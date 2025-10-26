@@ -1,0 +1,219 @@
+/* General Container Styles */
+.userprofile {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cover Photo */
+.userprofile-coverphoto {
+  width: 100%;
+  height: 360px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* Basic Info Section (placed below the cover photo) */
+.userprofile-basicinfo {
+  position: relative;
+  width: 100%;
+  padding: 20px 25px;
+}
+
+/* Profile photo wrapper is absolutely positioned relative to basic info */
+.userprofile-profilephoto-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 25px;
+  width: 150px;
+  height: 150px;
+  z-index: 1;
+}
+
+/* Circular profile photo container */
+.userprofile-profilephoto {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid var(--background-color-2);
+  overflow: hidden;
+  background-color: var(--background-color-4);
+}
+
+.profile-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Upload button for profile photo */
+.upload-photo-btn {
+  position: absolute;
+  top: calc(50% + 53px);
+  left: calc(50% + 53px);
+  transform: translate(-50%, -50%);
+  background: var(--background-color-2);
+  border-radius: 50%;
+  border: none;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-photo-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--font-color-default);
+}
+
+.upload-photo-btn:hover {
+  background: var(--background-color-3);
+}
+
+/* Profile Basic Info (Name and Username) */
+.userprofile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.userprofile-firstandlast {
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--font-color-default);
+}
+
+.userprofile-username {
+  font-size: 16px;
+  color: var(--font-color-muted);
+}
+
+/* Horizontal Menu */
+.horizontal-menu {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  border-bottom: 1px solid var(--background-color-4);
+}
+
+.menu-item {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--font-color-muted);
+  padding: 20px 0;
+  position: relative;
+  transition: color 0.2s ease-in-out;
+}
+
+.menu-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--background-color-4);
+}
+
+.menu-item:hover {
+  color: var(--font-color-default);
+}
+
+.menu-item.active {
+  color: var(--font-color-default);
+}
+
+.menu-item.active::after {
+  background-color: var(--font-color-default);
+}
+
+/* Main Content */
+.userprofile-main {
+  display: flex;
+  width: 100%;
+}
+
+.userprofile-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+}
+
+.userprofile-content {
+  display: flex;
+  height: 500px;
+  background-color: var(--background-color-3);
+  border-radius: var(--border-radius);
+}
+
+/* Edit Cover Photo Button */
+.edit-cover-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: var(--background-color-2);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  z-index: 2;
+  font-size: var(--font-size-016);
+  color: var(--font-color-default);
+}
+
+.edit-cover-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--font-color-default);
+}
+
+.edit-cover-btn:hover {
+  background: var(--background-color-3);
+}
+
+/* Flex row for name/username + actions */
+.userprofile-header {
+  margin-left: 180px; /* keeps space for profile photo */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Actions container */
+.userprofile-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.addfriend-btn {
+  display: inline-block;          /* prevents stretching */
+  width: fit-content;             /* size based on text */
+  white-space: nowrap;            /* keeps text on one line */
+  padding: 8px 16px;
+  background-color: var(--font-color-default);
+  color: var(--color-primary-dark);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  flex: 0 0 auto;                 /* disables flex growing/shrinking */
+}
+
+.addfriend-btn:hover {
+  background-color: var(--color-max-light);
+}

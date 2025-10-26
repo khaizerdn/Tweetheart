@@ -1,0 +1,62 @@
+.containerAccess {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-width: 100vw;
+    background-color: var(--background-color-1);
+    font-family: var(--font-family-primary);
+  }
+  
+  .verificationSection {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    padding: var(--padding-016);
+    gap: var(--gap-016);
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--gap-016);
+  }
+  
+  .note {
+    text-align: center;
+    font-size: var(--font-size-014);
+    color: var(--font-color-muted);
+  }
+  
+  .errorMessage {
+    color: var(--font-color-status-danger);
+    font-size: var(--font-size-012);
+    font-weight: var(--font-weight-normal);
+    text-align: center;
+  }
+  .resendLink {
+    text-align: center;
+  }
+  
+  .resendLink a {
+    text-align: center;
+    font-size: var(--font-size-014);
+    color: var(--font-color-default);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .verificationSection p {
+    color: var(--font-color-muted);
+  }
+
+  .resendLink a:hover {
+    color: var(--font-color-hover);
+  }
+  
+  .verificationSection hr {
+    background-color: var(--background-color-primary-default-1);
+  }

@@ -1,0 +1,13 @@
+:root {
+    /* hr */
+    --height-hr: 0.1px;
+    --margin-hr: 0;
+    --border-style-hr: solid;
+}
+
+:where(hr) {
+    border: 0;
+    height: var(--height-hr);
+    margin: var(--margin-hr);
+    border-style: var(--border-style-hr);
+}

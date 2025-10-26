@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Font Families */
+  --font-family-primary: "Inter", sans-serif;
+
+  /* Font Sizes */
+  --font-size-010: 0.625rem;
+  --font-size-012: 0.75rem;
+  --font-size-014: 0.875rem;
+  --font-size-016: 1rem;
+  --font-size-018: 1.125rem;
+  --font-size-020: 1.25rem;
+  --font-size-024: 1.5rem;
+  --font-size-028: 1.75rem;
+  --font-size-032: 2rem;
+  --font-size-040: 2.5rem;
+  --font-size-048: 3rem;
+  --font-size-056: 3.5rem;
+  --font-size-064: 4rem;
+
+  /* Font Weights */
+  --font-weight-thin: 100;
+  --font-weight-extra-light: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+  --font-weight-black: 900;
+
+  /* Line Height */
+  --line-height-default: 1.625;
+
+  /* Spacing */
+  --gap-002: 0.125rem;
+  --gap-004: 0.25rem;
+  --gap-008: 0.5rem;
+  --gap-010: 0.625rem;
+  --gap-012: 0.75rem;
+  --gap-014: 0.875rem;
+  --gap-016: 1rem;
+  --gap-018: 1.125rem;
+  --gap-024: 1.5rem;
+  --gap-032: 2rem;
+  --gap-040: 2.5rem;
+  --gap-048: 3rem;
+  --gap-056: 3.5rem;
+  --gap-064: 4rem;
+  
+  /* Border Radius */
+  --border-radius-000: 0;
+  --border-radius-004: 0.25rem;
+  --border-radius-008: 0.5rem;
+  --border-radius-012: 0.75rem;
+  --border-radius-016: 1rem;
+  --border-radius-024: 1.5rem;
+  --border-radius-032: 2rem;
+  --border-radius-999: 9999px;
+
+  /* Padding */
+  --padding-004: 0.25rem;
+  --padding-008: 0.5rem;
+  --padding-010: 0.625rem;
+  --padding-012: 0.75rem;
+  --padding-014: 0.875rem;
+  --padding-016: 1rem;
+  --padding-020: 1.25rem;
+  --padding-024: 1.5rem;
+  --padding-032: 2rem;
+  --padding-040: 2.5rem;
+  --padding-048: 3rem;
+  --padding-064: 4rem;
+
+  /* margin */
+  --margin-002: 0.125rem;
+  --margin-004: 0.25rem;
+  --margin-008: 0.5rem;
+  --margin-012: 0.75rem;
+  --margin-014: 0.875rem;
+  --margin-016: 1rem;
+  --margin-020: 1.25rem;
+  --margin-024: 1.5rem;
+  --margin-032: 2rem;
+  --margin-040: 2.5rem;
+  --margin-048: 3rem;
+  --margin-064: 4rem;
+
+  /* Colors */
+  --color-black: hsl(0, 0%, 0%);
+  --color-white: hsl(0, 0%, 100%);
+
+  /* Primary */
+  --color-primary-1: hsl(0, 0%, 0%);
+  --color-primary-2: hsl(0, 0%, 4%);
+  --color-primary-3: hsl(0, 0%, 8%);
+  --color-primary-4: hsl(0, 0%, 12%);
+  --color-primary-5: hsl(0, 0%, 16%);
+  --color-primary-6: hsl(0, 0%, 20%);
+  --color-primary-7: hsl(0, 0%, 24%);
+  --color-primary-8: hsl(0, 0%, 28%);
+  --color-primary-9: hsl(0, 0%, 32%);
+  --color-primary-10: hsl(0, 0%, 36%);
+  --color-primary-11: hsl(0, 0%, 40%);
+  --color-primary-12: hsl(0, 0%, 44%);
+  --color-primary-13: hsl(0, 0%, 48%);
+  --color-primary-14: hsl(0, 0%, 52%);
+  --color-primary-15: hsl(0, 0%, 56%);
+  --color-primary-16: hsl(0, 0%, 60%);
+  --color-primary-17: hsl(0, 0%, 64%);
+  --color-primary-18: hsl(0, 0%, 68%);
+  --color-primary-19: hsl(0, 0%, 72%);
+  --color-primary-20: hsl(0, 0%, 76%);
+  --color-primary-21: hsl(0, 0%, 80%);
+  --color-primary-22: hsl(0, 0%, 84%);
+  --color-primary-23: hsl(0, 0%, 88%);
+  --color-primary-24: hsl(0, 0%, 92%);
+  --color-primary-25: hsl(0, 0%, 96%);
+  --color-primary-26: hsl(0, 0%, 100%);
+
+  /* Secondary */
+  --color-secondary-1: hsl(220, 60%, 0%);
+  --color-secondary-2: hsl(220, 60%, 4%);
+  --color-secondary-3: hsl(220, 60%, 8%);
+  --color-secondary-4: hsl(220, 60%, 12%);
+  --color-secondary-5: hsl(220, 60%, 16%);
+  --color-secondary-6: hsl(220, 60%, 20%);
+  --color-secondary-7: hsl(220, 60%, 24%);
+  --color-secondary-8: hsl(220, 60%, 28%);
+  --color-secondary-9: hsl(220, 60%, 32%);
+  --color-secondary-10: hsl(220, 60%, 36%);
+  --color-secondary-11: hsl(220, 60%, 40%);
+  --color-secondary-12: hsl(220, 60%, 44%);
+  --color-secondary-13: hsl(220, 60%, 48%);
+  --color-secondary-14: hsl(220, 60%, 52%);
+  --color-secondary-15: hsl(220, 60%, 56%);
+  --color-secondary-16: hsl(220, 60%, 60%);
+  --color-secondary-17: hsl(220, 60%, 64%);
+  --color-secondary-18: hsl(220, 60%, 68%);
+  --color-secondary-19: hsl(220, 60%, 72%);
+  --color-secondary-20: hsl(220, 60%, 76%);
+  --color-secondary-21: hsl(220, 60%, 80%);
+  --color-secondary-22: hsl(220, 60%, 84%);
+  --color-secondary-23: hsl(220, 60%, 88%);
+  --color-secondary-24: hsl(220, 60%, 92%);
+  --color-secondary-25: hsl(220, 60%, 96%);
+  --color-secondary-26: hsl(220, 60%, 100%);
+
+  --shadow-1: 
+  inset 0 1px 2px #ffffff30,
+  0 1px 2px #00000030,
+  0 2px 4px #00000015;
+
+  --shadow-2:
+  inset 0 1px 2px #ffffff50,
+  0 2px 4px #00000030,
+  0 4px 8px #00000015;
+
+  --shadow-3:
+  inset 0 1px 2px #ffffff70,
+  0 4px 6px #00000030,
+  0 6px 10px #00000015;
+
+  /* Scrollbar Color */
+  --scrollbar-color-default: var(--color-primary-6);
+  --scrollbar-color-hover: var(--color-primary-8);
+
+  /* Background Color */
+  --background-color-1: var(--color-primary-3);
+  --background-color-2: var(--color-primary-4);
+  --background-color-3: var(--color-primary-5);
+
+  /* If using --background-color-1 */
+  --background-color-primary-disabled-1: var(--color-primary-4);
+  --background-color-primary-muted-1: var(--color-primary-5);
+  --background-color-primary-default-1: var(--color-primary-6);
+  --background-color-primary-hover-1: var(--color-primary-7);
+  --background-color-primary-active-1: var(--color-primary-8);
+  --background-color-primary-selected-1: var(--color-primary-9);
+
+  /* If using --background-color-2 */
+  --background-color-primary-disabled-2: var(--color-primary-5);
+  --background-color-primary-muted-2: var(--color-primary-6);
+  --background-color-primary-default-2: var(--color-primary-7);
+  --background-color-primary-hover-2: var(--color-primary-8);
+  --background-color-primary-active-2: var(--color-primary-9);
+  --background-color-primary-selected-2: var(--color-primary-10);
+
+  /* If using --background-color-3 */
+  --background-color-primary-disabled-3: var(--color-primary-6);
+  --background-color-primary-muted-3: var(--color-primary-7);
+  --background-color-primary-default-3: var(--color-primary-8);
+  --background-color-primary-hover-3: var(--color-primary-9);
+  --background-color-primary-active-3: var(--color-primary-10);
+  --background-color-primary-selected-3: var(--color-primary-11);
+
+  /* Background Color Secondary */
+  --background-color-secondary-disabled: var(--color-secondary-14);
+  --background-color-secondary-muted: var(--color-secondary-15);
+  --background-color-secondary-default: var(--color-secondary-16);
+  --background-color-secondary-hover: var(--color-secondary-17);
+  --background-color-secondary-active: var(--color-secondary-18);
+  --background-color-secondary-selected: var(--color-secondary-19);
+
+  /* Font Colors */
+  --font-color-disabled: var(--color-primary-7);
+  --font-color-muted: var(--color-primary-11);
+  --font-color-default: var(--color-primary-19);
+  --font-color-hover: var(--color-primary-23);
+  --font-color-active: var(--color-primary-25);
+  --font-color-selected: var(--color-primary-26);
+
+  /* Font Colors Secondary */
+  --font-color-secondary-disabled: var(--color-secondary-7);
+  --font-color-secondary-muted: var(--color-secondary-11);
+  --font-color-secondary-default: var(--color-secondary-19);
+  --font-color-secondary-hover: var(--color-secondary-23);
+  --font-color-secondary-active: var(--color-secondary-25);
+  --font-color-secondary-selected: var(--color-secondary-26);
+
+  /* Font Color Status */
+  --font-color-status-danger: rgb(255, 115, 105);
+  --font-color-status-success: rgb(51, 212, 147);
+  --font-color-status-warning: rgb(255, 180, 91);
+  --font-color-status-inform: rgb(86, 182, 233);
+  
+  /* Background Colors Status */
+  --background-color-status-danger: rgb(64, 39, 38);
+  --background-color-status-success: rgb(28, 58, 47);
+  --background-color-status-warning: rgb(59, 46, 32);
+  --background-color-status-inform: rgb(31, 47, 61);
+}

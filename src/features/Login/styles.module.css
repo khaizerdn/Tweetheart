@@ -1,0 +1,51 @@
+.containerAccess {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: var(--background-color-1);
+  font-family: var(--font-family-primary);
+}
+
+.loginSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px;
+  padding: var(--padding-016);
+  gap: var(--gap-016);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--gap-016);
+}
+
+.errorMessage {
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+}
+
+.loginSection p {
+  text-align: center;
+  font-size: var(--font-size-014);
+}
+
+.loginSection hr {
+  background-color: var(--background-color-primary-default-1);
+}
+
+.buttonRegisterText {
+  color: var(--font-color-default);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.buttonRegisterText:hover {
+  color: var(--font-color-active);
+}

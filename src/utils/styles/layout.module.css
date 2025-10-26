@@ -1,0 +1,84 @@
+.containerShortcut {
+  display: flex;
+  width: 280px;
+  height: 100%;
+}
+
+.containerComplementary {
+  display: flex;
+  width: 280px;
+  height: 100%;
+}
+
+.shortcut {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.complementary {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-left: 1px solid var(--background-color-primary-default-1);
+  border-top: 1px solid var(--background-color-primary-default-1);
+}
+
+/* Responsive adjustments */
+@media screen and (min-width: 1px) and (max-width: 286px) {
+  .containerShortcut,
+  .containerComplementary {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 286px) and (max-width: 685px) {
+  .containerShortcut,
+  .containerComplementary {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 685px) and (max-width: 1006px) {
+  .containerShortcut {
+    width: 70px;
+  }
+  .containerComplementary {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1006px) and (max-width: 1245px) {
+  .containerShortcut {
+    width: 70px;
+  }
+  .containerComplementary {
+    width: 280px;
+    min-width: 280px;
+  }
+}
+
+@media screen and (min-width: 1245px) and (max-width: 1921px) {
+  .containerShortcut {
+    width: 280px;
+    min-width: 280px;
+  }
+  .containerComplementary {
+    width: 280px;
+    min-width: 280px;
+  }
+}
+
+@media screen and (min-width: 1921px) {
+  .containerShortcut {
+    width: 280px;
+    min-width: 280px;
+  }
+  .containerComplementary {
+    width: 280px;
+    min-width: 280px;
+  }
+}

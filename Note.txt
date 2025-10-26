@@ -1,0 +1,52 @@
+Setting Up a Server
+
+Page 1
+- Select Game
+
+Page 2
+- Tournament Name
+- Region
+- Start Date
+- Start Time
+
+Page 3 
+- Description (Markdown if possible)
+- Rules (Markdown if possible)
+- Prize (Markdown if possible)
+- Contact (Markdown if possible)
+
+Page 4 Tournament Format
+- Min Member
+- Max Member
+- Check-in (Enable/Disable): Ensures that teams unable or unwilling to continue are excluded, while committed teams can proceed.
+- Format (Single Elim / Double Elim / Etc.)
+
+If format is single elim:
+- Bracket Name
+- Number of Teams (Min of 2)
+- Start Date
+- Start Time
+- Match Check-in (Enable/Disable): Ensures that when two teams are matched in a round, the game can start promptly without delays.
+- Match Disqualification Time (5min / 10min / 15min): This setting applies only if Match Check-in is enabled. When two teams are matched, both must check in before the timer expires. If they fail to do so, one or both teams will be disqualified. The countdown begins only once both teams are placed in the same match in a round.
+- Enable Third Place Match (Optional): Determines whether a match will be held to decide the 3rd place winner.
+- Match Score Reporting (Admin Only / Admin & Players)
+- Match Screenshot (Enable or Disable)
+
+Page 5 Registration Fields
+This is like a google form where tournament creators will be able to add input fields where each team member will answer when try join the tournament. Also, have the option if the input field is public/private. If its public, other participants will be able to see it.
+Example:
+- Full Name (Private)
+- Age (Private)
+- Contact (Public)
+- In-game ID (Public)
+- Game Rank (Public)
+
+Page 6 
+- Draft/Published: Publishing this tournament will enable registration and allow players to join.
+- Private/Public: Public tournaments are eligible to appear in search results and tournament listings.
+- Join Codes (Optional): Have control which player/teams are able to join the tournament by giving them codes.
+
+
+IDEAS
+- Players may earn points in website and use it as time in partnered computer shops
+- Partnered computer shops and implementing nfc cards registration.

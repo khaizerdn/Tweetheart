@@ -1,0 +1,52 @@
+.containerAccess {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: fit-content;
+  background-color: var(--background-color-1);
+  font-family: var(--font-family-primary);
+}
+
+.loginSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 3rem 0 3rem 0;
+  max-width: 320px;
+  padding: var(--padding-016);
+  gap: var(--gap-016);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--gap-016);
+}
+
+.errorMessage {
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+}
+
+.loginSection p {
+  text-align: center;
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+}
+
+.loginSection hr {
+  background-color: var(--background-color-primary-default-1);
+}
+
+.buttonRegisterText {
+  color: var(--font-color-default);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.buttonRegisterText:hover {
+  color: var(--font-color-hover);
+}

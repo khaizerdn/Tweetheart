@@ -1,0 +1,111 @@
+@import url('tokens.css');
+@import url('defaults.css');
+@import 'overlayscrollbars/overlayscrollbars.css';
+
+#root {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-normal);
+  color: var(--font-color-default);
+  background-color: var(--background-color-1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+  overflow: hidden;
+}
+
+.container-content {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  border-top-left-radius: var(--border-radius-016);
+  border-left: 1px solid var(--background-color-primary-default-1);
+  border-top: 1px solid var(--background-color-primary-default-1);
+}
+
+.container-titleBar {
+  display: flex;
+  width: 100%;
+  background-color: var(--background-color-1);
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media screen and (min-width: 1px) and (max-width: 286px) {
+  .container {
+    width: 100%;
+  }
+  .content {
+    border-top-left-radius: 0;
+    border-left: none;
+    border-top: none;
+  }
+  .container-titleBar {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 286px) and (max-width: 685px) {
+  .container {
+    width: 100%;
+  }
+  .content {
+    border-top-left-radius: 0;
+    border-left: none;
+    border-top: none;
+  }
+  .container-titleBar {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 685px) and (max-width: 1006px) {
+  .container {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1006px) and (max-width: 1245px) {
+  .container {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1245px) and (max-width: 1921px) {
+  .container {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1921px) {
+  .container {
+    width: 1440px;
+  }
+}
