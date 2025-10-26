@@ -4,6 +4,7 @@ import axios from "axios";
 import InputField from "../../components/InputFields";
 import Button from "../../components/Buttons/Button";
 import styles from "./styles.module.css";
+import logoHorizontal from "../../utils/assets/logo_horizontal.svg";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -34,7 +35,13 @@ function Login({ setIsLoggedIn }) {
   return (
     <div className={styles.containerAccess}>
       <div className={styles.loginSection}>
-        <h1>gamify.com</h1>
+        <div className={styles.logoContainer}>
+          <img 
+            src={logoHorizontal} 
+            alt="Logo" 
+            className={styles.logo}
+          />
+        </div>
         <form onSubmit={handleSubmit}>
           <InputField
             type="email"

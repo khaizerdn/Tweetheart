@@ -17,6 +17,16 @@
   gap: var(--gap-016);
 }
 
+.logoContainer {
+  display: flex;
+}
+
+.logo {
+  height: 48px;
+  width: auto;
+  max-width: 220px;
+}
+
 form {
   display: flex;
   flex-direction: column;
