@@ -16,10 +16,21 @@ function Login({ setIsLoggedIn }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Clear previous errors
+    setError("");
+    
+    // Local validation - check for empty credentials
+    if (!email.trim() || !password.trim()) {
+      setError("Incorrect email or password.");
+      return;
+    }
+    
+    // Only make API request if validation passes
     try {
       const res = await axios.post(
         `${API_URL}/login`,
-        { email, password },
+        { email: email.trim(), password },
         { withCredentials: true }
       );
       setIsLoggedIn(true);
