@@ -6,21 +6,7 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import layoutStyles from './utils/styles/layout.module.css';
 
 import Menu from './features/Menu/features';
-import Complementary from './features/Complementary/Complementary';
-
-import SearchPageMain from './features/Content/SearchPage';
-import ContentProfile from './features/Content/UserProfile/UserProfile';
-import ContentHome from './features/Content/content-home';
-import ContentNotifications from './features/Content/content-notifications';
-import ContentTrends from './features/Content/content-trends';
-import ContentTournament from './features/Content/content-tournament';
-import ContentScrimmage from './features/Content/content-scrimmage';
-import ContentChats from './features/Content/content-chats';
-import ContentFriends from './features/Content/content-friends';
-import ContentTeams from './features/Content/content-teams';
-import ContentOrganizations from './features/Content/content-organizations';
-import ContentPages from './features/Content/content-pages';
-import ContentSettings from './features/Content/content-settings';
+import BlankPage from './components/BlankPage';
 
 import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
@@ -32,15 +18,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [content, setContent] = useState(
-    <div>
-      <h2>For You Content</h2>
-      <p>This section is tailored just for you!</p>
-    </div>
-  );
-  const [dropdownLabel, setDropdownLabel] = useState(
-    () => localStorage.getItem('dropdownLabel') || "For you"
-  );
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -98,7 +75,7 @@ function App() {
                         options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
                         overflow: { x: 'hidden', y: 'scroll' } }}
                         className={layoutStyles.shortcut}>
-                        <Menu setDropdownLabel={setDropdownLabel} />
+                        <Menu />
                       </OverlayScrollbarsComponent>
                     </div>
                     <div className="container-content">
@@ -107,39 +84,8 @@ function App() {
                         overflow: { x: 'hidden', y: 'scroll' } }}
                         className="content">
                         <Routes>
-                          <Route path="*" element={<Navigate to="/" />} />
-                          <Route
-                            path="/"
-                            element={
-                              <ContentHome
-                                content={content}
-                                setContent={setContent}
-                                dropdownLabel={dropdownLabel}
-                                setDropdownLabel={setDropdownLabel}
-                              />
-                            }
-                          />
-                          <Route path="/search" element={<SearchPageMain />} />
-                          <Route path="/notifications" element={<ContentNotifications />} />
-                          <Route path="/trends" element={<ContentTrends />} />
-                          <Route path="/tournament" element={<ContentTournament />} />
-                          <Route path="/scrimmage" element={<ContentScrimmage />} />
-                          <Route path="/chats" element={<ContentChats />} />
-                          <Route path="/friends" element={<ContentFriends />} />
-                          <Route path="/teams" element={<ContentTeams />} />
-                          <Route path="/organizations" element={<ContentOrganizations />} />
-                          <Route path="/pages" element={<ContentPages />} />
-                          <Route path="/settings" element={<ContentSettings />} />
-                          <Route path="/:username/*" element={<ContentProfile />} />
+                          <Route path="*" element={<BlankPage />} />
                         </Routes>
-                      </OverlayScrollbarsComponent>
-                    </div>
-                    <div className={layoutStyles.containerComplementary}>
-                      <OverlayScrollbarsComponent
-                        options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
-                        overflow: { x: 'hidden', y: 'scroll' } }}
-                        className={layoutStyles.complementary}>
-                        <Complementary />
                       </OverlayScrollbarsComponent>
                     </div>
                   </div>
