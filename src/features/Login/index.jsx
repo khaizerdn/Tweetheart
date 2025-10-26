@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../../components/InputFields";
@@ -13,6 +13,18 @@ function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [countdown, setCountdown] = useState(0);
+
+  // Countdown effect
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,9 +48,20 @@ function Login({ setIsLoggedIn }) {
       setIsLoggedIn(true);
       navigate("/");
     } catch (err) {
-      const message = err.response?.status === 429
-        ? "Too many login attempts. Please try again later."
-        : err.response?.data?.message || "Login failed";
+      let message;
+      if (err.response?.status === 429) {
+        const remainingSeconds = err.response?.data?.remainingSeconds;
+        if (remainingSeconds) {
+          setCountdown(remainingSeconds);
+          message = `Try again in ${remainingSeconds}s`;
+        } else {
+          message = "Too many attempts. Try again later.";
+        }
+      } else {
+        message = err.response?.data?.message || "Login failed";
+        // Clear countdown on successful login attempts with different credentials
+        setCountdown(0);
+      }
       setError(message);
     }
   };
@@ -86,8 +109,18 @@ function Login({ setIsLoggedIn }) {
               selected: 'var(--background-color-primary-selected-1)'
             }}
           />
-          {error && <span className={styles.errorMessage}>{error}</span>}
-          <Button type="secondary" position="center" htmlType="submit">Log In</Button>
+          {error && (
+            <span className={styles.errorMessage}>
+              {countdown > 0 ? `Try again in ${countdown}s` : error}
+            </span>
+          )}
+          <Button 
+            type="secondary" 
+            position="center" 
+            htmlType="submit"
+          >
+            Log In
+          </Button>
         </form>
         <p>
           <Link to="/forgotpassword" className={styles.buttonRegisterText}>
