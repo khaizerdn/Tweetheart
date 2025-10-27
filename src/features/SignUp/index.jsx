@@ -256,8 +256,8 @@ function SignUp() {
       {/* Right Container - Input Fields and Photos */}
       <div className={styles.rightContainer}>
         <div className={styles.formSection}>
-          <form onSubmit={handleSubmit}>
           <h1>Sign Up</h1>
+          <form onSubmit={handleSubmit}>
             <div className={styles.formContent}>
               {/* Input Fields Section */}
               <div className={styles.inputFieldsSection}>
