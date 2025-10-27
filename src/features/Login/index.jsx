@@ -4,7 +4,7 @@ import axios from "axios";
 import InputField from "../../components/InputFields";
 import Button from "../../components/Buttons/Button";
 import styles from "./styles.module.css";
-import logoHorizontal from "../../utils/assets/logo_1.svg";
+import logo from "../../utils/assets/logo.svg";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -78,7 +78,7 @@ function Login({ setIsLoggedIn }) {
         <div className={styles.loginSection}>
           <div className={styles.logoContainer}>
             <img 
-              src={logoHorizontal} 
+              src={logo} 
               alt="Logo" 
               className={styles.logo}
             />
