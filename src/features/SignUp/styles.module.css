@@ -1,6 +1,7 @@
 .containerAccess {
-  --container-gap: var(--gap-080);
+  --container-gap: 0;
   display: flex;
+  gap: var(--container-gap);
   min-height: 100vh;
   height: auto;
   width: 100vw;
@@ -184,13 +185,11 @@
 .rightContainer {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   position: sticky;
   top: 0;
   max-height: 100vh;
-  padding-left: var(--padding-016);
-  padding-right: var(--padding-016);
 }
 
 .formSection {
@@ -401,7 +400,6 @@
   .rightContainer {
     position: relative;
     max-height: none;
-    padding: var(--padding-016);
   }
 
   .formSection {
@@ -465,7 +463,6 @@
   .rightContainer {
     position: relative;
     max-height: none;
-    padding: var(--padding-016);
   }
 
   .formSection {
@@ -521,12 +518,9 @@
   .rightContainer {
     position: relative;
     max-height: none;
-    padding: var(--padding-024);
   }
 
   .formSection {
-    padding: var(--padding-032) 0;
-    
     max-width: 100%;
   }
 
