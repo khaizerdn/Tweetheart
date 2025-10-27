@@ -116,17 +116,54 @@ function SignUp() {
       setError("Please upload at least 2 photos");
       return;
     }
-
-    navigate("/verification");
     
     const [year, month, day] = birthDate ? birthDate.split("-") : ["", "", ""];
     try {
+      // Step 1: Create user account
       const res = await axios.post(
         `${API_URL}/signup`,
         { firstName, lastName, email, password, gender, month, day, year, bio },
         { withCredentials: true }
       );
+      
       sessionStorage.setItem("email", email);
+      
+      // Step 2: Upload photos to S3 if account creation was successful
+      if (res.data.success && res.data.userId) {
+        try {
+          const formData = new FormData();
+          
+          // Append all photo files to FormData
+          uploadedPhotos.forEach((photoObj) => {
+            if (photoObj && photoObj.file) {
+              formData.append('photos', photoObj.file);
+            }
+          });
+          
+          formData.append('userId', res.data.userId);
+
+          // Upload photos to S3
+          await axios.post(
+            `${API_URL}/api/photos/upload-multiple`,
+            formData,
+            { 
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }
+          );
+          
+          console.log("✅ Photos uploaded successfully to S3");
+        } catch (photoErr) {
+          console.error("⚠️ Photo upload failed (account created):", photoErr);
+          // Don't block navigation - photos can be added later
+        }
+      }
+      
+      // Navigate to verification page
+      navigate("/verification");
+      
     } catch (err) {
       console.error("API error:", {
         message: err.message,

@@ -101,6 +101,7 @@ router.post("/signup", async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Account updated. Verification email sent.",
+        userId: existingId,
       });
     }
 
@@ -128,6 +129,7 @@ router.post("/signup", async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Account created. Verification email sent.",
+      userId: userId,
     });
   } catch (error) {
     console.error("❌ Error during account creation:", error);
