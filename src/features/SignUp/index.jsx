@@ -11,7 +11,6 @@ function SignUp() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -40,7 +39,7 @@ function SignUp() {
     try {
       const res = await axios.post(
         `${API_URL}/signup`,
-        { firstName, lastName, username, email, password, gender, month, day, year, bio },
+        { firstName, lastName, email, password, gender, month, day, year, bio },
         { withCredentials: true }
       );
       sessionStorage.setItem("email", email);
@@ -148,24 +147,6 @@ function SignUp() {
             onChange={(e) => setBio(e.target.value)}
             max={500}
             required={false}
-            styles={{
-              background: 'var(--background-color-1)',
-              disabled: 'var(--background-color-primary-disabled-1)',
-              muted: 'var(--background-color-primary-muted-1)',
-              default: 'var(--background-color-primary-default-1)',
-              hover: 'var(--background-color-primary-hover-1)',
-              active: 'var(--background-color-primary-active-1)',
-              selected: 'var(--background-color-primary-selected-1)',
-            }}
-          />
-          <InputField
-            ref={(el) => (inputRefs.current.username = el)}
-            type="checkusername"
-            label="Username"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required={true}
             styles={{
               background: 'var(--background-color-1)',
               disabled: 'var(--background-color-primary-disabled-1)',

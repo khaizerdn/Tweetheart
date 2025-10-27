@@ -41,11 +41,11 @@ const dbQuery = (query, values = []) => {
 // ✅ CREATE ACCOUNT ROUTE
 // =====================================================
 router.post("/signup", async (req, res) => {
-  const { firstName, lastName, username, email, password, gender, month, day, year, bio } = req.body;
+  const { firstName, lastName, email, password, gender, month, day, year, bio } = req.body;
 
   try {
     // Validate required fields
-    if (!firstName || !lastName || !username || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -61,9 +61,9 @@ router.post("/signup", async (req, res) => {
     const checkUserQuery = `
       SELECT id, is_verified 
       FROM users 
-      WHERE (email = ? OR username = ?) AND is_verified = 0
+      WHERE email = ? AND is_verified = 0
     `;
-    const existingUser = await dbQuery(checkUserQuery, [email, username]);
+    const existingUser = await dbQuery(checkUserQuery, [email]);
 
     if (existingUser.length > 0) {
       const existingId = existingUser[0].id;
@@ -73,7 +73,6 @@ router.post("/signup", async (req, res) => {
         SET 
           first_name = ?, 
           last_name = ?, 
-          username = ?, 
           email = ?, 
           password = ?, 
           birthdate = ?, 
@@ -88,7 +87,6 @@ router.post("/signup", async (req, res) => {
       await dbQuery(updateUserQuery, [
         firstName,
         lastName,
-        username,
         email,
         hashedPassword,
         birthdate,
@@ -109,15 +107,14 @@ router.post("/signup", async (req, res) => {
     // Create new user
     const insertUserQuery = `
       INSERT INTO users 
-        (id, first_name, last_name, username, email, password, birthdate, gender, bio, is_verified, verification_code, expiration_time, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
+        (id, first_name, last_name, email, password, birthdate, gender, bio, is_verified, verification_code, expiration_time, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
     `;
 
     await dbQuery(insertUserQuery, [
       userId,
       firstName,
       lastName,
-      username,
       email,
       hashedPassword,
       birthdate,

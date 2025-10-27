@@ -32,7 +32,6 @@ The Create Account feature allows users to register for an account with email ve
 
 ### User Registration
 - First Name & Last Name
-- Username (unique, validated)
 - Email (unique, validated)
 - Password (with confirmation)
 - Gender selection (Male, Female, Other)
@@ -42,7 +41,6 @@ The Create Account feature allows users to register for an account with email ve
 ### Validation
 - Real-time field validation
 - Email format verification
-- Username availability check
 - Password strength requirements
 - Password confirmation matching
 - Age verification from birth date
@@ -69,7 +67,6 @@ CREATE TABLE `users` (
   `id` varchar(255) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
-  `username` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `birthdate` date NOT NULL,
@@ -84,10 +81,8 @@ CREATE TABLE `users` (
 
 ### Indexes
 - Primary Key: `id`
-- Unique Key: `username`
 - Unique Key: `email`
 - Index: `idx_email`
-- Index: `idx_username`
 
 ## API Endpoints
 
@@ -99,7 +94,6 @@ Creates a new user account or updates existing unverified account.
 {
   "firstName": "string",
   "lastName": "string",
-  "username": "string",
   "email": "string",
   "password": "string",
   "gender": "Male|Female|Other",
@@ -156,7 +150,7 @@ import SignUp from './features/SignUp';
 
 ## Notes
 
-- Users can re-submit registration with same email/username if not verified
+- Users can re-submit registration with same email if not verified
 - Existing unverified accounts get updated instead of creating duplicates
 - Verification code expires after 2 minutes
 

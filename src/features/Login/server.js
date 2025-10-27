@@ -226,7 +226,7 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
-      user: { id: user.id, email: user.email, username: user.username },
+      user: { id: user.id, email: user.email },
     });
   } catch (err) {
     res.status(500).send("Internal server error");

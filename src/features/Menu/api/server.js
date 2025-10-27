@@ -30,7 +30,7 @@ const queryDB = async (query, values = []) => {
 };
 
 /**
- * Route: Get user basic info (first name, last name, username only)
+ * Route: Get user basic info (first name, last name only)
  */
 router.get("/user-basic", async (req, res) => {
   const userId = req.cookies.userId;
@@ -41,7 +41,7 @@ router.get("/user-basic", async (req, res) => {
 
   try {
     const sql = `
-      SELECT first_name, last_name, username 
+      SELECT first_name, last_name 
       FROM users 
       WHERE id = ?
     `;
@@ -56,7 +56,6 @@ router.get("/user-basic", async (req, res) => {
       success: true,
       firstName: user.first_name,
       lastName: user.last_name,
-      username: user.username,
     });
   } catch (error) {
     console.error("Error fetching user basic info:", error);

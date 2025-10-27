@@ -8,7 +8,7 @@ const Profile = ({ userData, profilePhotoUrl }) => {
 
   const handleProfileClick = () => {
     if (userData) {
-      navigate(`/${userData.username}`);
+      navigate(`/profile`);
     }
   };
 
@@ -27,7 +27,6 @@ const Profile = ({ userData, profilePhotoUrl }) => {
         {userData ? (
           <>
             {userData.first_name} {userData.last_name}
-            <div className={styles.buttonTextOther}>@{userData.username}</div>
           </>
         ) : (
           "Profile"

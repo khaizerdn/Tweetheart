@@ -39,7 +39,6 @@ function Menu() {
         setUserData({
           first_name: data.firstName,
           last_name: data.lastName,
-          username: data.username,
         });
       } catch (error) {
         console.error("Error fetching user data:", error.response?.data?.message || error.message);
