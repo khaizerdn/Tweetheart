@@ -20,7 +20,6 @@
 .previewCard {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: var(--gap-016);
   width: 100%;
   max-width: 350px;
@@ -30,7 +29,7 @@
   font-size: var(--font-size-032);
   font-weight: var(--font-weight-semi-bold);
   color: var(--font-color-default);
-  text-align: center;
+  text-align: left;
 }
 
 .card {
