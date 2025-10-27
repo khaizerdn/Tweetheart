@@ -17,8 +17,28 @@ function SignUp() {
   const [gender, setGender] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [bio, setBio] = useState("");
+  const [photos, setPhotos] = useState([null, null, null, null, null, null]); // 6 photo slots
   const [error, setError] = useState("");
   const inputRefs = useRef({});
+
+  const handlePhotoUpload = (index, event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newPhotos = [...photos];
+        newPhotos[index] = { file, preview: reader.result };
+        setPhotos(newPhotos);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePhotoDelete = (index) => {
+    const newPhotos = [...photos];
+    newPhotos[index] = null;
+    setPhotos(newPhotos);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +50,13 @@ function SignUp() {
     const isValid = results.every((valid) => valid);
 
     if (!isValid) {
+      return;
+    }
+
+    // Check if at least 2 photos are uploaded
+    const uploadedPhotos = photos.filter(photo => photo !== null);
+    if (uploadedPhotos.length < 2) {
+      setError("Please upload at least 2 photos");
       return;
     }
 
@@ -61,11 +88,14 @@ function SignUp() {
         {/* Add your content here */}
       </div>
 
-      {/* Right Container - Input Fields */}
+      {/* Right Container - Input Fields and Photos */}
       <div className={styles.rightContainer}>
-        <div className={styles.loginSection}>
+        <div className={styles.formSection}>
           <h1>Sign Up</h1>
-          <form onSubmit={handleSubmit}>
+          <div className={styles.formContent}>
+            {/* Left Side - Input Fields */}
+            <div className={styles.loginSection}>
+              <form onSubmit={handleSubmit}>
           <InputField
             ref={(el) => (inputRefs.current.firstName = el)}
             type="firstname"
@@ -223,28 +253,63 @@ function SignUp() {
           <Button type="secondary" position="center" htmlType="submit">
             Create Account
           </Button>
-          </form>
-          <p>
-            By creating an account, you agree to the{" "}
-            <Link to="/terms-of-service" className={styles.buttonRegisterText}>
-              Terms of Service
-            </Link>
-            ,{" "}
-            <Link to="/privacy-policy" className={styles.buttonRegisterText}>
-              Privacy Policy
-            </Link>
-            , including{" "}
-            <Link to="/cookies-policy" className={styles.buttonRegisterText}>
-              Cookie Policy
-            </Link>
-            .
-          </p>
-          <hr />
-          <p>
-            <Link to="/" className={styles.buttonRegisterText}>
-              Already have an account?
-            </Link>
-          </p>
+              </form>
+              <p>
+                By creating an account, you agree to the{" "}
+                <Link to="/terms-of-service" className={styles.buttonRegisterText}>
+                  Terms of Service
+                </Link>
+                ,{" "}
+                <Link to="/privacy-policy" className={styles.buttonRegisterText}>
+                  Privacy Policy
+                </Link>
+                , including{" "}
+                <Link to="/cookies-policy" className={styles.buttonRegisterText}>
+                  Cookie Policy
+                </Link>
+                .
+              </p>
+              <hr />
+              <p>
+                <Link to="/" className={styles.buttonRegisterText}>
+                  Already have an account?
+                </Link>
+              </p>
+            </div>
+
+            {/* Right Side - Photo Upload */}
+            <div className={styles.photoSection}>
+              <div className={styles.photoGrid}>
+                {photos.map((photo, index) => (
+                  <div key={index} className={styles.photoCard}>
+                    {photo ? (
+                      <div className={styles.photoPreview}>
+                        <img src={photo.preview} alt={`Upload ${index + 1}`} />
+                        <div 
+                          className={styles.photoOverlay}
+                          onClick={() => handlePhotoDelete(index)}
+                        >
+                          <i className="fa-solid fa-trash"></i>
+                          <span>Delete</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <label className={styles.photoUpload}>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handlePhotoUpload(index, e)}
+                          style={{ display: 'none' }}
+                        />
+                        <i className="fa-solid fa-plus"></i>
+                        <span>Add Photo</span>
+                      </label>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,11 +1,13 @@
 .containerAccess {
-  --container-gap: 10rem; /* Adjust this to change the gap between containers */
+  --container-gap: var(--gap-080);
   display: flex;
   min-height: 100vh;
+  height: auto;
   min-width: 100vw;
   background-color: var(--background-color-1);
   font-family: var(--font-family-primary);
   gap: var(--container-gap);
+  overflow-y: auto;
 }
 
 .leftContainer {
@@ -14,15 +16,16 @@
   justify-content: right;
   align-items: center;
   padding: var(--padding-016);
-  /* Add your background or content styles here */
 }
 
 .rightContainer {
   flex: 1;
   display: flex;
   justify-content: left;
-  align-items: center;
+  align-items: flex-start;
   padding: var(--padding-016);
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .loginSection {
@@ -32,21 +35,33 @@
   max-width: 320px;
   padding: var(--padding-016);
   gap: var(--gap-016);
+  margin: auto 0;
+  padding-top: var(--padding-048);
+  padding-bottom: var(--padding-048);
+  min-height: fit-content;
 }
 
-/* Responsive: Stack vertically on smaller screens */
 @media (max-width: 768px) {
   .containerAccess {
     flex-direction: column;
     --container-gap: 0rem;
+    min-height: auto;
   }
 
   .rightContainer {
     justify-content: center;
+    min-height: auto;
+    padding: var(--padding-016) var(--padding-016) var(--padding-032) var(--padding-016);
   }
   
   .leftContainer {
-    display: none; /* Hide left container on mobile */
+    display: none;
+  }
+
+  .loginSection {
+    margin: 0;
+    padding-top: var(--padding-032);
+    padding-bottom: var(--padding-032);
   }
 }
 
@@ -58,9 +73,9 @@
 }
 
 .logo {
-  height: 64px;
+  height: var(--gap-064);
   width: auto;
-  max-width: 64px;
+  max-width: var(--gap-064);
 }
 
 .logoContainer h1 {

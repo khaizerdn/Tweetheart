@@ -15,7 +15,7 @@ body {
   font-weight: var(--font-weight-normal);
   color: var(--font-color-default);
   background-color: var(--background-color-1);
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
 }
 
