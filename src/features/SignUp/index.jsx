@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../../components/InputFields";
 import Button from "../../components/Buttons/Button";
+import Card from "../../components/Card";
 import styles from "./styles.module.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -181,75 +182,35 @@ function SignUp() {
       <div className={styles.leftContainer}>
         <div className={styles.previewCard}>
           <div className={styles.previewLabel}>Preview</div>
-          <div className={styles.card}>
-            <div className={styles.photoContainer}>
-              {uploadedPhotos.length > 0 ? (
-                <>
-                  <img 
-                    src={uploadedPhotos[currentPhotoIndex]} 
-                    alt="Preview" 
-                    className={styles.photo}
-                  />
-                  
-                  {/* Photo indicators */}
-                  {uploadedPhotos.length > 1 && (
-                    <div className={styles.photoIndicators}>
-                      {uploadedPhotos.map((_, photoIndex) => (
-                        <div
-                          key={photoIndex}
-                          className={`${styles.indicator} ${photoIndex === currentPhotoIndex ? styles.active : ''}`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Photo navigation buttons */}
-                  {uploadedPhotos.length > 1 && (
-                    <>
-                      <button
-                        className={`${styles.navButton} ${styles.prevButton}`}
-                        onClick={prevPhoto}
-                        type="button"
-                      >
-                        <i className="fa fa-chevron-left"></i>
-                      </button>
-                      <button
-                        className={`${styles.navButton} ${styles.nextButton}`}
-                        onClick={nextPhoto}
-                        type="button"
-                      >
-                        <i className="fa fa-chevron-right"></i>
-                      </button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <div className={styles.placeholderPhoto}>
-                  <i className="fa fa-user"></i>
-                  <p>Upload photos to see preview</p>
-                </div>
-              )}
+          <Card
+            photos={uploadedPhotos}
+            currentPhotoIndex={currentPhotoIndex}
+            onNextPhoto={nextPhoto}
+            onPrevPhoto={prevPhoto}
+            placeholder={
+              <div className={styles.placeholderPhoto}>
+                <i className="fa fa-user"></i>
+                <p>Upload photos to see preview</p>
+              </div>
+            }
+          >
+            <div className={styles.nameAge}>
+              <h3>
+                {displayName}
+                {age && `, ${age}`}
+              </h3>
+              <div className={styles.category}>
+                <i className="fa fa-venus-mars"></i>
+                <span>{displayGender}</span>
+              </div>
             </div>
             
-            <div className={styles.cardInfo}>
-              <div className={styles.nameAge}>
-                <h3>
-                  {displayName}
-                  {age && `, ${age}`}
-                </h3>
-                <div className={styles.category}>
-                  <i className="fa fa-venus-mars"></i>
-                  <span>{displayGender}</span>
-                </div>
+            {bio && (
+              <div className={styles.bioPreview}>
+                {bio}
               </div>
-              
-              {bio && (
-                <div className={styles.bioPreview}>
-                  {bio}
-                </div>
-              )}
-            </div>
-          </div>
+            )}
+          </Card>
         </div>
       </div>
 

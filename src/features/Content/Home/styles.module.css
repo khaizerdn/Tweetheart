@@ -26,24 +26,21 @@
   position: relative;
 }
 
-.card {
-  position: absolute;
+/* Swipe card specific styles - override Card component for swipe functionality */
+.swipeCard {
+  position: absolute !important;
   width: 350px;
-  height: 600px;
-  background: var(--color-white);
-  border-radius: var(--border-radius-024);
-  overflow: hidden;
   will-change: transform;
   transition: all 0.3s ease-in-out;
   cursor: grab;
-  box-shadow: var(--shadow-3);
 }
 
-.card.moving {
+.swipeCard.moving {
   transition: none;
   cursor: grabbing;
 }
 
+/* Swipe overlays - specific to Home component */
 .swipeOverlayLeft {
   position: absolute;
   top: 0;
@@ -68,90 +65,7 @@
   transition: opacity 0.1s ease-out;
 }
 
-.photoContainer {
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-}
-
-.photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-}
-
-.photoIndicators {
-  position: absolute;
-  top: var(--padding-012);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: var(--gap-008);
-  z-index: 2;
-}
-
-.indicator {
-  width: var(--gap-008);
-  height: var(--gap-008);
-  border-radius: var(--border-radius-999);
-  background-color: rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
-}
-
-.indicator.active {
-  background-color: rgba(255, 255, 255, 1);
-  transform: scale(1.2);
-}
-
-.navButton {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border-radius: var(--border-radius-999);
-  border: none;
-  background-color: rgba(255, 255, 255, 0.9);
-  color: var(--font-color-default);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-016);
-  transition: all 0.3s ease;
-  z-index: 2;
-  box-shadow: var(--shadow-2);
-}
-
-.navButton:hover {
-  background-color: rgba(255, 255, 255, 1);
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: var(--shadow-3);
-}
-
-.navButton:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-.prevButton {
-  left: var(--padding-012);
-}
-
-.nextButton {
-  right: var(--padding-012);
-}
-
-.cardInfo {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-  padding: var(--padding-020);
-  color: var(--color-white);
-  pointer-events: none;
-}
+/* Card info content - specific to Home component */
 
 .nameAge {
   margin-bottom: var(--padding-012);
@@ -357,32 +271,12 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .card {
+  .swipeCard {
     width: 320px;
-    height: 550px;
   }
   
   .nameAge h3 {
     font-size: var(--font-size-024);
-  }
-  
-  .navButton {
-    width: 35px;
-    height: 35px;
-    font-size: var(--font-size-014);
-  }
-  
-  .prevButton {
-    left: var(--gap-008);
-  }
-  
-  .nextButton {
-    right: var(--gap-008);
-  }
-  
-  .indicator {
-    width: var(--gap-008);
-    height: var(--gap-008);
   }
   
   .button {
@@ -397,36 +291,12 @@
 }
 
 @media (max-width: 480px) {
-  .card {
+  .swipeCard {
     width: 300px;
-    height: 500px;
   }
   
   .nameAge h3 {
     font-size: var(--font-size-020);
-  }
-  
-  .navButton {
-    width: 30px;
-    height: 30px;
-    font-size: var(--font-size-012);
-  }
-  
-  .prevButton {
-    left: var(--gap-008);
-  }
-  
-  .nextButton {
-    right: var(--gap-008);
-  }
-  
-  .photoIndicators {
-    top: var(--gap-008);
-  }
-  
-  .indicator {
-    width: var(--gap-008);
-    height: var(--gap-008);
   }
   
   .button {

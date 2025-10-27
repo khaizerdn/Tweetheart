@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Card from '../../../components/Card';
 import styles from './styles.module.css';
 
 const Content = () => {
@@ -280,10 +281,16 @@ const Content = () => {
               const isTopCard = index === 0;
               
               return (
-                <div
+                <Card
                   key={card.id}
                   ref={(el) => (cardRefs.current[card.id] = el)}
-                  className={`${styles.card} ${isTopCard && isMoving ? styles.moving : ''}`}
+                  className={`${styles.swipeCard} ${isTopCard && isMoving ? styles.moving : ''}`}
+                  photos={card.photos}
+                  currentPhotoIndex={currentPhotoIndex[card.id] || 0}
+                  onNextPhoto={(e) => nextPhoto(card.id, e)}
+                  onPrevPhoto={(e) => prevPhoto(card.id, e)}
+                  showNavigation={isTopCard && card.photos.length > 1}
+                  showIndicators={isTopCard && card.photos.length > 1}
                   onTouchStart={isTopCard ? (e) => handleStart(e, card.id) : undefined}
                   onTouchMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
                   onTouchEnd={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
@@ -292,9 +299,7 @@ const Content = () => {
                   onMouseUp={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
                   onMouseLeave={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
                   style={{ pointerEvents: isTopCard ? 'auto' : 'none' }}
-                >
-                  {/* Swipe gradient overlays - only on top card */}
-                  {isTopCard && (
+                  overlays={isTopCard && (
                     <>
                       <div 
                         className={styles.swipeOverlayLeft} 
@@ -310,77 +315,35 @@ const Content = () => {
                       />
                     </>
                   )}
-                  
-                  <div className={styles.photoContainer}>
-                    <img 
-                      src={card.photos[currentPhotoIndex[card.id] || 0]} 
-                      alt={`${card.name} photo ${(currentPhotoIndex[card.id] || 0) + 1}`} 
-                      className={styles.photo}
-                    />
-                    
-                    {/* Photo indicators - only on top card */}
-                    {isTopCard && card.photos.length > 1 && (
-                      <div className={styles.photoIndicators}>
-                        {card.photos.map((_, photoIndex) => (
-                          <div
-                            key={photoIndex}
-                            className={`${styles.indicator} ${photoIndex === (currentPhotoIndex[card.id] || 0) ? styles.active : ''}`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                    
-                    {/* Photo navigation buttons - only on top card */}
-                    {isTopCard && card.photos.length > 1 && (
-                      <>
-                        <button
-                          className={`${styles.navButton} ${styles.prevButton}`}
-                          onClick={(e) => prevPhoto(card.id, e)}
-                          aria-label="Previous photo"
-                        >
-                          <i className="fa fa-chevron-left"></i>
-                        </button>
-                        <button
-                          className={`${styles.navButton} ${styles.nextButton}`}
-                          onClick={(e) => nextPhoto(card.id, e)}
-                          aria-label="Next photo"
-                        >
-                          <i className="fa fa-chevron-right"></i>
-                        </button>
-                      </>
-                    )}
+                >
+                  <div className={styles.nameAge}>
+                    <h3>{card.name}, {card.age}</h3>
+                    <div className={styles.category}>
+                      <i className="fa fa-flag"></i>
+                      <span>{card.category}</span>
+                    </div>
                   </div>
                   
-                  <div className={styles.cardInfo}>
-                    <div className={styles.nameAge}>
-                      <h3>{card.name}, {card.age}</h3>
-                      <div className={styles.category}>
-                        <i className="fa fa-flag"></i>
-                        <span>{card.category}</span>
+                  <div className={styles.tags}>
+                    {card.tags.map((tag, tagIndex) => (
+                      <div key={tagIndex} className={styles.tag}>
+                        {tag}
                       </div>
-                    </div>
-                    
-                    <div className={styles.tags}>
-                      {card.tags.map((tag, tagIndex) => (
-                        <div key={tagIndex} className={styles.tag}>
-                          {tag}
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {isTopCard && (
-                      <>
-                        <button className={styles.showMoreButton}>
-                          Show more
-                        </button>
-                        
-                        <button className={styles.scrollButton}>
-                          <i className="fa fa-chevron-up"></i>
-                        </button>
-                      </>
-                    )}
+                    ))}
                   </div>
-                </div>
+                  
+                  {isTopCard && (
+                    <>
+                      <button className={styles.showMoreButton}>
+                        Show more
+                      </button>
+                      
+                      <button className={styles.scrollButton}>
+                        <i className="fa fa-chevron-up"></i>
+                      </button>
+                    </>
+                  )}
+                </Card>
               );
             })}
           </>
