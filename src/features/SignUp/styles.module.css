@@ -387,6 +387,17 @@
 
 /* Standard Media Queries matching index.css */
 
+/* Center rightContainer on screens 1279px and below */
+@media screen and (max-width: 1279px) {
+  .rightContainer {
+    justify-content: center;
+  }
+  
+  .formContent {
+    justify-content: center;
+  }
+}
+
 /* Very small screens: 1px - 286px */
 @media screen and (min-width: 1px) and (max-width: 286px) {
   .containerAccess {
@@ -400,6 +411,7 @@
   .rightContainer {
     position: relative;
     max-height: none;
+    justify-content: center;
   }
 
   .formSection {
@@ -409,6 +421,7 @@
 
   .formContent {
     flex-direction: column;
+    align-items: center;
   }
 
   .inputFieldsSection {
@@ -463,6 +476,7 @@
   .rightContainer {
     position: relative;
     max-height: none;
+    justify-content: center;
   }
 
   .formSection {
@@ -472,6 +486,7 @@
 
   .formContent {
     flex-direction: column;
+    align-items: center;
   }
 
   .inputFieldsSection {
@@ -518,6 +533,7 @@
   .rightContainer {
     position: relative;
     max-height: none;
+    justify-content: center;
   }
 
   .formSection {
@@ -526,6 +542,7 @@
 
   .formContent {
     flex-direction: column;
+    align-items: center;
   }
 
   .inputFieldsSection {
@@ -573,8 +590,13 @@
 
 /* Large screens: 1006px - 1245px */
 @media screen and (min-width: 1006px) and (max-width: 1245px) {
+  .rightContainer {
+    justify-content: center;
+  }
+  
   .formContent {
     flex-direction: row;
+    justify-content: center;
   }
 
   .inputFieldsSection {
@@ -593,8 +615,35 @@
   }
 }
 
-/* Extra large screens: 1245px - 1921px */
-@media screen and (min-width: 1245px) and (max-width: 1921px) {
+/* Extra large screens: 1245px - 1279px (centered) */
+@media screen and (min-width: 1245px) and (max-width: 1279px) {
+  .rightContainer {
+    justify-content: center;
+  }
+  
+  .formContent {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
+
+/* Extra large screens: 1280px - 1921px */
+@media screen and (min-width: 1280px) and (max-width: 1921px) {
   .formContent {
     flex-direction: row;
   }
