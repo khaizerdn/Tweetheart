@@ -16,6 +16,11 @@
     padding: var(--padding-016);
     gap: var(--gap-016);
   }
+
+  .verificationSection h1 {
+    color: var(--background-color-secondary-default);
+  }
+  
   
   form {
     display: flex;
