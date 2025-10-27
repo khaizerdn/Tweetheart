@@ -251,7 +251,7 @@ function SignUp() {
           />
           {error && <span className={styles.errorMessage}>{error}</span>}
           <Button type="secondary" position="center" htmlType="submit">
-            Create Account
+            Confirm
           </Button>
               </form>
               <p>
