@@ -8,7 +8,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-016);
   font-weight: var(--font-weight-normal);
-  border-radius: var(--border-radius-008);
+  border-radius: 9999px;
   border: none;
   cursor: pointer;
 }

@@ -7,6 +7,7 @@ import layoutStyles from './utils/styles/layout.module.css';
 
 import Menu from './features/Menu/features';
 import BlankPage from './components/BlankPage';
+import Content from './features/Content/Home';
 
 import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
@@ -81,9 +82,10 @@ function App() {
                     <div className="container-content">
                       <OverlayScrollbarsComponent
                         options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
-                        overflow: { x: 'hidden', y: 'scroll' } }}
+                        overflow: { x: 'hidden', y: 'hidden' } }}
                         className="content">
                         <Routes>
+                          <Route path="/" element={<Content />} />
                           <Route path="*" element={<BlankPage />} />
                         </Routes>
                       </OverlayScrollbarsComponent>

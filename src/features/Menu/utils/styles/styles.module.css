@@ -12,6 +12,7 @@
   flex-shrink: 0;
   padding: 0 var(--padding-016);
   display: flex;
+  margin-top: var(--margin-016);
   margin-bottom: var(--margin-016);
 }
 
