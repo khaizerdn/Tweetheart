@@ -38,14 +38,12 @@
   height: 600px;
   background: var(--color-white);
   border-radius: var(--border-radius-024);
-  overflow: hidden;
   box-shadow: var(--shadow-3);
 }
 
 .photoContainer {
   position: relative;
   height: 100%;
-  overflow: hidden;
   background: var(--background-color-2);
 }
 
@@ -188,6 +186,11 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  padding-left: var(--padding-016);
+  padding-right: var(--padding-016);
 }
 
 .formSection {
@@ -195,6 +198,8 @@
   flex-direction: column;
   padding-top: var(--padding-048);
   padding-bottom: var(--padding-048);
+  width: 100%;
+  max-width: 700px;
 }
 
 .formSection h1 {
@@ -205,26 +210,86 @@
 
 .formContent {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
 }
 
-.loginSection {
+.inputFieldsSection {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 320px;
+  width: 320px;
   padding: var(--padding-016);
   gap: var(--gap-016);
   min-height: fit-content;
   flex-shrink: 0;
+  order: 1;
 }
 
 .photoSection {
   display: flex;
   flex-direction: column;
+  width: 320px;
   gap: var(--gap-016);
   flex-shrink: 0;
   padding: var(--padding-016);
+  order: 2;
+}
+
+.actionsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  flex-shrink: 0;
+  order: 3;
+}
+
+.buttonSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--padding-016);
+  gap: var(--gap-016);
+}
+
+.termsSection {
+  display: flex;
+  width: 100%;
+  padding: var(--padding-016);
+}
+
+.termsSection p {
+  text-align: center;
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+}
+
+.hrSection {
+  display: flex;
+  width: 100%;
+  padding: 0 var(--padding-016);
+}
+
+.hrSection hr {
+  width: 100%;
+  background-color: var(--background-color-primary-default-1);
+  border: none;
+  height: 1px;
+  margin: 0;
+}
+
+.accountLinkSection {
+  display: flex;
+  width: 100%;
+  padding: var(--padding-016);
+}
+
+.accountLinkSection p {
+  text-align: center;
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+  width: 100%;
 }
 
 .photoRequirement {
@@ -235,20 +300,18 @@
 
 .photoGrid {
   display: grid;
-  grid-template-columns: repeat(2, 120px);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--gap-016);
-  justify-content: start;
+  width: 100%;
 }
 
 .photoCard {
   aspect-ratio: 1;
   border-radius: var(--border-radius-008);
-  overflow: hidden;
   background-color: var(--background-color-2);
   border: 2px dashed var(--background-color-primary-default-1);
   transition: all 0.2s ease-in-out;
-  max-width: 120px;
-  max-height: 120px;
+  width: 100%;
 }
 
 .photoCard:hover {
@@ -323,24 +386,190 @@
   font-size: var(--font-size-014);
 }
 
-/* Medium screens - stack form sections */
-@media (max-width: 1024px) {
+/* Standard Media Queries matching index.css */
+
+/* Very small screens: 1px - 286px */
+@media screen and (min-width: 1px) and (max-width: 286px) {
+  .containerAccess {
+    flex-direction: column;
+  }
+
+  .leftContainer {
+    display: none;
+  }
+
+  .rightContainer {
+    position: relative;
+    max-height: none;
+    padding: var(--padding-016);
+  }
+
+  .formSection {
+    padding: var(--padding-016) 0;
+    max-width: 100%;
+  }
+
   .formContent {
     flex-direction: column;
-    gap: var(--gap-032);
+  }
+
+  .inputFieldsSection {
+    width: 320px;
+    padding: var(--padding-008);
+    order: 1;
   }
 
   .photoSection {
+    width: 320px;
+    padding: var(--padding-008);
+    order: 2;
+  }
+
+  .actionsContainer {
+    width: 320px;
+    order: 3;
+  }
+
+  .buttonSection {
+    padding: var(--padding-008);
+  }
+
+  .termsSection {
+    padding: var(--padding-008);
+  }
+
+  .hrSection {
+    padding: 0 var(--padding-008);
+  }
+
+  .accountLinkSection {
+    padding: var(--padding-008);
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-008);
+  }
+}
+
+/* Small screens: 286px - 685px */
+@media screen and (min-width: 286px) and (max-width: 685px) {
+  .containerAccess {
+    flex-direction: column;
+  }
+
+  .leftContainer {
+    display: none;
+  }
+
+  .rightContainer {
+    position: relative;
+    max-height: none;
+    padding: var(--padding-016);
+  }
+
+  .formSection {
+    padding: var(--padding-024) 0;
     max-width: 100%;
   }
 
-  .loginSection {
+  .formContent {
+    flex-direction: column;
+  }
+
+  .inputFieldsSection {
+    width: 320px;
+    padding: var(--padding-012);
+    order: 1;
+  }
+
+  .photoSection {
+    width: 320px;
+    padding: var(--padding-012);
+    order: 2;
+  }
+
+  .actionsContainer {
+    width: 320px;
+    order: 3;
+  }
+
+  .buttonSection {
+    padding: var(--padding-012);
+  }
+
+  .termsSection {
+    padding: var(--padding-012);
+  }
+
+  .hrSection {
+    padding: 0 var(--padding-012);
+  }
+
+  .accountLinkSection {
+    padding: var(--padding-012);
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-012);
+  }
+}
+
+/* Medium screens / Tablet: 685px - 1006px */
+@media screen and (min-width: 685px) and (max-width: 1006px) {
+  .rightContainer {
+    position: relative;
+    max-height: none;
+    padding: var(--padding-024);
+  }
+
+  .formSection {
+    padding: var(--padding-032) 0;
+    
     max-width: 100%;
   }
 
-  .card {
-    height: 550px;
-    max-width: 320px;
+  .formContent {
+    flex-direction: column;
+  }
+
+  .inputFieldsSection {
+    width: 320px;
+    padding: var(--padding-016);
+    order: 1;
+  }
+
+  .photoSection {
+    width: 320px;
+    padding: var(--padding-016);
+    order: 2;
+  }
+
+  .actionsContainer {
+    width: 320px;
+    order: 3;
+  }
+
+  .buttonSection {
+    padding: var(--padding-016);
+  }
+
+  .termsSection {
+    padding: var(--padding-016);
+  }
+
+  .hrSection {
+    padding: 0 var(--padding-016);
+  }
+
+  .accountLinkSection {
+    padding: var(--padding-016);
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-016);
   }
 
   .nameAge h3 {
@@ -348,50 +577,74 @@
   }
 }
 
-/* Mobile screens */
-@media (max-width: 768px) {
+/* Large screens: 1006px - 1245px */
+@media screen and (min-width: 1006px) and (max-width: 1245px) {
+  .formContent {
+    flex-direction: row;
+  }
+
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
+
+/* Extra large screens: 1245px - 1921px */
+@media screen and (min-width: 1245px) and (max-width: 1921px) {
+  .formContent {
+    flex-direction: row;
+  }
+
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
+
+/* Max width: 1921px+ */
+@media screen and (min-width: 1921px) {
   .containerAccess {
-    flex-direction: column;
-    --container-gap: 0rem;
-    min-height: auto;
+    max-width: 1920px;
+    margin: 0 auto;
   }
 
-  .rightContainer {
-    justify-content: center;
-    min-height: auto;
-    padding: var(--padding-016) var(--padding-016) var(--padding-032) var(--padding-016);
-  }
-  
-  .leftContainer {
-    display: none;
+  .formContent {
+    flex-direction: row;
   }
 
-  .formSection {
-    padding-top: var(--padding-032);
-    padding-bottom: var(--padding-032);
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
   }
 
-  .loginSection {
-    max-width: 100%;
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
   }
 
-  .photoGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .card {
-    height: 500px;
-    max-width: 300px;
-  }
-
-  .nameAge h3 {
-    font-size: var(--font-size-020);
-  }
-
-  .navButton {
-    width: 35px;
-    height: 35px;
-    font-size: var(--font-size-014);
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
   }
 }
 
@@ -399,7 +652,6 @@ form {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: var(--gap-016);
 }
 
 .errorMessage {
@@ -407,16 +659,6 @@ form {
   font-size: var(--font-size-012);
   font-weight: var(--font-weight-normal);
   text-align: center;
-}
-
-.loginSection p {
-  text-align: center;
-  font-size: var(--font-size-014);
-  color: var(--font-color-muted);
-}
-
-.loginSection hr {
-  background-color: var(--background-color-primary-default-1);
 }
 
 .buttonRegisterText {
