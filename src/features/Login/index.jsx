@@ -4,7 +4,7 @@ import axios from "axios";
 import InputField from "../../components/InputFields";
 import Button from "../../components/Buttons/Button";
 import styles from "./styles.module.css";
-import logoHorizontal from "../../utils/assets/logo_horizontal.svg";
+import logoHorizontal from "../../utils/assets/logo_1.svg";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -75,6 +75,7 @@ function Login({ setIsLoggedIn }) {
             alt="Logo" 
             className={styles.logo}
           />
+          <h1>Tweetheart</h1>
         </div>
         <form onSubmit={handleSubmit}>
           <InputField
@@ -130,7 +131,7 @@ function Login({ setIsLoggedIn }) {
         <hr />
         <p>
           <Link to="/createaccount" className={styles.buttonRegisterText}>
-            Create Account
+            Sign Up
           </Link>
         </p>
       </div>

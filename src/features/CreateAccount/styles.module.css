@@ -50,3 +50,7 @@ form {
 .buttonRegisterText:hover {
   color: var(--font-color-hover);
 }
+
+.loginSection h1 {
+  color: var(--background-color-secondary-default);
+}

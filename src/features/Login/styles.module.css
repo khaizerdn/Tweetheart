@@ -19,12 +19,19 @@
 
 .logoContainer {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .logo {
-  height: 48px;
+  height: 64px;
   width: auto;
-  max-width: 220px;
+  max-width: 64px;
+}
+
+.logoContainer h1 {
+  color: var(--background-color-secondary-default);
 }
 
 form {

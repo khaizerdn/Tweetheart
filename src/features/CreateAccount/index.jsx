@@ -57,7 +57,7 @@ function CreateAccount() {
   return (
     <div className={styles.containerAccess}>
       <div className={styles.loginSection}>
-        <h1>Create Account</h1>
+        <h1>Sign Up</h1>
         <form onSubmit={handleSubmit}>
           <InputField
             ref={(el) => (inputRefs.current.firstName = el)}
