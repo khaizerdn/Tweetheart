@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../../components/InputFields";
@@ -19,7 +19,64 @@ function SignUp() {
   const [bio, setBio] = useState("");
   const [photos, setPhotos] = useState([null, null, null, null, null, null]); // 6 photo slots
   const [error, setError] = useState("");
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const inputRefs = useRef({});
+
+  // Calculate age from birth date
+  const calculateAge = (birthDateString) => {
+    if (!birthDateString) return null;
+    const birth = new Date(birthDateString);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const age = useMemo(() => calculateAge(birthDate), [birthDate]);
+
+  // Get display name
+  const displayName = useMemo(() => {
+    if (firstName && lastName) return `${firstName} ${lastName}`;
+    if (firstName) return firstName;
+    return "Your Name";
+  }, [firstName, lastName]);
+
+  // Get display gender
+  const displayGender = useMemo(() => {
+    if (!gender) return "Not specified";
+    if (gender === "male") return "Male";
+    if (gender === "female") return "Female";
+    return "Prefer not to say";
+  }, [gender]);
+
+  // Get uploaded photos for preview
+  const uploadedPhotos = useMemo(() => {
+    return photos.filter(photo => photo !== null).map(photo => photo.preview);
+  }, [photos]);
+
+  const nextPhoto = () => {
+    if (uploadedPhotos.length > 0) {
+      setCurrentPhotoIndex((prev) => (prev + 1) % uploadedPhotos.length);
+    }
+  };
+
+  const prevPhoto = () => {
+    if (uploadedPhotos.length > 0) {
+      setCurrentPhotoIndex((prev) => prev === 0 ? uploadedPhotos.length - 1 : prev - 1);
+    }
+  };
+
+  // Reset photo index when photos change
+  useEffect(() => {
+    if (currentPhotoIndex >= uploadedPhotos.length && uploadedPhotos.length > 0) {
+      setCurrentPhotoIndex(uploadedPhotos.length - 1);
+    } else if (uploadedPhotos.length === 0) {
+      setCurrentPhotoIndex(0);
+    }
+  }, [uploadedPhotos.length, currentPhotoIndex]);
 
   const handlePhotoUpload = (index, event) => {
     const file = event.target.files[0];
@@ -83,9 +140,80 @@ function SignUp() {
 
   return (
     <div className={styles.containerAccess}>
-      {/* Left Container - For future content */}
+      {/* Left Container - Preview Card */}
       <div className={styles.leftContainer}>
-        {/* Add your content here */}
+        <div className={styles.previewCard}>
+          <div className={styles.previewLabel}>Preview</div>
+          <div className={styles.card}>
+            <div className={styles.photoContainer}>
+              {uploadedPhotos.length > 0 ? (
+                <>
+                  <img 
+                    src={uploadedPhotos[currentPhotoIndex]} 
+                    alt="Preview" 
+                    className={styles.photo}
+                  />
+                  
+                  {/* Photo indicators */}
+                  {uploadedPhotos.length > 1 && (
+                    <div className={styles.photoIndicators}>
+                      {uploadedPhotos.map((_, photoIndex) => (
+                        <div
+                          key={photoIndex}
+                          className={`${styles.indicator} ${photoIndex === currentPhotoIndex ? styles.active : ''}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Photo navigation buttons */}
+                  {uploadedPhotos.length > 1 && (
+                    <>
+                      <button
+                        className={`${styles.navButton} ${styles.prevButton}`}
+                        onClick={prevPhoto}
+                        type="button"
+                      >
+                        <i className="fa fa-chevron-left"></i>
+                      </button>
+                      <button
+                        className={`${styles.navButton} ${styles.nextButton}`}
+                        onClick={nextPhoto}
+                        type="button"
+                      >
+                        <i className="fa fa-chevron-right"></i>
+                      </button>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div className={styles.placeholderPhoto}>
+                  <i className="fa fa-user"></i>
+                  <p>Upload photos to see preview</p>
+                </div>
+              )}
+            </div>
+            
+            <div className={styles.cardInfo}>
+              <div className={styles.nameAge}>
+                <h3>
+                  {displayName}
+                  {age && `, ${age}`}
+                </h3>
+                <div className={styles.category}>
+                  <i className="fa fa-venus-mars"></i>
+                  <span>{displayGender}</span>
+                </div>
+              </div>
+              
+              {bio && (
+                <div className={styles.bioPreview}>
+                  {bio}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Right Container - Input Fields and Photos */}
