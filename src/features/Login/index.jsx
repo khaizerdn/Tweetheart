@@ -68,72 +68,80 @@ function Login({ setIsLoggedIn }) {
 
   return (
     <div className={styles.containerAccess}>
-      <div className={styles.loginSection}>
-        <div className={styles.logoContainer}>
-          <img 
-            src={logoHorizontal} 
-            alt="Logo" 
-            className={styles.logo}
-          />
-          <h1>Tweetheart</h1>
+      {/* Left Container - For future content */}
+      <div className={styles.leftContainer}>
+        {/* Add your content here */}
+      </div>
+
+      {/* Right Container - Input Fields */}
+      <div className={styles.rightContainer}>
+        <div className={styles.loginSection}>
+          <div className={styles.logoContainer}>
+            <img 
+              src={logoHorizontal} 
+              alt="Logo" 
+              className={styles.logo}
+            />
+            <h1>Tweetheart</h1>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <InputField
+              type="email"
+              label="Email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              styles={{
+                background: 'var(--background-color-1)',
+                disabled: 'var(--background-color-primary-disabled-1)',
+                muted: 'var(--background-color-primary-muted-1)',
+                default: 'var(--background-color-primary-default-1)',
+                hover: 'var(--background-color-primary-hover-1)',
+                active: 'var(--background-color-primary-active-1)',
+                selected: 'var(--background-color-primary-selected-1)'
+              }}
+            />
+            <InputField
+              type="password"
+              label="Password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              styles={{
+                background: 'var(--background-color-1)',
+                disabled: 'var(--background-color-primary-disabled-1)',
+                muted: 'var(--background-color-primary-muted-1)',
+                default: 'var(--background-color-primary-default-1)',
+                hover: 'var(--background-color-primary-hover-1)',
+                active: 'var(--background-color-primary-active-1)',
+                selected: 'var(--background-color-primary-selected-1)'
+              }}
+            />
+            {error && (
+              <span className={styles.errorMessage}>
+                {countdown > 0 ? `Try again in ${countdown}s` : error}
+              </span>
+            )}
+            <Button 
+              type="secondary" 
+              position="center" 
+              htmlType="submit"
+            >
+              Log In
+            </Button>
+          </form>
+          <p>
+            <Link to="/forgotpassword" className={styles.buttonRegisterText}>
+              Forgot Password?
+            </Link>
+          </p>
+          <hr />
+          <p>
+            <Link to="/signup" className={styles.buttonRegisterText}>
+              Sign Up
+            </Link>
+          </p>
         </div>
-        <form onSubmit={handleSubmit}>
-          <InputField
-            type="email"
-            label="Email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            styles={{
-              background: 'var(--background-color-1)',
-              disabled: 'var(--background-color-primary-disabled-1)',
-              muted: 'var(--background-color-primary-muted-1)',
-              default: 'var(--background-color-primary-default-1)',
-              hover: 'var(--background-color-primary-hover-1)',
-              active: 'var(--background-color-primary-active-1)',
-              selected: 'var(--background-color-primary-selected-1)'
-            }}
-          />
-          <InputField
-            type="password"
-            label="Password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            styles={{
-              background: 'var(--background-color-1)',
-              disabled: 'var(--background-color-primary-disabled-1)',
-              muted: 'var(--background-color-primary-muted-1)',
-              default: 'var(--background-color-primary-default-1)',
-              hover: 'var(--background-color-primary-hover-1)',
-              active: 'var(--background-color-primary-active-1)',
-              selected: 'var(--background-color-primary-selected-1)'
-            }}
-          />
-          {error && (
-            <span className={styles.errorMessage}>
-              {countdown > 0 ? `Try again in ${countdown}s` : error}
-            </span>
-          )}
-          <Button 
-            type="secondary" 
-            position="center" 
-            htmlType="submit"
-          >
-            Log In
-          </Button>
-        </form>
-        <p>
-          <Link to="/forgotpassword" className={styles.buttonRegisterText}>
-            Forgot Password?
-          </Link>
-        </p>
-        <hr />
-        <p>
-          <Link to="/signup" className={styles.buttonRegisterText}>
-            Sign Up
-          </Link>
-        </p>
       </div>
     </div>
   );

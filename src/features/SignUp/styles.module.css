@@ -1,20 +1,54 @@
 .containerAccess {
+  --container-gap: 5rem; /* Adjust this to change the gap between containers */
   display: flex;
-  justify-content: center;
+  min-height: 100vh;
   width: 100vw;
-  height: fit-content;
   background-color: var(--background-color-1);
   font-family: var(--font-family-primary);
+  gap: var(--container-gap);
+}
+
+.leftContainer {
+  flex: 1;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding: var(--padding-016);
+  /* Add your background or content styles here */
+}
+
+.rightContainer {
+  flex: 1;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding: var(--padding-016);
 }
 
 .loginSection {
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 3rem 0 3rem 0;
   max-width: 320px;
   padding: var(--padding-016);
   gap: var(--gap-016);
+  margin: 3rem 0;
+}
+
+/* Responsive: Stack vertically on smaller screens */
+@media (max-width: 768px) {
+  .containerAccess {
+    flex-direction: column;
+    --container-gap: 0rem;
+  }
+
+  .rightContainer {
+    justify-content: center;
+  }
+  
+  .leftContainer {
+    display: none; /* Hide left container on mobile */
+  }
 }
 
 form {

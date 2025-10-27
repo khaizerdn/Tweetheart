@@ -56,9 +56,16 @@ function SignUp() {
 
   return (
     <div className={styles.containerAccess}>
-      <div className={styles.loginSection}>
-        <h1>Sign Up</h1>
-        <form onSubmit={handleSubmit}>
+      {/* Left Container - For future content */}
+      <div className={styles.leftContainer}>
+        {/* Add your content here */}
+      </div>
+
+      {/* Right Container - Input Fields */}
+      <div className={styles.rightContainer}>
+        <div className={styles.loginSection}>
+          <h1>Sign Up</h1>
+          <form onSubmit={handleSubmit}>
           <InputField
             ref={(el) => (inputRefs.current.firstName = el)}
             type="firstname"
@@ -216,28 +223,29 @@ function SignUp() {
           <Button type="secondary" position="center" htmlType="submit">
             Create Account
           </Button>
-        </form>
-        <p>
-          By creating an account, you agree to the{" "}
-          <Link to="/terms-of-service" className={styles.buttonRegisterText}>
-            Terms of Service
-          </Link>
-          ,{" "}
-          <Link to="/privacy-policy" className={styles.buttonRegisterText}>
-            Privacy Policy
-          </Link>
-          , including{" "}
-          <Link to="/cookies-policy" className={styles.buttonRegisterText}>
-            Cookie Policy
-          </Link>
-          .
-        </p>
-        <hr />
-        <p>
-          <Link to="/" className={styles.buttonRegisterText}>
-            Already have an account?
-          </Link>
-        </p>
+          </form>
+          <p>
+            By creating an account, you agree to the{" "}
+            <Link to="/terms-of-service" className={styles.buttonRegisterText}>
+              Terms of Service
+            </Link>
+            ,{" "}
+            <Link to="/privacy-policy" className={styles.buttonRegisterText}>
+              Privacy Policy
+            </Link>
+            , including{" "}
+            <Link to="/cookies-policy" className={styles.buttonRegisterText}>
+              Cookie Policy
+            </Link>
+            .
+          </p>
+          <hr />
+          <p>
+            <Link to="/" className={styles.buttonRegisterText}>
+              Already have an account?
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
