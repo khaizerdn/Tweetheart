@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.css';
-import logoUrl from '../../utils/icons/logo.svg';
+import logoUrl from '../../../../utils/assets/logo.svg';
 
 const Logo = () => {
   const navigate = useNavigate();
@@ -15,10 +15,10 @@ const Logo = () => {
       <div className={styles.logoButton} onClick={handleLogoClick}>
         <img 
           src={logoUrl} 
-          alt="Gamecord Logo" 
+          alt="Dating App Logo" 
           className={styles.logo}
-          width="28"
-          height="28"
+          width="32"
+          height="32"
         />
       </div>
     </div>
