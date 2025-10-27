@@ -12,8 +12,8 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: var(--padding-016);
+  padding-top: var(--padding-048);
+  padding-bottom: var(--padding-048);
 }
 
 .previewCard {
@@ -188,15 +188,11 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: var(--padding-016);
-  min-height: 100vh;
 }
 
 .formSection {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 900px;
   padding-top: var(--padding-048);
   padding-bottom: var(--padding-048);
 }
