@@ -40,7 +40,7 @@ const dbQuery = (query, values = []) => {
 // =====================================================
 // ✅ CREATE ACCOUNT ROUTE
 // =====================================================
-router.post("/createaccount", async (req, res) => {
+router.post("/signup", async (req, res) => {
   const { firstName, lastName, username, email, password, gender, month, day, year, bio } = req.body;
 
   try {

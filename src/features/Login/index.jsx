@@ -130,7 +130,7 @@ function Login({ setIsLoggedIn }) {
         </p>
         <hr />
         <p>
-          <Link to="/createaccount" className={styles.buttonRegisterText}>
+          <Link to="/signup" className={styles.buttonRegisterText}>
             Sign Up
           </Link>
         </p>

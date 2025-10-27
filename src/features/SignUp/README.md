@@ -91,7 +91,7 @@ CREATE TABLE `users` (
 
 ## API Endpoints
 
-### POST `/createaccount`
+### POST `/signup`
 Creates a new user account or updates existing unverified account.
 
 **Request Body:**
@@ -132,7 +132,7 @@ VITE_API_URL=http://localhost:5000
 ## File Structure
 
 ```
-CreateAccount/
+SignUp/
 ├── index.jsx           # Main component with form and state management
 ├── server.js           # Backend API routes
 ├── styles.module.css   # Component-specific styles
@@ -142,10 +142,10 @@ CreateAccount/
 ## Usage Example
 
 ```jsx
-import CreateAccount from './features/CreateAccount';
+import SignUp from './features/SignUp';
 
 // In your router
-<Route path="/signup" element={<CreateAccount />} />
+<Route path="/signup" element={<SignUp />} />
 ```
 
 ## Related Features

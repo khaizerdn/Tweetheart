@@ -7,7 +7,7 @@ import styles from "./styles.module.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-function CreateAccount() {
+function SignUp() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -39,7 +39,7 @@ function CreateAccount() {
     const [year, month, day] = birthDate ? birthDate.split("-") : ["", "", ""];
     try {
       const res = await axios.post(
-        `${API_URL}/createaccount`,
+        `${API_URL}/signup`,
         { firstName, lastName, username, email, password, gender, month, day, year, bio },
         { withCredentials: true }
       );
@@ -262,4 +262,4 @@ function CreateAccount() {
   );
 }
 
-export default CreateAccount;
+export default SignUp;

@@ -11,7 +11,7 @@ import Content from './features/Content/Home';
 
 import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
-import CreateAccount from './features/CreateAccount';
+import SignUp from './features/SignUp';
 import EmailVerification from './features/EmailVerification';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -57,7 +57,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/" element={<Login setIsLoggedIn={handleLogin} />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/createaccount" element={<CreateAccount />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/verification" element={<EmailVerification />} />
             <Route path="/reset-password" element={<EmailVerification />} />
           </>
