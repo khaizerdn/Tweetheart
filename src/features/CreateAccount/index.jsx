@@ -17,6 +17,7 @@ function CreateAccount() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [bio, setBio] = useState("");
   const [error, setError] = useState("");
   const inputRefs = useRef({});
 
@@ -39,7 +40,7 @@ function CreateAccount() {
     try {
       const res = await axios.post(
         `${API_URL}/createaccount`,
-        { firstName, lastName, username, email, password, gender, month, day, year },
+        { firstName, lastName, username, email, password, gender, month, day, year, bio },
         { withCredentials: true }
       );
       sessionStorage.setItem("email", email);
@@ -128,6 +129,25 @@ function CreateAccount() {
             min="01/01/1900"
             max="present"
             required={true}
+            styles={{
+              background: 'var(--background-color-1)',
+              disabled: 'var(--background-color-primary-disabled-1)',
+              muted: 'var(--background-color-primary-muted-1)',
+              default: 'var(--background-color-primary-default-1)',
+              hover: 'var(--background-color-primary-hover-1)',
+              active: 'var(--background-color-primary-active-1)',
+              selected: 'var(--background-color-primary-selected-1)',
+            }}
+          />
+          <InputField
+            ref={(el) => (inputRefs.current.bio = el)}
+            type="textarea"
+            label="Bio"
+            placeholder="Tell us about yourself..."
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            max={500}
+            required={false}
             styles={{
               background: 'var(--background-color-1)',
               disabled: 'var(--background-color-primary-disabled-1)',

@@ -41,7 +41,7 @@ const dbQuery = (query, values = []) => {
 // ✅ CREATE ACCOUNT ROUTE
 // =====================================================
 router.post("/createaccount", async (req, res) => {
-  const { firstName, lastName, username, email, password, gender, month, day, year } = req.body;
+  const { firstName, lastName, username, email, password, gender, month, day, year, bio } = req.body;
 
   try {
     // Validate required fields
@@ -54,7 +54,7 @@ router.post("/createaccount", async (req, res) => {
     const birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     const verificationCode = generateVerificationCode();
     const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
-    const expirationTime = new Date(Date.now() + 15 * 60 * 1000); // 15 min expiry
+    const expirationTime = new Date(Date.now() + 2 * 60 * 1000); // 2 min expiry
     const userId = snowflake.generate().toString();
 
     // Check for existing unverified user
@@ -78,6 +78,7 @@ router.post("/createaccount", async (req, res) => {
           password = ?, 
           birthdate = ?, 
           gender = ?, 
+          bio = ?,
           verification_code = ?, 
           expiration_time = ?, 
           created_at = NOW()
@@ -92,6 +93,7 @@ router.post("/createaccount", async (req, res) => {
         hashedPassword,
         birthdate,
         gender,
+        bio || null,
         hashedVerificationCode,
         expirationTime,
         existingId,
@@ -107,8 +109,8 @@ router.post("/createaccount", async (req, res) => {
     // Create new user
     const insertUserQuery = `
       INSERT INTO users 
-        (id, first_name, last_name, username, email, password, birthdate, gender, is_verified, verification_code, expiration_time, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
+        (id, first_name, last_name, username, email, password, birthdate, gender, bio, is_verified, verification_code, expiration_time, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
     `;
 
     await dbQuery(insertUserQuery, [
@@ -120,6 +122,7 @@ router.post("/createaccount", async (req, res) => {
       hashedPassword,
       birthdate,
       gender,
+      bio || null,
       hashedVerificationCode,
       expirationTime,
     ]);
