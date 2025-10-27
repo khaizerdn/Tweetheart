@@ -78,6 +78,7 @@ const Content = () => {
   const [dragCurrent, setDragCurrent] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState({});
+  const [swipeDistance, setSwipeDistance] = useState(0);
 
   const containerRef = useRef(null);
   const cardRefs = useRef({});
@@ -92,15 +93,22 @@ const Content = () => {
   };
 
   const initCards = () => {
-    const currentCard = getCurrentCard();
-    if (currentCard) {
-      const cardElement = cardRefs.current[currentCard.id];
+    const visibleCards = cards.filter(card => !removedCards.has(card.id));
+    
+    visibleCards.forEach((card, index) => {
+      const cardElement = cardRefs.current[card.id];
       if (cardElement) {
-        cardElement.style.zIndex = 1;
+        // Stack cards with decreasing z-index only
+        cardElement.style.zIndex = visibleCards.length - index;
+        
+        // All cards same size and position - no scaling or effects
         cardElement.style.transform = 'scale(1) translateY(0px)';
         cardElement.style.opacity = 1;
+        
+        // No transition - cards should appear instantly in their position
+        cardElement.style.transition = 'none';
       }
-    }
+    });
   };
 
   useEffect(() => {
@@ -127,6 +135,7 @@ const Content = () => {
     const deltaY = clientY - dragStart.y;
     
     setDragCurrent({ x: clientX, y: clientY });
+    setSwipeDistance(deltaX);
     
     const cardElement = cardRefs.current[cardId];
     if (cardElement) {
@@ -162,16 +171,24 @@ const Content = () => {
 
     if (keep) {
       // Return card to original position
+      cardElement.style.transition = 'transform 0.3s ease-out';
       cardElement.style.transform = 'scale(1) translateY(0px)';
+      setSwipeDistance(0);
     } else {
-      // Remove card and fly to specific points
-      setRemovedCards(prev => new Set([...prev, cardId]));
-      
-      const moveOutWidth = window.innerWidth * 1.5;
+      // Animate card out smoothly
+      const moveOutWidth = window.innerWidth * 0.8;
       const toX = deltaX > 0 ? moveOutWidth : -moveOutWidth;
       const rotate = deltaX > 0 ? 30 : -30;
 
+      // Enable transition for smooth animation
+      cardElement.style.transition = 'transform 0.5s ease-out';
       cardElement.style.transform = `translate(${toX}px, -100px) rotate(${rotate}deg)`;
+      
+      // Remove card from state after animation completes
+      setTimeout(() => {
+        setRemovedCards(prev => new Set([...prev, cardId]));
+        setSwipeDistance(0);
+      }, 500); // Match the transition duration
     }
   };
 
@@ -182,13 +199,7 @@ const Content = () => {
     const cardElement = cardRefs.current[currentCard.id];
     if (!cardElement) return;
 
-    const moveOutWidth = window.innerWidth * 1.5;
-    
-    if (action === 'like') {
-      cardElement.style.transform = `translate(${moveOutWidth}px, -100px) rotate(30deg)`;
-    } else if (action === 'nope') {
-      cardElement.style.transform = `translate(-${moveOutWidth}px, -100px) rotate(-30deg)`;
-    } else if (action === 'undo') {
+    if (action === 'undo') {
       // Undo last action
       const lastRemovedCard = Array.from(removedCards).pop();
       if (lastRemovedCard) {
@@ -200,8 +211,22 @@ const Content = () => {
       }
       return;
     }
+
+    const moveOutWidth = window.innerWidth * 1.5;
     
-    setRemovedCards(prev => new Set([...prev, currentCard.id]));
+    // Enable transition for smooth animation
+    cardElement.style.transition = 'transform 0.5s ease-out';
+    
+    if (action === 'like') {
+      cardElement.style.transform = `translate(${moveOutWidth}px, -100px) rotate(30deg)`;
+    } else if (action === 'nope') {
+      cardElement.style.transform = `translate(-${moveOutWidth}px, -100px) rotate(-30deg)`;
+    }
+    
+    // Remove card from state after animation completes
+    setTimeout(() => {
+      setRemovedCards(prev => new Set([...prev, currentCard.id]));
+    }, 500); // Match the transition duration
   };
 
   const resetCards = () => {
@@ -236,7 +261,8 @@ const Content = () => {
   };
 
   const currentCard = getCurrentCard();
-  const allCardsSwiped = !currentCard;
+  const visibleCards = cards.filter(card => !removedCards.has(card.id));
+  const allCardsSwiped = visibleCards.length === 0;
 
   return (
     <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
@@ -248,86 +274,120 @@ const Content = () => {
             <p>You've swiped through all the cards. Click reset to start over.</p>
           </div>
         ) : (
-          <div
-            ref={(el) => (cardRefs.current[currentCard.id] = el)}
-            className={`${styles.card} ${isMoving ? styles.moving : ''}`}
-            onTouchStart={(e) => handleStart(e, currentCard.id)}
-            onTouchMove={(e) => handleMove(e, currentCard.id)}
-            onTouchEnd={(e) => handleEnd(e, currentCard.id)}
-            onMouseDown={(e) => handleStart(e, currentCard.id)}
-            onMouseMove={(e) => handleMove(e, currentCard.id)}
-            onMouseUp={(e) => handleEnd(e, currentCard.id)}
-            onMouseLeave={(e) => handleEnd(e, currentCard.id)}
-          >
-            <div className={styles.photoContainer}>
-              <img 
-                src={currentCard.photos[currentPhotoIndex[currentCard.id] || 0]} 
-                alt={`${currentCard.name} photo ${(currentPhotoIndex[currentCard.id] || 0) + 1}`} 
-                className={styles.photo}
-              />
+          <>
+            {visibleCards.slice(0, 3).reverse().map((card, reverseIndex) => {
+              const index = visibleCards.slice(0, 3).length - 1 - reverseIndex;
+              const isTopCard = index === 0;
               
-              {/* Photo indicators */}
-              {currentCard.photos.length > 1 && (
-                <div className={styles.photoIndicators}>
-                  {currentCard.photos.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`${styles.indicator} ${index === (currentPhotoIndex[currentCard.id] || 0) ? styles.active : ''}`}
+              return (
+                <div
+                  key={card.id}
+                  ref={(el) => (cardRefs.current[card.id] = el)}
+                  className={`${styles.card} ${isTopCard && isMoving ? styles.moving : ''}`}
+                  onTouchStart={isTopCard ? (e) => handleStart(e, card.id) : undefined}
+                  onTouchMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
+                  onTouchEnd={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
+                  onMouseDown={isTopCard ? (e) => handleStart(e, card.id) : undefined}
+                  onMouseMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
+                  onMouseUp={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
+                  onMouseLeave={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
+                  style={{ pointerEvents: isTopCard ? 'auto' : 'none' }}
+                >
+                  {/* Swipe gradient overlays - only on top card */}
+                  {isTopCard && (
+                    <>
+                      <div 
+                        className={styles.swipeOverlayLeft} 
+                        style={{ 
+                          opacity: swipeDistance < 0 ? Math.min(Math.abs(swipeDistance) / 100, 0.7) : 0 
+                        }}
+                      />
+                      <div 
+                        className={styles.swipeOverlayRight} 
+                        style={{ 
+                          opacity: swipeDistance > 0 ? Math.min(swipeDistance / 100, 0.7) : 0 
+                        }}
+                      />
+                    </>
+                  )}
+                  
+                  <div className={styles.photoContainer}>
+                    <img 
+                      src={card.photos[currentPhotoIndex[card.id] || 0]} 
+                      alt={`${card.name} photo ${(currentPhotoIndex[card.id] || 0) + 1}`} 
+                      className={styles.photo}
                     />
-                  ))}
-                </div>
-              )}
-              
-              {/* Photo navigation buttons */}
-              {currentCard.photos.length > 1 && (
-                <>
-                  <button
-                    className={`${styles.navButton} ${styles.prevButton}`}
-                    onClick={(e) => prevPhoto(currentCard.id, e)}
-                    aria-label="Previous photo"
-                  >
-                    <i className="fa fa-chevron-left"></i>
-                  </button>
-                  <button
-                    className={`${styles.navButton} ${styles.nextButton}`}
-                    onClick={(e) => nextPhoto(currentCard.id, e)}
-                    aria-label="Next photo"
-                  >
-                    <i className="fa fa-chevron-right"></i>
-                  </button>
-                </>
-              )}
-            </div>
-            
-            <div className={styles.cardInfo}>
-              <div className={styles.nameAge}>
-                <h3>{currentCard.name}, {currentCard.age}</h3>
-                <div className={styles.category}>
-                  <i className="fa fa-flag"></i>
-                  <span>{currentCard.category}</span>
-                </div>
-              </div>
-              
-              <div className={styles.tags}>
-                {currentCard.tags.map((tag, index) => (
-                  <div key={index} className={styles.tag}>
-                    {tag}
+                    
+                    {/* Photo indicators - only on top card */}
+                    {isTopCard && card.photos.length > 1 && (
+                      <div className={styles.photoIndicators}>
+                        {card.photos.map((_, photoIndex) => (
+                          <div
+                            key={photoIndex}
+                            className={`${styles.indicator} ${photoIndex === (currentPhotoIndex[card.id] || 0) ? styles.active : ''}`}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Photo navigation buttons - only on top card */}
+                    {isTopCard && card.photos.length > 1 && (
+                      <>
+                        <button
+                          className={`${styles.navButton} ${styles.prevButton}`}
+                          onClick={(e) => prevPhoto(card.id, e)}
+                          aria-label="Previous photo"
+                        >
+                          <i className="fa fa-chevron-left"></i>
+                        </button>
+                        <button
+                          className={`${styles.navButton} ${styles.nextButton}`}
+                          onClick={(e) => nextPhoto(card.id, e)}
+                          aria-label="Next photo"
+                        >
+                          <i className="fa fa-chevron-right"></i>
+                        </button>
+                      </>
+                    )}
                   </div>
-                ))}
-              </div>
-              
-              <button className={styles.showMoreButton}>
-                Show more
-              </button>
-              
-              <button className={styles.scrollButton}>
-                <i className="fa fa-chevron-up"></i>
-              </button>
-            </div>
-          </div>
+                  
+                  <div className={styles.cardInfo}>
+                    <div className={styles.nameAge}>
+                      <h3>{card.name}, {card.age}</h3>
+                      <div className={styles.category}>
+                        <i className="fa fa-flag"></i>
+                        <span>{card.category}</span>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.tags}>
+                      {card.tags.map((tag, tagIndex) => (
+                        <div key={tagIndex} className={styles.tag}>
+                          {tag}
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {isTopCard && (
+                      <>
+                        <button className={styles.showMoreButton}>
+                          Show more
+                        </button>
+                        
+                        <button className={styles.scrollButton}>
+                          <i className="fa fa-chevron-up"></i>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </>
         )}
+      </div>
 
-<div className={styles.buttons}>
+      <div className={styles.buttons}>
         {allCardsSwiped ? (
           <button 
             onClick={resetCards}
@@ -371,9 +431,6 @@ const Content = () => {
           </>
         )}
       </div>
-      </div>
-
-      
     </div>
   );
 };
