@@ -10,6 +10,8 @@ import BlankPage from './components/BlankPage';
 import Content from './features/Content/Home';
 import Profile from './features/Content/Profile';
 import Matches from './features/Content/Matches';
+import Chats from './features/Content/Chats';
+import ChatRoom from './features/Content/Chats/ChatRoom';
 
 import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
@@ -97,6 +99,15 @@ function App() {
                             <Matches />
                           </OverlayScrollbarsComponent>
                         } />
+                        <Route path="/chats" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Chats />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="/chats/:chatId" element={<ChatRoom />} />
                         <Route path="/profile/:userId" element={<Profile />} />
                         <Route path="*" element={
                           <OverlayScrollbarsComponent

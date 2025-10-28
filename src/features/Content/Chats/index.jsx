@@ -1,33 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Card from '../../../components/Card';
 import styles from './styles.module.css';
+import { fetchMatches } from '../Matches/server';
 
-const Matches = () => {
+const Chats = () => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { chatId } = useParams();
 
-  // Fetch matches data
-  const fetchMatches = async () => {
+  // Fetch matches data (same as Matches component)
+  const fetchMatchesData = async () => {
     try {
       setLoading(true);
       setError("");
       
-      const response = await fetch('http://localhost:8081/api/likes/matches', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch matches: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await fetchMatches();
       const { matches: matchesData } = data;
       
       // Transform the data to match the expected format
@@ -55,7 +45,7 @@ const Matches = () => {
 
   // Fetch matches on component mount
   useEffect(() => {
-    fetchMatches();
+    fetchMatchesData();
   }, []);
 
   // Handle card click to open chat room
@@ -66,15 +56,15 @@ const Matches = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className={styles.matches}>
+      <div className={styles.chats}>
         <div className={styles.header}>
-          <h1>Matches</h1>
+          <h1>Chats</h1>
         </div>
         <div className={styles.container}>
           <div className={styles.loadingState}>
             <i className="fa fa-spinner fa-spin"></i>
-            <h3>Loading matches...</h3>
-            <p>Finding your connections</p>
+            <h3>Loading chats...</h3>
+            <p>Finding your conversations</p>
           </div>
         </div>
       </div>
@@ -84,9 +74,9 @@ const Matches = () => {
   // Show error state
   if (error) {
     return (
-      <div className={styles.matches}>
+      <div className={styles.chats}>
         <div className={styles.header}>
-          <h1>Matches</h1>
+          <h1>Chats</h1>
         </div>
         <div className={styles.container}>
           <div className={styles.errorState}>
@@ -94,7 +84,7 @@ const Matches = () => {
             <h3>Oops! Something went wrong</h3>
             <p>{error}</p>
             <button 
-              onClick={fetchMatches} 
+              onClick={fetchMatchesData} 
               className={styles.retryButton}
             >
               Try Again
@@ -106,24 +96,23 @@ const Matches = () => {
   }
 
   return (
-    <div className={styles.matches}>
+    <div className={styles.chats}>
       <div className={styles.header}>
-        <h1>Matches</h1>
+        <h1>Chats</h1>
       </div>
       <div className={styles.container}>
-
         {matches.length === 0 ? (
           <div className={styles.emptyState}>
-            <i className="fa fa-heart"></i>
-            <h3>No matches yet</h3>
-            <p>Keep swiping to find your perfect match!</p>
+            <i className="fa fa-comments"></i>
+            <h3>No conversations yet</h3>
+            <p>Start chatting with your matches!</p>
           </div>
         ) : (
            <div className={styles.grid}>
              {matches.map((match) => (
                <Card
                  key={match.id}
-                 className={styles.matchCard}
+                 className={styles.chatCard}
                  photos={match.photos}
                  currentPhotoIndex={0}
                  showNavigation={false}
@@ -137,6 +126,13 @@ const Matches = () => {
                      <span>{match.gender === 'male' ? 'Male' : match.gender === 'female' ? 'Female' : 'Other'}</span>
                    </div>
                  </div>
+                 
+                 {match.lastMessage && (
+                   <div className={styles.lastMessage}>
+                     <i className="fa fa-comment"></i>
+                     <span>{match.lastMessage}</span>
+                   </div>
+                 )}
                  
                  {match.bio && (
                    <div className={styles.bioPreview}>
@@ -152,4 +148,4 @@ const Matches = () => {
   );
 };
 
-export default Matches;
+export default Chats;
