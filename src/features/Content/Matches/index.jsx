@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Card from '../../../components/Card';
 import styles from './styles.module.css';
 
 const Matches = () => {
@@ -57,10 +58,10 @@ const Matches = () => {
   if (loading) {
     return (
       <div className={styles.matches}>
+        <div className={styles.header}>
+          <h1>Matches</h1>
+        </div>
         <div className={styles.container}>
-          <div className={styles.header}>
-            <h1>Matches</h1>
-          </div>
           <div className={styles.loadingState}>
             <i className="fa fa-spinner fa-spin"></i>
             <h3>Loading matches...</h3>
@@ -75,10 +76,10 @@ const Matches = () => {
   if (error) {
     return (
       <div className={styles.matches}>
+        <div className={styles.header}>
+          <h1>Matches</h1>
+        </div>
         <div className={styles.container}>
-          <div className={styles.header}>
-            <h1>Matches</h1>
-          </div>
           <div className={styles.errorState}>
             <i className="fa fa-exclamation-triangle"></i>
             <h3>Oops! Something went wrong</h3>
@@ -97,13 +98,10 @@ const Matches = () => {
 
   return (
     <div className={styles.matches}>
+      <div className={styles.header}>
+        <h1>Matches</h1>
+      </div>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <h1>Matches</h1>
-          <p className={styles.subtitle}>
-            {matches.length} {matches.length === 1 ? 'match' : 'matches'}
-          </p>
-        </div>
 
         {matches.length === 0 ? (
           <div className={styles.emptyState}>
@@ -112,33 +110,32 @@ const Matches = () => {
             <p>Keep swiping to find your perfect match!</p>
           </div>
         ) : (
-          <div className={styles.grid}>
-            {matches.map((match) => (
-              <div key={match.id} className={styles.matchCard}>
-                <div className={styles.photoContainer}>
-                  {match.photos && match.photos.length > 0 ? (
-                    <img 
-                      src={match.photos[0]} 
-                      alt={match.name}
-                      className={styles.photo}
-                    />
-                  ) : (
-                    <div className={styles.placeholderPhoto}>
-                      <i className="fa fa-user"></i>
-                    </div>
-                  )}
-                  <div className={styles.overlay}>
-                    <div className={styles.nameContainer}>
-                      <h3 className={styles.name}>{match.name}</h3>
-                      {match.age && (
-                        <span className={styles.age}>, {match.age}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+           <div className={styles.grid}>
+             {matches.map((match) => (
+               <Card
+                 key={match.id}
+                 className={styles.matchCard}
+                 photos={match.photos}
+                 currentPhotoIndex={0}
+                 showNavigation={false}
+                 showIndicators={false}
+               >
+                 <div className={styles.nameAge}>
+                   <h3>{match.name}, {match.age}</h3>
+                   <div className={styles.category}>
+                     <i className="fa fa-heart"></i>
+                     <span>It's a Match!</span>
+                   </div>
+                 </div>
+                 
+                 {match.bio && (
+                   <div className={styles.bioPreview}>
+                     {match.bio}
+                   </div>
+                 )}
+               </Card>
+             ))}
+           </div>
         )}
       </div>
     </div>
