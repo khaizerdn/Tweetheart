@@ -267,138 +267,121 @@ const Content = () => {
 
   return (
     <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
-      <div className={styles.cards}>
-        {allCardsSwiped ? (
-          <div className={styles.emptyState}>
-            <i className="fa fa-heart-broken"></i>
-            <h3>No more cards!</h3>
-            <p>You've swiped through all the cards. Click reset to start over.</p>
-          </div>
-        ) : (
-          <>
-            {visibleCards.slice(0, 3).reverse().map((card, reverseIndex) => {
-              const index = visibleCards.slice(0, 3).length - 1 - reverseIndex;
-              const isTopCard = index === 0;
-              
-              return (
-                <Card
-                  key={card.id}
-                  ref={(el) => (cardRefs.current[card.id] = el)}
-                  className={`${styles.swipeCard} ${isTopCard && isMoving ? styles.moving : ''}`}
-                  photos={card.photos}
-                  currentPhotoIndex={currentPhotoIndex[card.id] || 0}
-                  onNextPhoto={(e) => nextPhoto(card.id, e)}
-                  onPrevPhoto={(e) => prevPhoto(card.id, e)}
-                  showNavigation={isTopCard && card.photos.length > 1}
-                  showIndicators={isTopCard && card.photos.length > 1}
-                  onTouchStart={isTopCard ? (e) => handleStart(e, card.id) : undefined}
-                  onTouchMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
-                  onTouchEnd={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
-                  onMouseDown={isTopCard ? (e) => handleStart(e, card.id) : undefined}
-                  onMouseMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
-                  onMouseUp={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
-                  onMouseLeave={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
-                  style={{ pointerEvents: isTopCard ? 'auto' : 'none' }}
-                  overlays={isTopCard && (
-                    <>
-                      <div 
-                        className={styles.swipeOverlayLeft} 
-                        style={{ 
-                          opacity: swipeDistance < 0 ? Math.min(Math.abs(swipeDistance) / 100, 0.7) : 0 
-                        }}
-                      />
-                      <div 
-                        className={styles.swipeOverlayRight} 
-                        style={{ 
-                          opacity: swipeDistance > 0 ? Math.min(swipeDistance / 100, 0.7) : 0 
-                        }}
-                      />
-                    </>
-                  )}
-                >
-                  <div className={styles.nameAge}>
-                    <h3>{card.name}, {card.age}</h3>
-                    <div className={styles.category}>
-                      <i className="fa fa-flag"></i>
-                      <span>{card.category}</span>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.tags}>
-                    {card.tags.map((tag, tagIndex) => (
-                      <div key={tagIndex} className={styles.tag}>
-                        {tag}
+      <div className={styles.cardContainer}>
+        <div className={styles.cards}>
+          {allCardsSwiped ? (
+            <div className={styles.emptyState}>
+              <i className="fa fa-heart-broken"></i>
+              <h3>No more cards!</h3>
+              <p>You've swiped through all the cards. Click reset to start over.</p>
+            </div>
+          ) : (
+            <>
+              {visibleCards.slice(0, 3).reverse().map((card, reverseIndex) => {
+                const index = visibleCards.slice(0, 3).length - 1 - reverseIndex;
+                const isTopCard = index === 0;
+                
+                return (
+                  <Card
+                    key={card.id}
+                    ref={(el) => (cardRefs.current[card.id] = el)}
+                    className={`${styles.swipeCard} ${isTopCard && isMoving ? styles.moving : ''}`}
+                    photos={card.photos}
+                    currentPhotoIndex={currentPhotoIndex[card.id] || 0}
+                    onNextPhoto={(e) => nextPhoto(card.id, e)}
+                    onPrevPhoto={(e) => prevPhoto(card.id, e)}
+                    showNavigation={isTopCard && card.photos.length > 1}
+                    showIndicators={isTopCard && card.photos.length > 1}
+                    onTouchStart={isTopCard ? (e) => handleStart(e, card.id) : undefined}
+                    onTouchMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
+                    onTouchEnd={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
+                    onMouseDown={isTopCard ? (e) => handleStart(e, card.id) : undefined}
+                    onMouseMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
+                    onMouseUp={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
+                    onMouseLeave={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
+                    style={{ pointerEvents: isTopCard ? 'auto' : 'none' }}
+                    overlays={isTopCard && (
+                      <>
+                        <div 
+                          className={styles.swipeOverlayLeft} 
+                          style={{ 
+                            opacity: swipeDistance < 0 ? Math.min(Math.abs(swipeDistance) / 100, 0.7) : 0 
+                          }}
+                        />
+                        <div 
+                          className={styles.swipeOverlayRight} 
+                          style={{ 
+                            opacity: swipeDistance > 0 ? Math.min(swipeDistance / 100, 0.7) : 0 
+                          }}
+                        />
+                      </>
+                    )}
+                  >
+                    <div className={styles.nameAge}>
+                      <h3>{card.name}, {card.age}</h3>
+                      <div className={styles.category}>
+                        <i className="fa fa-venus-mars"></i>
+                        <span>Looking for connections</span>
                       </div>
-                    ))}
-                  </div>
-                  
-                  {card.bio && (
-                    <div className={styles.bioPreview}>
-                      {card.bio}
                     </div>
-                  )}
-                  
-                  {isTopCard && (
-                    <>
-                      <button className={styles.showMoreButton}>
-                        Show more
-                      </button>
-                      
-                      <button className={styles.scrollButton}>
-                        <i className="fa fa-chevron-up"></i>
-                      </button>
-                    </>
-                  )}
-                </Card>
-              );
-            })}
-          </>
-        )}
-      </div>
+                    
+                    {card.bio && (
+                      <div className={styles.bioPreview}>
+                        {card.bio}
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
+            </>
+          )}
+        </div>
 
-      <div className={styles.buttons}>
-        {allCardsSwiped ? (
-          <button 
-            onClick={resetCards}
-            className={`${styles.button} ${styles.resetButton}`}
-          >
-            <i className="fa fa-refresh"></i>
-            <span>Reset Cards</span>
-          </button>
-        ) : (
-          <>
+        {/* Action buttons positioned below the card */}
+        <div className={styles.buttons}>
+          {allCardsSwiped ? (
             <button 
-              onClick={() => handleButtonClick('undo')}
-              className={`${styles.button} ${styles.undoButton}`}
+              onClick={resetCards}
+              className={`${styles.button} ${styles.resetButton}`}
             >
-              <i className="fa fa-undo"></i>
+              <i className="fa fa-refresh"></i>
+              <span>Reset Cards</span>
             </button>
-            <button 
-              onClick={() => handleButtonClick('nope')}
-              className={`${styles.button} ${styles.nopeButton}`}
-            >
-              <i className="fa fa-times"></i>
-            </button>
-            <button 
-              onClick={() => handleButtonClick('superlike')}
-              className={`${styles.button} ${styles.superLikeButton}`}
-            >
-              <i className="fa fa-star"></i>
-            </button>
-            <button 
-              onClick={() => handleButtonClick('like')}
-              className={`${styles.button} ${styles.likeButton}`}
-            >
-              <i className="fa fa-heart"></i>
-            </button>
-            <button 
-              onClick={() => handleButtonClick('boost')}
-              className={`${styles.button} ${styles.boostButton}`}
-            >
-              <i className="fa fa-paper-plane"></i>
-            </button>
-          </>
-        )}
+          ) : (
+            <>
+              <button 
+                onClick={() => handleButtonClick('undo')}
+                className={`${styles.button} ${styles.undoButton}`}
+              >
+                <i className="fa fa-undo"></i>
+              </button>
+              <button 
+                onClick={() => handleButtonClick('nope')}
+                className={`${styles.button} ${styles.nopeButton}`}
+              >
+                <i className="fa fa-times"></i>
+              </button>
+              <button 
+                onClick={() => handleButtonClick('superlike')}
+                className={`${styles.button} ${styles.superLikeButton}`}
+              >
+                <i className="fa fa-star"></i>
+              </button>
+              <button 
+                onClick={() => handleButtonClick('like')}
+                className={`${styles.button} ${styles.likeButton}`}
+              >
+                <i className="fa fa-heart"></i>
+              </button>
+              <button 
+                onClick={() => handleButtonClick('boost')}
+                className={`${styles.button} ${styles.boostButton}`}
+              >
+                <i className="fa fa-paper-plane"></i>
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

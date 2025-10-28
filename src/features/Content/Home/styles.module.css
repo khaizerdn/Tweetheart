@@ -1,8 +1,10 @@
 .tinder {
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   overflow: hidden;
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   position: relative;
   opacity: 0;
@@ -15,24 +17,37 @@
   opacity: 1;
 }
 
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-020);
+  position: relative;
+  width: 350px; /* Fixed width to match card width */
+  margin: 0 auto; /* Center the container */
+}
+
 .cards {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 1;
-  padding: var(--padding-020);
   position: relative;
+  width: 350px; /* Fixed width to match card width */
+  height: 600px; /* Fixed height to match card height */
 }
 
 /* Swipe card specific styles - override Card component for swipe functionality */
 .swipeCard {
   position: absolute !important;
-  width: 350px;
+  width: 350px !important;
+  height: 600px !important;
   will-change: transform;
   transition: all 0.3s ease-in-out;
   cursor: grab;
+  flex-shrink: 0;
 }
 
 .swipeCard.moving {
@@ -91,23 +106,6 @@
   font-size: var(--font-size-012);
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--gap-008);
-  margin-bottom: var(--gap-016);
-}
-
-.tag {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--color-white);
-  padding: var(--gap-008) var(--padding-012);
-  border-radius: var(--border-radius-024);
-  font-size: var(--font-size-012);
-  font-weight: var(--font-weight-medium);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
 
 .bioPreview {
   font-size: var(--font-size-014);
@@ -117,65 +115,22 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.showMoreButton {
-  background: transparent;
-  border: 1px solid var(--color-white);
-  color: var(--color-white);
-  padding: var(--padding-012) var(--padding-024);
-  border-radius: var(--border-radius-024);
-  font-size: var(--font-size-014);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  pointer-events: auto;
-  transition: all 0.3s ease;
-  margin-bottom: var(--padding-012);
-}
-
-.showMoreButton:hover {
-  background: var(--color-white);
-  color: var(--color-primary-3);
-}
-
-.scrollButton {
-  position: absolute;
-  right: var(--padding-020);
-  bottom: var(--padding-020);
-  width: 40px;
-  height: 40px;
-  border-radius: var(--border-radius-999);
-  background: rgba(0, 0, 0, 0.6);
-  border: none;
-  color: var(--color-white);
-  cursor: pointer;
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-016);
-  transition: all 0.3s ease;
-}
-
-.scrollButton:hover {
-  background: rgba(0, 0, 0, 0.8);
-  transform: scale(1.1);
-}
 
 .buttons {
-  position: absolute;
-  bottom: var(--padding-020);
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
   gap: var(--padding-012);
   z-index: 100;
+  margin-top: var(--padding-024);
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+  width: 350px; /* Fixed width to match card width */
 }
 
 .button {
   border-radius: var(--border-radius-999);
-  width: 60px;
-  height: 60px;
+  width: 60px !important;
+  height: 60px !important;
   border: none;
   display: flex;
   align-items: center;
@@ -184,6 +139,7 @@
   box-shadow: var(--shadow-2);
   transition: all 0.3s ease;
   font-size: var(--font-size-020);
+  flex-shrink: 0;
 }
 
 .button:hover {
@@ -277,43 +233,4 @@
   line-height: var(--line-height-default);
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .swipeCard {
-    width: 320px;
-  }
-  
-  .nameAge h3 {
-    font-size: var(--font-size-024);
-  }
-  
-  .button {
-    width: 50px;
-    height: 50px;
-    font-size: var(--font-size-018);
-  }
-  
-  .buttons {
-    gap: var(--gap-008);
-  }
-}
-
-@media (max-width: 480px) {
-  .swipeCard {
-    width: 300px;
-  }
-  
-  .nameAge h3 {
-    font-size: var(--font-size-020);
-  }
-  
-  .button {
-    width: 45px;
-    height: 45px;
-    font-size: var(--font-size-016);
-  }
-  
-  .buttons {
-    gap: var(--gap-008);
-  }
-}
+/* Fixed dimensions - no responsive scaling */
