@@ -90,7 +90,7 @@ function App() {
                             <Content />
                           </OverlayScrollbarsComponent>
                         } />
-                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/profile/:userId" element={<Profile />} />
                         <Route path="*" element={
                           <OverlayScrollbarsComponent
                             options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },

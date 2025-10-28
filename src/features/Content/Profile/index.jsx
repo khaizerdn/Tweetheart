@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import InputField from "../../../components/InputFields";
 import Button from "../../../components/Buttons/Button";
@@ -68,6 +68,7 @@ const loadFromCache = () => {
 
 function Profile() {
   const navigate = useNavigate();
+  const { userId } = useParams();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -272,7 +273,7 @@ function Profile() {
         }
         
         // Fetch from API if not in cache
-        const userResponse = await requestAccessToken.get('/user-profile');
+        const userResponse = await requestAccessToken.get(`/user-profile/${userId}`);
         const userData = userResponse.data;
         
         const firstNameData = userData.firstName || "";
@@ -288,7 +289,7 @@ function Profile() {
         setBio(bioData);
 
         // Fetch user photos
-        const photosResponse = await requestAccessToken.get('/api/photos');
+        const photosResponse = await requestAccessToken.get(`/api/photos/${userId}`);
         const photosData = photosResponse.data.photos || [];
         
         // Save to cache
@@ -427,14 +428,9 @@ function Profile() {
         try {
           const formData = new FormData();
           
-          // Get userId from cookies for the upload
-          const userId = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('userId='))
-            ?.split('=')[1];
-          
+          // Use userId from URL params
           if (!userId) {
-            setError("User not authenticated for photo upload");
+            setError("User ID not found in URL");
             return;
           }
           

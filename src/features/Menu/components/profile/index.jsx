@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.css';
 
-const Profile = ({ userData, profilePhotoUrl }) => {
+const Profile = ({ userData, profilePhotoUrl, currentUserId }) => {
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
-    if (userData) {
-      navigate(`/profile`);
+    if (userData && currentUserId) {
+      navigate(`/profile/${currentUserId}`);
     }
   };
 
@@ -45,6 +45,7 @@ const Profile = ({ userData, profilePhotoUrl }) => {
 Profile.propTypes = {
   userData: PropTypes.object,
   profilePhotoUrl: PropTypes.string,
+  currentUserId: PropTypes.string,
 };
 
 export default Profile;

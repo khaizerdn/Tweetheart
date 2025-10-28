@@ -13,6 +13,7 @@ function Menu() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   const logout = async () => {
     console.log("Attempting to log out...");
@@ -45,6 +46,18 @@ function Menu() {
       }
     }
     fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    // Get current user ID from cookies
+    const userId = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userId='))
+      ?.split('=')[1];
+    
+    if (userId) {
+      setCurrentUserId(userId);
+    }
   }, []);
 
   useEffect(() => {
@@ -86,7 +99,7 @@ function Menu() {
 
       {/* Highlighted Features Container */}
       <div className={styles.highlightedContainer}>
-        <Profile userData={userData} profilePhotoUrl={profilePhotoUrl} />
+        <Profile userData={userData} profilePhotoUrl={profilePhotoUrl} currentUserId={currentUserId} />
         <Search />
       </div>
 
