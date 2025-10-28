@@ -13,7 +13,7 @@ const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "gamers",
+  database: process.env.DB_NAME || "tweetheart",
   connectionLimit: 10,
 });
 
@@ -48,9 +48,7 @@ router.get("/user-profile", async (req, res) => {
         first_name, 
         last_name, 
         gender, 
-        birth_year, 
-        birth_month, 
-        birth_day, 
+        birthdate, 
         bio 
       FROM users 
       WHERE id = ?
@@ -63,20 +61,33 @@ router.get("/user-profile", async (req, res) => {
 
     const user = users[0];
     
-    // Format birth date
+    // Format birth date from the single birthdate field
     let birthDate = "";
-    if (user.birth_year && user.birth_month && user.birth_day) {
-      const year = user.birth_year.toString().padStart(4, '0');
-      const month = user.birth_month.toString().padStart(2, '0');
-      const day = user.birth_day.toString().padStart(2, '0');
-      birthDate = `${year}-${month}-${day}`;
+    if (user.birthdate) {
+      // Ensure the date is in YYYY-MM-DD format for HTML date input
+      const date = new Date(user.birthdate);
+      if (!isNaN(date.getTime())) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        birthDate = `${year}-${month}-${day}`;
+      } else {
+        // If it's already a string in YYYY-MM-DD format, use it directly
+        birthDate = user.birthdate;
+      }
     }
+
+    // Convert database gender values to frontend values
+    let frontendGender = user.gender || "";
+    if (user.gender === "Male") frontendGender = "male";
+    else if (user.gender === "Female") frontendGender = "female";
+    else if (user.gender === "Other") frontendGender = "prefer_not_to_say";
 
     return res.status(200).json({
       success: true,
       firstName: user.first_name || "",
       lastName: user.last_name || "",
-      gender: user.gender || "",
+      gender: frontendGender,
       birthDate: birthDate,
       bio: user.bio || "",
     });
@@ -106,27 +117,37 @@ router.put("/user-profile", async (req, res) => {
   }
 
   try {
+    // Convert gender to match database enum values
+    let dbGender = gender;
+    if (gender === 'male') dbGender = 'Male';
+    else if (gender === 'female') dbGender = 'Female';
+    else if (gender === 'prefer_not_to_say') dbGender = 'Other';
+
+    // Format birthdate from separate fields
+    let birthdate = null;
+    if (year && month && day) {
+      const yearStr = year.toString().padStart(4, '0');
+      const monthStr = month.toString().padStart(2, '0');
+      const dayStr = day.toString().padStart(2, '0');
+      birthdate = `${yearStr}-${monthStr}-${dayStr}`;
+    }
+
     const sql = `
       UPDATE users 
       SET 
         first_name = ?, 
         last_name = ?, 
         gender = ?, 
-        birth_year = ?, 
-        birth_month = ?, 
-        birth_day = ?, 
-        bio = ?,
-        updated_at = NOW()
+        birthdate = ?, 
+        bio = ?
       WHERE id = ?
     `;
     
     const values = [
       firstName,
       lastName,
-      gender,
-      year || null,
-      month || null,
-      day || null,
+      dbGender,
+      birthdate,
       bio || null,
       userId
     ];

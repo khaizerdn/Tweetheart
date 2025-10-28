@@ -52,7 +52,7 @@ const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "gamers",
+  database: process.env.DB_NAME || "tweetheart",
 });
 
 /**
@@ -228,16 +228,19 @@ router.post("/api/photos/upload-multiple", upload.array("photos", 6), async (req
 router.get("/api/photos", async (req, res) => {
   try {
     const userId = req.cookies?.userId;
+    
     if (!userId) {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
     const rows = await dbQuery("SELECT photos FROM users WHERE id = ?", [userId]);
+    
     if (rows.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const photosData = rows[0].photos;
+    
     if (!photosData) {
       return res.json({ photos: [] });
     }

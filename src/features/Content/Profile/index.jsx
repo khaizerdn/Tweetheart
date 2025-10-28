@@ -50,7 +50,8 @@ function Profile() {
     if (!gender) return "Not specified";
     if (gender === "male") return "Male";
     if (gender === "female") return "Female";
-    return "Prefer not to say";
+    if (gender === "prefer_not_to_say") return "Other";
+    return "Not specified";
   }, [gender]);
 
   // Get uploaded photos for preview
@@ -85,14 +86,33 @@ function Profile() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const newPhotos = [...photos];
-        newPhotos[index] = { file, preview: reader.result };
+        newPhotos[index] = { 
+          file, 
+          preview: reader.result,
+          isExisting: false 
+        };
         setPhotos(newPhotos);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handlePhotoDelete = (index) => {
+  const handlePhotoDelete = async (index) => {
+    const photo = photos[index];
+    if (!photo) return;
+
+    // If it's an existing photo, delete it from the server
+    if (photo.isExisting && photo.key) {
+      try {
+        await requestAccessToken.delete(`/api/photos/delete?key=${photo.key}`);
+      } catch (err) {
+        console.error("Error deleting photo from server:", err);
+        setError("Failed to delete photo from server");
+        return;
+      }
+    }
+
+    // Remove from local state
     const newPhotos = [...photos];
     newPhotos[index] = null;
     setPhotos(newPhotos);
@@ -118,11 +138,19 @@ function Profile() {
         const photosResponse = await requestAccessToken.get('/api/photos');
         const photosData = photosResponse.data.photos || [];
         
-        // Convert photo URLs to preview format
-        const photoPreviews = [...photos];
+        // Convert photo URLs to preview format and maintain order
+        const photoPreviews = [null, null, null, null, null, null]; // Initialize with 6 null slots
         photosData.forEach((photo, index) => {
           if (index < 6 && photo.url) {
-            photoPreviews[index] = { preview: photo.url };
+            // Use the order field from the database, or fallback to index
+            const photoIndex = (photo.order - 1) || index;
+            if (photoIndex >= 0 && photoIndex < 6) {
+              photoPreviews[photoIndex] = { 
+                preview: photo.url, 
+                key: photo.key,
+                isExisting: true 
+              };
+            }
           }
         });
         setPhotos(photoPreviews);
@@ -170,13 +198,26 @@ function Profile() {
       });
 
       // Upload photos if any new ones were added
-      const uploadedPhotos = photos.filter(photo => photo !== null && photo.file);
-      if (uploadedPhotos.length > 0) {
+      const newPhotos = photos.filter(photo => photo !== null && photo.file && !photo.isExisting);
+      if (newPhotos.length > 0) {
         try {
           const formData = new FormData();
           
-          // Append all photo files to FormData
-          uploadedPhotos.forEach((photoObj) => {
+          // Get userId from cookies for the upload
+          const userId = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('userId='))
+            ?.split('=')[1];
+          
+          if (!userId) {
+            setError("User not authenticated for photo upload");
+            return;
+          }
+          
+          formData.append('userId', userId);
+          
+          // Append all new photo files to FormData
+          newPhotos.forEach((photoObj) => {
             if (photoObj && photoObj.file) {
               formData.append('photos', photoObj.file);
             }
@@ -315,7 +356,7 @@ function Profile() {
                   options={[
                     { value: "male", label: "Male" },
                     { value: "female", label: "Female" },
-                    { value: "prefer_not_to_say", label: "Prefer not to say" },
+                    { value: "prefer_not_to_say", label: "Other" },
                   ]}
                   required={true}
                   styles={{
@@ -333,11 +374,11 @@ function Profile() {
                   ref={(el) => (inputRefs.current.birthDate = el)}
                   type="date"
                   label="Birth Date"
-                  placeholder="mm/dd/yyyy"
+                  placeholder="yyyy-mm-dd"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
-                  min="01/01/1900"
-                  max="present"
+                  min="1900-01-01"
+                  max="2024-12-31"
                   required={true}
                   styles={{
                     background: 'var(--background-color-1)',
