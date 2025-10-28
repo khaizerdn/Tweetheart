@@ -253,11 +253,11 @@ function Profile() {
           const birthDateData = userData.birthDate || "";
           const bioData = userData.bio || "";
 
-          setFirstName(firstNameData);
-          setLastName(lastNameData);
-          setGender(genderData);
-          setBirthDate(birthDateData);
-          setBio(bioData);
+        setFirstName(firstNameData);
+        setLastName(lastNameData);
+        setGender(genderData);
+        setBirthDate(birthDateData);
+        setBio(bioData);
 
           // Convert photo URLs to preview format and maintain order
           const photoPreviews = [null, null, null, null, null, null]; // Initialize with 6 null slots

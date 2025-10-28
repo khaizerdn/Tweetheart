@@ -332,6 +332,12 @@ const Content = () => {
                     ))}
                   </div>
                   
+                  {card.bio && (
+                    <div className={styles.bioPreview}>
+                      {card.bio}
+                    </div>
+                  )}
+                  
                   {isTopCard && (
                     <>
                       <button className={styles.showMoreButton}>
