@@ -9,6 +9,68 @@ import styles from "./styles.module.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Global cache for user profile data
+let profileCache = {
+  data: null,
+  timestamp: null,
+  timer: null
+};
+
+// Cache duration: 1 minute
+const CACHE_DURATION = 60 * 1000; // 60 seconds in milliseconds
+
+// Helper functions for cache management
+const clearProfileCache = () => {
+  if (profileCache.timer) {
+    clearTimeout(profileCache.timer);
+    profileCache.timer = null;
+  }
+  profileCache.data = null;
+  profileCache.timestamp = null;
+  console.log("🗑️ Profile cache cleared");
+};
+
+const startCacheTimer = () => {
+  // Clear any existing timer
+  if (profileCache.timer) {
+    clearTimeout(profileCache.timer);
+  }
+  
+  // Start new timer
+  profileCache.timer = setTimeout(() => {
+    clearProfileCache();
+  }, CACHE_DURATION);
+  
+  console.log("⏰ Cache timer started - will clear in 1 minute");
+};
+
+const isCacheValid = () => {
+  if (!profileCache.data || !profileCache.timestamp) {
+    return false;
+  }
+  
+  const now = Date.now();
+  const cacheAge = now - profileCache.timestamp;
+  return cacheAge < CACHE_DURATION;
+};
+
+const saveToCache = (profileData, photosData) => {
+  profileCache.data = {
+    profile: profileData,
+    photos: photosData
+  };
+  profileCache.timestamp = Date.now();
+  console.log("💾 Profile data cached");
+};
+
+const loadFromCache = () => {
+  if (isCacheValid()) {
+    console.log("📦 Loading profile data from cache");
+    return profileCache.data;
+  }
+  return null;
+};
+
 function Profile() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
@@ -165,7 +227,55 @@ function Profile() {
       try {
         setLoading(true);
         
-        // Fetch basic user info
+        // Check cache first
+        const cachedData = loadFromCache();
+        if (cachedData) {
+          const { profile: userData, photos: photosData } = cachedData;
+          
+          const firstNameData = userData.firstName || "";
+          const lastNameData = userData.lastName || "";
+          const genderData = userData.gender || "";
+          const birthDateData = userData.birthDate || "";
+          const bioData = userData.bio || "";
+
+          setFirstName(firstNameData);
+          setLastName(lastNameData);
+          setGender(genderData);
+          setBirthDate(birthDateData);
+          setBio(bioData);
+
+          // Convert photo URLs to preview format and maintain order
+          const photoPreviews = [null, null, null, null, null, null]; // Initialize with 6 null slots
+          photosData.forEach((photo, index) => {
+            if (index < 6 && photo.url) {
+              // Use the order field from the database, or fallback to index
+              const photoIndex = (photo.order - 1) || index;
+              if (photoIndex >= 0 && photoIndex < 6) {
+                photoPreviews[photoIndex] = { 
+                  preview: photo.url, 
+                  key: photo.key,
+                  isExisting: true 
+                };
+              }
+            }
+          });
+          setPhotos(photoPreviews);
+
+          // Store original data for comparison
+          setOriginalData({
+            firstName: firstNameData,
+            lastName: lastNameData,
+            gender: genderData,
+            birthDate: birthDateData,
+            bio: bioData,
+            photos: [...photoPreviews] // Deep copy of photos array
+          });
+          
+          setLoading(false);
+          return;
+        }
+        
+        // Fetch from API if not in cache
         const userResponse = await requestAccessToken.get('/user-profile');
         const userData = userResponse.data;
         
@@ -184,6 +294,9 @@ function Profile() {
         // Fetch user photos
         const photosResponse = await requestAccessToken.get('/api/photos');
         const photosData = photosResponse.data.photos || [];
+        
+        // Save to cache
+        saveToCache(userData, photosData);
         
         // Convert photo URLs to preview format and maintain order
         const photoPreviews = [null, null, null, null, null, null]; // Initialize with 6 null slots
@@ -221,6 +334,23 @@ function Profile() {
     };
 
     fetchUserData();
+  }, []);
+
+  // Cleanup effect - start timer when component unmounts
+  useEffect(() => {
+    // Clear any existing timer when component mounts
+    if (profileCache.timer) {
+      clearTimeout(profileCache.timer);
+      profileCache.timer = null;
+      console.log("🔄 Cache timer cleared - user returned to profile");
+    }
+    
+    return () => {
+      // Start the cache timer when user leaves the profile page
+      if (profileCache.data) {
+        startCacheTimer();
+      }
+    };
   }, []);
 
   const handleSubmit = async (e) => {
@@ -357,6 +487,9 @@ function Profile() {
         bio,
         photos: [...photos] // Deep copy of current photos
       });
+      
+      // Clear cache since data has been updated
+      clearProfileCache();
       
       setSuccess("Profile updated successfully!");
       
