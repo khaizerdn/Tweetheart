@@ -69,6 +69,7 @@ const loadFromCache = () => {
 function Profile() {
   const navigate = useNavigate();
   const { userId } = useParams();
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -106,6 +107,11 @@ function Profile() {
   };
 
   const age = useMemo(() => calculateAge(birthDate), [birthDate]);
+
+  // Determine if viewing own profile
+  const isOwnProfile = useMemo(() => {
+    return currentUserId && userId && currentUserId === userId;
+  }, [currentUserId, userId]);
 
   // Get display name
   const displayName = useMemo(() => {
@@ -217,6 +223,18 @@ function Profile() {
     newPhotos[index] = null;
     setPhotos(newPhotos);
   };
+
+  // Get current user ID and determine if viewing own profile
+  useEffect(() => {
+    const userIdFromCookie = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userId='))
+      ?.split('=')[1];
+    
+    if (userIdFromCookie) {
+      setCurrentUserId(userIdFromCookie);
+    }
+  }, []);
 
   // Load user data on component mount
   useEffect(() => {
@@ -330,8 +348,10 @@ function Profile() {
       }
     };
 
-    fetchUserData();
-  }, []);
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
 
   // Cleanup effect - start timer when component unmounts
   useEffect(() => {
@@ -508,6 +528,50 @@ function Profile() {
     );
   }
 
+  // If viewing another user's profile, show only the preview card
+  if (!isOwnProfile) {
+    return (
+      <div className={styles.containerAccess}>
+        {/* Center Container - Preview Card Only */}
+        <div className={styles.centerContainer}>
+          <div className={styles.previewCard}>
+            <div className={styles.previewLabel}>{displayName}'s Profile</div>
+            <Card
+              photos={uploadedPhotos}
+              currentPhotoIndex={currentPhotoIndex}
+              onNextPhoto={nextPhoto}
+              onPrevPhoto={prevPhoto}
+              placeholder={
+                <div className={styles.placeholderPhoto}>
+                  <i className="fa fa-user"></i>
+                  <p>No photos available</p>
+                </div>
+              }
+            >
+              <div className={styles.nameAge}>
+                <h3>
+                  {displayName}
+                  {age && `, ${age}`}
+                </h3>
+                <div className={styles.category}>
+                  <i className="fa fa-venus-mars"></i>
+                  <span>{displayGender}</span>
+                </div>
+              </div>
+              
+              {bio && (
+                <div className={styles.bioPreview}>
+                  {bio}
+                </div>
+              )}
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If viewing own profile, show edit form
   return (
     <div className={styles.containerAccess}>
       {/* Left Container - Preview Card */}
