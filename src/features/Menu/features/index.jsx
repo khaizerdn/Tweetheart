@@ -12,7 +12,7 @@ import requestAccessToken from '../../../api/requestAccessToken';
 function Menu() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
-  const [profilePhotoUrl, setProfilePhotoUrl] = useState('/default-profile.png');
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
   const logout = async () => {
     console.log("Attempting to log out...");
@@ -50,14 +50,27 @@ function Menu() {
   useEffect(() => {
     async function fetchProfilePhoto() {
       try {
-        const response = await requestAccessToken.get('/api/getProfilePhoto'); // use Axios instance
+        const response = await requestAccessToken.get('/api/photos'); // use the same endpoint as Profile
         const data = response.data;
 
-        if (data.imageUrl) {
-          setProfilePhotoUrl(data.imageUrl);
+        if (data.photos && data.photos.length > 0) {
+          // Find the photo with order 1
+          const order1Photo = data.photos.find(photo => photo.order === 1);
+          
+          if (order1Photo && order1Photo.url) {
+            setProfilePhotoUrl(order1Photo.url);
+          } else {
+            // If no order 1 photo found, set to null (will show placeholder)
+            setProfilePhotoUrl(null);
+          }
+        } else {
+          // If no photos found, set to null (will show placeholder)
+          setProfilePhotoUrl(null);
         }
       } catch (error) {
         console.error("Error fetching profile photo:", error.response?.data?.message || error.message);
+        // On error, set to null (will show placeholder)
+        setProfilePhotoUrl(null);
       }
     }
     fetchProfilePhoto();

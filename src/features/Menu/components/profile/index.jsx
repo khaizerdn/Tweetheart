@@ -15,13 +15,19 @@ const Profile = ({ userData, profilePhotoUrl }) => {
   return (
     <div className={styles.buttonProfile} onClick={handleProfileClick}>
       <div className={styles.buttonLogoContainer}>
-        <img
-          src={profilePhotoUrl}
-          alt="profile"
-          className={styles.profilePhoto}
-          width="32"
-          height="32"
-        />
+        {profilePhotoUrl ? (
+          <img
+            src={profilePhotoUrl}
+            alt="profile"
+            className={styles.profilePhoto}
+            width="32"
+            height="32"
+          />
+        ) : (
+          <div className={styles.profilePhotoPlaceholder}>
+            <i className="fa fa-user"></i>
+          </div>
+        )}
       </div>
       <div className={styles.buttonText}>
         {userData ? (
@@ -38,7 +44,7 @@ const Profile = ({ userData, profilePhotoUrl }) => {
 
 Profile.propTypes = {
   userData: PropTypes.object,
-  profilePhotoUrl: PropTypes.string.isRequired,
+  profilePhotoUrl: PropTypes.string,
 };
 
 export default Profile;
