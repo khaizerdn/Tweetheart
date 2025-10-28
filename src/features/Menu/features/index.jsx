@@ -120,11 +120,8 @@ function Menu() {
       >
         <Button to="/" iconClass="fa-solid fa-house" label="Home" />
         <Button to="/notifications" iconClass="fa-solid fa-bell" label="Notifications" />
-        <Button to="/scrimmage" iconClass="fa-solid fa-bolt" label="Scrimmage" />
+        <Button to="/matches" iconClass="fa-solid fa-heart" label="Matches" />
         <Button to="/chats" iconClass="fa-solid fa-comments" label="Chats" />
-        <Button to="/friends" iconClass="fa-solid fa-users" label="Friends" />
-        <Button to="/teams" iconClass="fa-solid fa-shield" label="Teams" />
-        <Button to="/organizations" iconClass="fa-solid fa-building" label="Organizations" />
       </OverlayScrollbarsComponent>
 
         <hr className={styles.sectionSeparator} />
