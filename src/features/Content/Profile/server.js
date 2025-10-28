@@ -634,6 +634,108 @@ router.get("/api/photos/:userId", async (req, res) => {
 });
 
 // ========================================================
+// ✅ GET ALL USERS FOR DATING FEED
+// ========================================================
+router.get("/api/users/feed", async (req, res) => {
+  try {
+    const currentUserId = req.cookies?.userId;
+    
+    if (!currentUserId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    // Get all users except the current user
+    const sql = `
+      SELECT 
+        id,
+        first_name, 
+        last_name, 
+        gender, 
+        birthdate, 
+        bio,
+        photos
+      FROM users 
+      WHERE id != ?
+      ORDER BY created_at DESC
+      LIMIT 50
+    `;
+    const users = await queryDB(sql, [currentUserId]);
+
+    if (!users.length) {
+      return res.json({ users: [] });
+    }
+
+    // Process each user and their photos
+    const usersWithPhotos = await Promise.all(
+      users.map(async (user) => {
+        // Calculate age from birthdate
+        let age = null;
+        if (user.birthdate) {
+          const birth = new Date(user.birthdate);
+          const today = new Date();
+          age = today.getFullYear() - birth.getFullYear();
+          const monthDiff = today.getMonth() - birth.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+          }
+        }
+
+        // Process photos
+        let photos = [];
+        if (user.photos) {
+          try {
+            const photosData = typeof user.photos === 'string' ? JSON.parse(user.photos) : user.photos;
+            
+            // Generate signed URLs for photos
+            photos = await Promise.all(
+              photosData.map(async (photo) => {
+                try {
+                  const signedUrl = await getSignedUrl(
+                    s3,
+                    new GetObjectCommand({ Bucket: bucketName, Key: photo.key }),
+                    { expiresIn: 3600 }
+                  );
+                  return signedUrl;
+                } catch (error) {
+                  console.error(`Error generating URL for ${photo.key}:`, error);
+                  return null;
+                }
+              })
+            );
+            
+            // Filter out null URLs and maintain order
+            photos = photos.filter(url => url !== null);
+          } catch (e) {
+            console.error("Error parsing photos JSON:", e);
+            photos = [];
+          }
+        }
+
+        // Convert database gender values to frontend values
+        let frontendGender = user.gender || "";
+        if (user.gender === "Male") frontendGender = "male";
+        else if (user.gender === "Female") frontendGender = "female";
+        else if (user.gender === "Other") frontendGender = "prefer_not_to_say";
+
+        return {
+          id: user.id,
+          name: user.first_name || "Unknown",
+          age: age,
+          bio: user.bio || "",
+          gender: frontendGender,
+          photos: photos
+        };
+      })
+    );
+
+    res.json({ users: usersWithPhotos });
+  } catch (error) {
+    console.error("❌ Error retrieving users for feed:", error);
+    res.status(500).json({ message: "Server error while retrieving users" });
+  }
+});
+
+// ========================================================
 // ✅ DELETE PHOTO
 // ========================================================
 router.delete("/api/photos/delete", async (req, res) => {

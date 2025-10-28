@@ -1,76 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Card from '../../../components/Card';
+import requestAccessToken from '../../../api/requestAccessToken';
 import styles from './styles.module.css';
 
 const Content = () => {
-  const [cards, setCards] = useState([
-    {
-      id: 1,
-      name: "Sofia",
-      age: 22,
-      bio: "Love hiking, photography, and trying new restaurants. Looking for someone to share adventures with!",
-      category: "Basics & Lifestyle",
-      tags: ["Socially on weekends", "Non-smoker", "Sometimes", "Want a pet"],
-      photos: [
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face"
-      ]
-    },
-    {
-      id: 2,
-      name: "Michael",
-      age: 28,
-      bio: "Software engineer by day, chef by night. Love cooking, gaming, and weekend road trips.",
-      category: "Basics & Lifestyle",
-      tags: ["Tech enthusiast", "Foodie", "Gamer", "Weekend traveler"],
-      photos: [
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face"
-      ]
-    },
-    {
-      id: 3,
-      name: "Emma",
-      age: 23,
-      bio: "Art student passionate about painting and music. Always up for museum visits and live concerts!",
-      category: "Basics & Lifestyle",
-      tags: ["Artist", "Music lover", "Museum goer", "Creative"],
-      photos: [
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=600&fit=crop&crop=face"
-      ]
-    },
-    {
-      id: 4,
-      name: "David",
-      age: 30,
-      bio: "Fitness enthusiast and travel blogger. Love exploring new cultures and staying active.",
-      category: "Basics & Lifestyle",
-      tags: ["Fitness", "Traveler", "Adventure seeker", "Healthy lifestyle"],
-      photos: [
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=600&fit=crop&crop=face"
-      ]
-    },
-    {
-      id: 5,
-      name: "Lisa",
-      age: 26,
-      bio: "Teacher who loves reading, yoga, and coffee. Looking for meaningful connections and good conversations.",
-      category: "Basics & Lifestyle",
-      tags: ["Educator", "Book lover", "Yoga", "Coffee enthusiast"],
-      photos: [
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=600&fit=crop&crop=face"
-      ]
-    }
-  ]);
+  const [cards, setCards] = useState([]);
 
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [isLoved, setIsLoved] = useState(false);
   const [isNoped, setIsNoped] = useState(false);
   const [removedCards, setRemovedCards] = useState(new Set());
@@ -84,8 +22,41 @@ const Content = () => {
   const containerRef = useRef(null);
   const cardRefs = useRef({});
 
+  // Fetch users data on component mount
   useEffect(() => {
-    setLoaded(true);
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        
+        const response = await requestAccessToken.get('/api/users/feed');
+        const usersData = response.data.users || [];
+        
+        // Transform the data to match the expected format
+        const transformedCards = usersData.map(user => ({
+          id: user.id,
+          name: user.name,
+          age: user.age,
+          bio: user.bio,
+          category: "Basics & Lifestyle",
+          tags: ["Looking for connections"],
+          photos: user.photos || []
+        }));
+        
+        setCards(transformedCards);
+        setLoaded(true);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+        setError("Failed to load users. Please try again.");
+        // Fallback to empty array or show error state
+        setCards([]);
+        setLoaded(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const getCurrentCard = () => {
@@ -264,6 +235,46 @@ const Content = () => {
   const currentCard = getCurrentCard();
   const visibleCards = cards.filter(card => !removedCards.has(card.id));
   const allCardsSwiped = visibleCards.length === 0;
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
+        <div className={styles.cardContainer}>
+          <div className={styles.cards}>
+            <div className={styles.emptyState}>
+              <i className="fa fa-spinner fa-spin"></i>
+              <h3>Loading users...</h3>
+              <p>Finding people near you</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
+        <div className={styles.cardContainer}>
+          <div className={styles.cards}>
+            <div className={styles.emptyState}>
+              <i className="fa fa-exclamation-triangle"></i>
+              <h3>Oops! Something went wrong</h3>
+              <p>{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className={styles.button}
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
