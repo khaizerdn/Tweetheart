@@ -31,8 +31,18 @@ const ChatRoom = () => {
     newSocket.on('connect', () => {
       console.log('Connected to chat server');
       setIsConnected(true);
-      // Join the specific chat room
-      newSocket.emit('join_chat', chatId);
+      
+      // Get current user ID
+      const userId = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('userId='))
+        ?.split('=')[1];
+      
+      // Join the specific chat room with user context
+      newSocket.emit('join_chat', {
+        chatId: chatId,
+        userId: userId
+      });
     });
 
     newSocket.on('disconnect', () => {
@@ -41,7 +51,18 @@ const ChatRoom = () => {
     });
 
     newSocket.on('new_message', (message) => {
-      setMessages(prev => [...prev, message]);
+      // Get current user ID to determine if this is their own message
+      const userId = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('userId='))
+        ?.split('=')[1];
+      
+      const messageWithOwnFlag = {
+        ...message,
+        is_own: message.sender_id === userId
+      };
+      
+      setMessages(prev => [...prev, messageWithOwnFlag]);
       scrollToBottom();
     });
 

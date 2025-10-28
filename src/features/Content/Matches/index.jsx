@@ -60,7 +60,21 @@ const Matches = () => {
 
   // Handle card click to open chat room
   const handleCardClick = (matchId) => {
-    navigate(`/chats/${matchId}`);
+    // Get current user ID to create a consistent chat room ID
+    const userId = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userId='))
+      ?.split('=')[1];
+    
+    if (!userId) {
+      console.error('User not authenticated');
+      return;
+    }
+    
+    // Create a consistent chat room ID that both users will use
+    // Sort the IDs to ensure both users get the same room ID regardless of who clicks first
+    const chatRoomId = [userId, matchId].sort().join('_');
+    navigate(`/chats/${chatRoomId}`);
   };
 
   // Show loading state
