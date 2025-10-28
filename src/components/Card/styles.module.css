@@ -145,6 +145,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  z-index: 3;
 }
 
 /* Allow child elements to be interactive but prevent text selection */
