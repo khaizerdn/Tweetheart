@@ -156,6 +156,20 @@ router.put("/user-profile", async (req, res) => {
   }
 
   try {
+    // First, get current user data to compare
+    const currentUserSql = `
+      SELECT first_name, last_name, gender, birthdate, bio 
+      FROM users 
+      WHERE id = ?
+    `;
+    const currentUser = await queryDB(currentUserSql, [userId]);
+    
+    if (!currentUser.length) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const current = currentUser[0];
+    
     // Convert gender to match database enum values
     let dbGender = gender;
     if (gender === 'male') dbGender = 'Male';
@@ -169,6 +183,22 @@ router.put("/user-profile", async (req, res) => {
       const monthStr = month.toString().padStart(2, '0');
       const dayStr = day.toString().padStart(2, '0');
       birthdate = `${yearStr}-${monthStr}-${dayStr}`;
+    }
+
+    // Check if data has actually changed
+    const hasChanged = 
+      current.first_name !== firstName ||
+      current.last_name !== lastName ||
+      current.gender !== dbGender ||
+      current.birthdate !== birthdate ||
+      (current.bio || '') !== (bio || '');
+
+    if (!hasChanged) {
+      return res.status(200).json({
+        success: true,
+        message: "No changes detected. Profile is already up to date.",
+        noChanges: true
+      });
     }
 
     const sql = `
@@ -192,10 +222,6 @@ router.put("/user-profile", async (req, res) => {
     ];
 
     const result = await queryDB(sql, values);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
 
     return res.status(200).json({
       success: true,
@@ -305,56 +331,120 @@ router.post("/api/photos/upload", upload.single("photo"), async (req, res) => {
 // ========================================================
 router.post("/api/profile/photos/upload-multiple", upload.array("photos", 6), async (req, res) => {
   try {
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: "No files provided" });
-    }
-
     const userId = req.cookies?.userId;
     if (!userId) {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
-    const photos = [];
-
-    // Upload all photos to S3
-    for (let i = 0; i < req.files.length; i++) {
-      const file = req.files[i];
-      const fileExtension = file.originalname.split(".").pop();
-      const uniqueFileName = `photos/${userId}/${uuidv4()}.${fileExtension}`;
-
-      // Resize image
-      const resizedImageBuffer = await sharp(file.buffer)
-        .resize(800, 800, { fit: "cover" })
-        .jpeg({ quality: 85 })
-        .toBuffer();
-
-      // Upload to S3
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: bucketName,
-          Key: uniqueFileName,
-          Body: resizedImageBuffer,
-          ContentType: "image/jpeg",
-        })
-      );
-
-      photos.push({
-        key: uniqueFileName,
-        order: i + 1,
-        uploadedAt: new Date().toISOString()
-      });
+    // Get photos data from form
+    const photosDataStr = req.body.photosData;
+    if (!photosDataStr) {
+      return res.status(400).json({ message: "Photos data is required" });
     }
 
-    // Update database with photos JSON
+    let photosData;
+    try {
+      photosData = JSON.parse(photosDataStr);
+    } catch (e) {
+      return res.status(400).json({ message: "Invalid photos data format" });
+    }
+
+    // Get existing photos from database
+    const existingRows = await queryDB("SELECT photos FROM users WHERE id = ?", [userId]);
+    let existingPhotos = [];
+    
+    if (existingRows.length > 0 && existingRows[0].photos) {
+      try {
+        existingPhotos = typeof existingRows[0].photos === 'string' 
+          ? JSON.parse(existingRows[0].photos) 
+          : existingRows[0].photos;
+      } catch (e) {
+        console.error("Error parsing existing photos JSON:", e);
+        existingPhotos = [];
+      }
+    }
+
+    // Create a map of existing photos by their key for quick lookup
+    const existingPhotosMap = new Map();
+    existingPhotos.forEach(photo => {
+      existingPhotosMap.set(photo.key, photo);
+    });
+
+    // Process the photos array
+    const finalPhotos = [null, null, null, null, null, null]; // 6 slots
+    let newPhotoIndex = 0;
+
+    for (let i = 0; i < photosData.length && i < 6; i++) {
+      const photoInfo = photosData[i];
+      
+      if (photoInfo.isDeleted) {
+        // Photo was deleted, keep as null
+        finalPhotos[i] = null;
+      } else if (photoInfo.isNew) {
+        // New photo upload
+        if (req.files && req.files[newPhotoIndex]) {
+          const file = req.files[newPhotoIndex];
+          const fileExtension = file.originalname.split(".").pop();
+          const uniqueFileName = `photos/${userId}/${uuidv4()}.${fileExtension}`;
+
+          // Resize image
+          const resizedImageBuffer = await sharp(file.buffer)
+            .resize(800, 800, { fit: "cover" })
+            .jpeg({ quality: 85 })
+            .toBuffer();
+
+          // Upload to S3
+          await s3.send(
+            new PutObjectCommand({
+              Bucket: bucketName,
+              Key: uniqueFileName,
+              Body: resizedImageBuffer,
+              ContentType: "image/jpeg",
+            })
+          );
+
+          finalPhotos[i] = {
+            key: uniqueFileName,
+            order: i + 1,
+            uploadedAt: new Date().toISOString()
+          };
+          
+          newPhotoIndex++;
+        }
+      } else if (photoInfo.key) {
+        // Existing photo, keep it
+        if (existingPhotosMap.has(photoInfo.key)) {
+          const existingPhoto = existingPhotosMap.get(photoInfo.key);
+          finalPhotos[i] = {
+            ...existingPhoto,
+            order: i + 1 // Update order based on new position
+          };
+        } else {
+          // Photo key not found in existing photos, treat as deleted
+          finalPhotos[i] = null;
+        }
+      } else {
+        // No key and not new, treat as deleted
+        finalPhotos[i] = null;
+      }
+    }
+
+    // Filter out null values and reorder
+    const finalPhotosArray = finalPhotos.filter(photo => photo !== null);
+    finalPhotosArray.forEach((photo, index) => {
+      photo.order = index + 1;
+    });
+
+    // Update database with merged photos JSON
     await queryDB("UPDATE users SET photos = ? WHERE id = ?", [
-      JSON.stringify(photos),
+      JSON.stringify(finalPhotosArray),
       userId
     ]);
 
     res.json({ 
       success: true,
-      message: `${photos.length} photos uploaded successfully`,
-      photoCount: photos.length
+      message: `Photos updated successfully`,
+      photoCount: finalPhotosArray.length
     });
   } catch (error) {
     console.error("❌ Error uploading multiple photos:", error);

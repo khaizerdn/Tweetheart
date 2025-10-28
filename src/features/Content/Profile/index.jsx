@@ -22,6 +22,16 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const inputRefs = useRef({});
+  
+  // Store original data for comparison
+  const [originalData, setOriginalData] = useState({
+    firstName: "",
+    lastName: "",
+    gender: "",
+    birthDate: "",
+    bio: "",
+    photos: [null, null, null, null, null, null]
+  });
 
   // Calculate age from birth date
   const calculateAge = (birthDateString) => {
@@ -58,6 +68,37 @@ function Profile() {
   const uploadedPhotos = useMemo(() => {
     return photos.filter(photo => photo !== null).map(photo => photo.preview);
   }, [photos]);
+
+  // Function to check if data has changed
+  const hasDataChanged = () => {
+    // Compare basic profile data
+    const basicDataChanged = 
+      firstName !== originalData.firstName ||
+      lastName !== originalData.lastName ||
+      gender !== originalData.gender ||
+      birthDate !== originalData.birthDate ||
+      bio !== originalData.bio;
+
+    // Compare photos - check if any new photos were added or existing ones were deleted
+    const photosChanged = photos.some((photo, index) => {
+      const originalPhoto = originalData.photos[index];
+      
+      // If current photo is null but original wasn't, or vice versa
+      if ((photo === null) !== (originalPhoto === null)) {
+        return true;
+      }
+      
+      // If both exist, check if they're different (new upload vs existing)
+      if (photo && originalPhoto) {
+        // If current photo has a file (new upload) or different key
+        return photo.file || photo.key !== originalPhoto.key;
+      }
+      
+      return false;
+    });
+
+    return basicDataChanged || photosChanged;
+  };
 
   const nextPhoto = () => {
     if (uploadedPhotos.length > 0) {
@@ -128,11 +169,17 @@ function Profile() {
         const userResponse = await requestAccessToken.get('/user-profile');
         const userData = userResponse.data;
         
-        setFirstName(userData.firstName || "");
-        setLastName(userData.lastName || "");
-        setGender(userData.gender || "");
-        setBirthDate(userData.birthDate || "");
-        setBio(userData.bio || "");
+        const firstNameData = userData.firstName || "";
+        const lastNameData = userData.lastName || "";
+        const genderData = userData.gender || "";
+        const birthDateData = userData.birthDate || "";
+        const bioData = userData.bio || "";
+
+        setFirstName(firstNameData);
+        setLastName(lastNameData);
+        setGender(genderData);
+        setBirthDate(birthDateData);
+        setBio(bioData);
 
         // Fetch user photos
         const photosResponse = await requestAccessToken.get('/api/photos');
@@ -154,6 +201,16 @@ function Profile() {
           }
         });
         setPhotos(photoPreviews);
+
+        // Store original data for comparison
+        setOriginalData({
+          firstName: firstNameData,
+          lastName: lastNameData,
+          gender: genderData,
+          birthDate: birthDateData,
+          bio: bioData,
+          photos: [...photoPreviews] // Deep copy of photos array
+        });
         
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -173,6 +230,12 @@ function Profile() {
     setError("");
     setSuccess("");
 
+    // Check if data has changed
+    if (!hasDataChanged()) {
+      setError("No changes detected. Profile is already up to date.");
+      return;
+    }
+
     // Validate all fields
     const results = await Promise.all(
       Object.values(inputRefs.current).map((ref) => ref.validate())
@@ -187,7 +250,7 @@ function Profile() {
       // Update user profile data
       const [year, month, day] = birthDate ? birthDate.split("-") : ["", "", ""];
       
-      await requestAccessToken.put('/user-profile', {
+      const profileResponse = await requestAccessToken.put('/user-profile', {
         firstName,
         lastName,
         gender,
@@ -197,9 +260,43 @@ function Profile() {
         bio
       });
 
-      // Upload photos if any new ones were added
+      // If server indicates no changes, show message and return early
+      if (profileResponse.data.noChanges) {
+        setError("No changes detected. Profile is already up to date.");
+        return;
+      }
+
+      // Upload photos if any new ones were added or existing ones were modified
       const newPhotos = photos.filter(photo => photo !== null && photo.file && !photo.isExisting);
-      if (newPhotos.length > 0) {
+      const hasPhotoChanges = photos.some((photo, index) => {
+        const originalPhoto = originalData.photos[index];
+        
+        // If one is null and the other isn't, there's a change
+        if ((photo === null) !== (originalPhoto === null)) {
+          return true;
+        }
+        
+        // If both are null, no change
+        if (photo === null && originalPhoto === null) {
+          return false;
+        }
+        
+        // If both exist, compare their keys and file status
+        if (photo && originalPhoto) {
+          // If current photo has a file (new upload), it's a change
+          if (photo.file) {
+            return true;
+          }
+          // If keys are different, it's a change
+          if (photo.key !== originalPhoto.key) {
+            return true;
+          }
+        }
+        
+        return false;
+      });
+
+      if (hasPhotoChanges) {
         try {
           const formData = new FormData();
           
@@ -216,7 +313,15 @@ function Profile() {
           
           formData.append('userId', userId);
           
-          // Append all new photo files to FormData
+          // Send the complete photos array as JSON to preserve existing photos
+          formData.append('photosData', JSON.stringify(photos.map((photo, index) => ({
+            index,
+            isNew: photo && photo.file && !photo.isExisting,
+            isDeleted: photo === null,
+            key: photo && photo.key ? photo.key : null
+          }))));
+          
+          // Append only new photo files to FormData
           newPhotos.forEach((photoObj) => {
             if (photoObj && photoObj.file) {
               formData.append('photos', photoObj.file);
@@ -242,6 +347,16 @@ function Profile() {
           return;
         }
       }
+      
+      // Update original data to reflect the saved state
+      setOriginalData({
+        firstName,
+        lastName,
+        gender,
+        birthDate,
+        bio,
+        photos: [...photos] // Deep copy of current photos
+      });
       
       setSuccess("Profile updated successfully!");
       
