@@ -1,10 +1,28 @@
 import express from "express";
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 dotenv.config();
 
 const router = express.Router();
+
+// ======================
+// ✅ AWS S3 CONFIG
+// ======================
+const bucketName = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region,
+});
 
 // =============================
 // ✅ DATABASE CONNECTION
@@ -128,6 +146,7 @@ router.get("/api/likes/matches", async (req, res) => {
         u.last_name,
         u.bio,
         u.photos,
+        u.birthdate,
         ul.created_at as matched_at
       FROM users u
       INNER JOIN users_likes ul ON u.id = ul.liked_id
@@ -136,7 +155,65 @@ router.get("/api/likes/matches", async (req, res) => {
       ORDER BY ul.created_at DESC
     `, [currentUserId]);
 
-    res.json({ matches });
+    // Process each match and their photos
+    const matchesWithPhotos = await Promise.all(
+      matches.map(async (match) => {
+        // Calculate age from birthdate
+        let age = null;
+        if (match.birthdate) {
+          const birth = new Date(match.birthdate);
+          const today = new Date();
+          age = today.getFullYear() - birth.getFullYear();
+          const monthDiff = today.getMonth() - birth.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+          }
+        }
+
+        // Process photos
+        let photos = [];
+        if (match.photos) {
+          try {
+            const photosData = typeof match.photos === 'string' ? JSON.parse(match.photos) : match.photos;
+            
+            // Generate signed URLs for photos
+            photos = await Promise.all(
+              photosData.map(async (photo) => {
+                try {
+                  const signedUrl = await getSignedUrl(
+                    s3,
+                    new GetObjectCommand({ Bucket: bucketName, Key: photo.key }),
+                    { expiresIn: 3600 }
+                  );
+                  return signedUrl;
+                } catch (error) {
+                  console.error(`Error generating URL for ${photo.key}:`, error);
+                  return null;
+                }
+              })
+            );
+            
+            // Filter out null URLs and maintain order
+            photos = photos.filter(url => url !== null);
+          } catch (e) {
+            console.error("Error parsing photos JSON:", e);
+            photos = [];
+          }
+        }
+
+        return {
+          id: match.id,
+          first_name: match.first_name,
+          last_name: match.last_name,
+          bio: match.bio,
+          age: age,
+          photos: photos,
+          matched_at: match.matched_at
+        };
+      })
+    );
+
+    res.json({ matches: matchesWithPhotos });
 
   } catch (error) {
     console.error("Error fetching matches:", error);

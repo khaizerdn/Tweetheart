@@ -9,6 +9,7 @@ import Menu from './features/Menu/features';
 import BlankPage from './components/BlankPage';
 import Content from './features/Content/Home';
 import Profile from './features/Content/Profile';
+import Matches from './features/Content/Matches';
 
 import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
@@ -86,6 +87,14 @@ function App() {
                             overflow: { x: 'hidden', y: 'hidden' } }}
                             className="content">
                             <Content />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="/matches" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Matches />
                           </OverlayScrollbarsComponent>
                         } />
                         <Route path="/profile/:userId" element={<Profile />} />
