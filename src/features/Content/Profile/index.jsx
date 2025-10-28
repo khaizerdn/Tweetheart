@@ -77,6 +77,7 @@ function Profile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const inputRefs = useRef({});
   
@@ -370,6 +371,8 @@ function Profile() {
       return;
     }
 
+    setSaving(true);
+
     try {
       // Update user profile data
       const [year, month, day] = birthDate ? birthDate.split("-") : ["", "", ""];
@@ -494,6 +497,8 @@ function Profile() {
         status: err.response?.status,
       });
       setError(err.response?.data?.message || "Profile update failed");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -691,7 +696,7 @@ function Profile() {
                 <div className={styles.buttonSection}>
                   {error && <span className={styles.errorMessage}>{error}</span>}
                   {success && <span className={styles.successMessage}>{success}</span>}
-                  <Button type="secondary" position="center" htmlType="submit">
+                  <Button type="secondary" position="center" htmlType="submit" loading={saving}>
                     Save
                   </Button>
                 </div>
