@@ -36,20 +36,11 @@ const queryDB = async (query, values = []) => {
 // ✅ LIKE A USER
 // =============================
 router.post("/api/likes", async (req, res) => {
-  console.log('🎯 /api/likes endpoint hit');
-  console.log('🍪 Cookies:', req.cookies);
-  console.log('📦 Body:', req.body);
-  
   try {
     const currentUserId = req.cookies?.userId;
     const { liked_id, like_type } = req.body;
 
-    console.log('👤 Current user ID:', currentUserId);
-    console.log('💕 Liked user ID:', liked_id);
-    console.log('🎭 Action type:', like_type);
-
     if (!currentUserId) {
-      console.log('❌ No user ID in cookies');
       return res.status(401).json({ message: "User not authenticated" });
     }
 
@@ -253,19 +244,14 @@ router.get("/api/likes/liked-by", async (req, res) => {
 // =============================
 router.get("/api/likes/test", async (req, res) => {
   try {
-    console.log('🧪 Test endpoint hit');
-    console.log('🍪 Cookies:', req.cookies);
-    
     // Test database connection
     const testQuery = await queryDB("SELECT 1 as test");
-    console.log('✅ Database connection test:', testQuery);
     
     // Test if users_likes table exists
     try {
       const tableCheck = await queryDB("DESCRIBE users_likes");
-      console.log('✅ users_likes table exists:', tableCheck);
     } catch (tableError) {
-      console.log('❌ users_likes table does not exist:', tableError.message);
+      // Table doesn't exist
     }
     
     res.json({ 
@@ -275,7 +261,7 @@ router.get("/api/likes/test", async (req, res) => {
       cookies: req.cookies
     });
   } catch (error) {
-    console.error('❌ Test endpoint error:', error);
+    console.error('Test endpoint error:', error);
     res.status(500).json({ message: "Test endpoint error", error: error.message });
   }
 });

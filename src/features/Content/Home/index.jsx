@@ -96,24 +96,10 @@ const Content = () => {
     }
   };
 
-  // Test server connection
-  const testServer = async () => {
-    try {
-      console.log('🧪 Testing server connection...');
-      const response = await fetch('http://localhost:8081/api/likes/test', {
-        credentials: 'include'
-      });
-      const data = await response.json();
-      console.log('🧪 Test response:', data);
-    } catch (error) {
-      console.error('🧪 Test error:', error);
-    }
-  };
 
   // Fetch initial users data on component mount
   useEffect(() => {
     fetchUsers(1, false);
-    testServer(); // Test server connection
   }, []);
 
   const getCurrentCard = () => {
@@ -297,10 +283,7 @@ const Content = () => {
 
   // Handle user action (like/pass)
   const handleUserAction = async (cardId, action) => {
-    console.log('🎯 handleUserAction called:', { cardId, action });
-    
     try {
-      console.log('📤 Sending request to /api/likes');
       const response = await fetch('http://localhost:8081/api/likes', {
         method: 'POST',
         headers: {
@@ -313,24 +296,16 @@ const Content = () => {
         })
       });
 
-      console.log('📥 Response status:', response.status);
-      console.log('📥 Response ok:', response.ok);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Response error:', errorText);
         throw new Error(`Failed to record interaction: ${response.status} ${errorText}`);
       }
 
       const data = await response.json();
-      console.log('📦 Response data:', data);
       
       if (action === 'like') {
-        console.log('❤️ User liked:', cardId);
-        
         // Check if this creates a match
         if (data.isMatch) {
-          console.log('🎉 MATCH FOUND!');
           const matchedUser = cards.find(card => card.id === cardId);
           if (matchedUser) {
             setMatchUser(matchedUser);
@@ -339,11 +314,9 @@ const Content = () => {
             setMatches(prev => [...prev, matchedUser]);
           }
         }
-      } else if (action === 'pass') {
-        console.log('👎 User passed:', cardId);
       }
     } catch (error) {
-      console.error('❌ Error handling user action:', error);
+      console.error('Error handling user action:', error);
       // You might want to show an error message to the user
     }
   };
