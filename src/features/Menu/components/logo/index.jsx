@@ -20,6 +20,7 @@ const Logo = () => {
           width="32"
           height="32"
         />
+        <span className={styles.logoText}>Dating App</span>
       </div>
     </div>
   );

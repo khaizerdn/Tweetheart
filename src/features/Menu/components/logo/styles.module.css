@@ -15,21 +15,22 @@
 /* Logo Button */
 .logoButton {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  aspect-ratio: 1/1;
   height: 32px;
-  width: 32px;
+  width: auto;
+  min-width: 32px;
   flex-shrink: 0;
   cursor: pointer;
   transition: all 0.2s ease;
+  gap: var(--gap-008);
 }
 
-.logoButton:hover {
+.logoContainer:hover .logoButton {
   transform: scale(1.1);
 }
 
-.logoButton:active {
+.logoContainer:active .logoButton {
   transform: scale(1.05);
 }
 
@@ -37,6 +38,17 @@
 .logo {
   max-width: 100%;
   height: auto;
+  flex-shrink: 0;
+}
+
+/* Logo Text */
+.logoText {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--background-color-secondary-selected);
+  white-space: nowrap;
+  user-select: none;
+  transition: none;
 }
 
 /* Responsive Styles */
@@ -47,6 +59,10 @@
     gap: 0;
     margin-bottom: 0;
   }
+  
+  .logoButton {
+    justify-content: center;
+  }
 }
 
 @media screen and (min-width: 1006px) and (max-width: 1245px) {
@@ -55,5 +71,9 @@
     align-items: center;
     gap: 0;
     margin-bottom: 0;
+  }
+  
+  .logoButton {
+    justify-content: center;
   }
 }
