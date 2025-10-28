@@ -44,14 +44,20 @@
 .profilePhotoPlaceholder {
   width: 32px;
   height: 32px;
-  background-color: var(--background-color-5);
+  background-color: var(--background-color-2);
   border-radius: 50%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--font-color-muted);
+  color: var(--font-color-primary-default);
   font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.buttonProfile:hover .profilePhotoPlaceholder {
+  background-color: var(--background-color-2);
+  color: var(--font-color-primary-default);
 }
 
 /* Profile Text */
