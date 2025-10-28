@@ -26,11 +26,11 @@
   gap: var(--gap-008);
 }
 
-.logoContainer:hover .logoButton {
+.logoContainer:hover .logo {
   transform: scale(1.1);
 }
 
-.logoContainer:active .logoButton {
+.logoContainer:active .logo {
   transform: scale(1.05);
 }
 
@@ -39,13 +39,14 @@
   max-width: 100%;
   height: auto;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
 /* Logo Text */
 .logoText {
-  font-size: 1.1rem;
+  font-size: var(--font-size-024);
   font-weight: 600;
-  color: var(--background-color-secondary-selected);
+  color: var(--background-color-secondary-active);
   white-space: nowrap;
   user-select: none;
   transition: none;
@@ -63,6 +64,10 @@
   .logoButton {
     justify-content: center;
   }
+  
+  .logoText {
+    display: none;
+  }
 }
 
 @media screen and (min-width: 1006px) and (max-width: 1245px) {
@@ -75,5 +80,9 @@
   
   .logoButton {
     justify-content: center;
+  }
+  
+  .logoText {
+    display: none;
   }
 }

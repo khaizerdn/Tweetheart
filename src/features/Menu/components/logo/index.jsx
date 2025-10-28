@@ -15,12 +15,12 @@ const Logo = () => {
       <div className={styles.logoButton} onClick={handleLogoClick}>
         <img 
           src={logoUrl} 
-          alt="Dating App Logo" 
+          alt="Tweetheart" 
           className={styles.logo}
           width="32"
           height="32"
         />
-        <span className={styles.logoText}>Dating App</span>
+        <span className={styles.logoText}>Tweetheart</span>
       </div>
     </div>
   );
