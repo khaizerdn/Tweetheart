@@ -283,4 +283,115 @@
   font-weight: var(--font-weight-medium);
 }
 
+/* Match Modal Styles */
+.matchModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.matchModalContent {
+  background: var(--color-white);
+  border-radius: var(--border-radius-024);
+  padding: var(--padding-048);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: var(--shadow-4);
+  animation: slideUp 0.3s ease-out;
+}
+
+.matchAnimation {
+  margin-bottom: var(--padding-024);
+}
+
+.matchHearts {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap-016);
+  font-size: var(--font-size-048);
+  color: var(--font-color-status-danger);
+  animation: heartBeat 1s ease-in-out infinite;
+}
+
+.matchModalContent h2 {
+  font-size: var(--font-size-032);
+  color: var(--color-primary-1);
+  margin-bottom: var(--padding-016);
+  font-weight: var(--font-weight-bold);
+}
+
+.matchModalContent p {
+  font-size: var(--font-size-018);
+  color: var(--font-color-primary);
+  margin-bottom: var(--padding-032);
+  line-height: var(--line-height-default);
+}
+
+.matchActions {
+  display: flex;
+  gap: var(--gap-016);
+  justify-content: center;
+}
+
+.matchButton {
+  background: var(--font-color-status-inform);
+  color: var(--color-white);
+  padding: var(--padding-012) var(--padding-024);
+  border-radius: var(--border-radius-016);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+  width: auto;
+  height: auto;
+}
+
+.messageButton {
+  background: var(--font-color-status-success);
+  color: var(--color-white);
+  padding: var(--padding-012) var(--padding-024);
+  border-radius: var(--border-radius-016);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+  width: auto;
+  height: auto;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
 /* Fixed dimensions - no responsive scaling */

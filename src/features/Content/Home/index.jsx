@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Card from '../../../components/Card';
 import requestAccessToken from '../../../api/requestAccessToken';
+// Remove likesAPI import since we'll use direct fetch calls
 import styles from './styles.module.css';
 
 const Content = () => {
@@ -26,6 +27,12 @@ const Content = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [swipedCount, setSwipedCount] = useState(0);
   const [swipingCards, setSwipingCards] = useState(new Set());
+  
+  // Likes and matches state
+  const [matches, setMatches] = useState([]);
+  const [isMatch, setIsMatch] = useState(false);
+  const [matchUser, setMatchUser] = useState(null);
+  const [showMatchModal, setShowMatchModal] = useState(false);
 
   const containerRef = useRef(null);
   const cardRefs = useRef({});
@@ -89,9 +96,24 @@ const Content = () => {
     }
   };
 
+  // Test server connection
+  const testServer = async () => {
+    try {
+      console.log('🧪 Testing server connection...');
+      const response = await fetch('http://localhost:8081/api/likes/test', {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      console.log('🧪 Test response:', data);
+    } catch (error) {
+      console.error('🧪 Test error:', error);
+    }
+  };
+
   // Fetch initial users data on component mount
   useEffect(() => {
     fetchUsers(1, false);
+    testServer(); // Test server connection
   }, []);
 
   const getCurrentCard = () => {
@@ -193,6 +215,9 @@ const Content = () => {
       cardElement.style.transform = 'scale(1) translateY(0px)';
       setSwipeDistance(0);
     } else {
+      // Determine action based on swipe direction
+      const action = deltaX > 0 ? 'like' : 'pass';
+      
       // Mark card as swiping so it becomes non-interactive
       setSwipingCards(prev => new Set([...prev, cardId]));
       setSwipedCount(prev => prev + 1);
@@ -207,6 +232,8 @@ const Content = () => {
       cardElement.style.transition = 'transform 0.5s ease-out';
       cardElement.style.transform = `translate(${toX}px, -100px) rotate(${rotate}deg)`;
       
+      // Handle the like/pass action
+      handleUserAction(cardId, action);
       
       // Remove card from state after animation completes
       setTimeout(() => {
@@ -251,8 +278,10 @@ const Content = () => {
     
     if (action === 'like') {
       cardElement.style.transform = `translate(${moveOutWidth}px, -100px) rotate(30deg)`;
+      handleUserAction(currentCard.id, 'like');
     } else if (action === 'nope') {
       cardElement.style.transform = `translate(-${moveOutWidth}px, -100px) rotate(-30deg)`;
+      handleUserAction(currentCard.id, 'pass');
     }
     
     // Remove card from state after animation completes
@@ -266,6 +295,66 @@ const Content = () => {
     }, 500); // Match the transition duration
   };
 
+  // Handle user action (like/pass)
+  const handleUserAction = async (cardId, action) => {
+    console.log('🎯 handleUserAction called:', { cardId, action });
+    
+    try {
+      console.log('📤 Sending request to /api/likes');
+      const response = await fetch('http://localhost:8081/api/likes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          liked_id: cardId,
+          like_type: action
+        })
+      });
+
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response ok:', response.ok);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Response error:', errorText);
+        throw new Error(`Failed to record interaction: ${response.status} ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('📦 Response data:', data);
+      
+      if (action === 'like') {
+        console.log('❤️ User liked:', cardId);
+        
+        // Check if this creates a match
+        if (data.isMatch) {
+          console.log('🎉 MATCH FOUND!');
+          const matchedUser = cards.find(card => card.id === cardId);
+          if (matchedUser) {
+            setMatchUser(matchedUser);
+            setIsMatch(true);
+            setShowMatchModal(true);
+            setMatches(prev => [...prev, matchedUser]);
+          }
+        }
+      } else if (action === 'pass') {
+        console.log('👎 User passed:', cardId);
+      }
+    } catch (error) {
+      console.error('❌ Error handling user action:', error);
+      // You might want to show an error message to the user
+    }
+  };
+
+  // Close match modal
+  const closeMatchModal = () => {
+    setShowMatchModal(false);
+    setIsMatch(false);
+    setMatchUser(null);
+  };
+
   const resetCards = () => {
     setRemovedCards(new Set());
     setSwipingCards(new Set());
@@ -273,6 +362,10 @@ const Content = () => {
     setSwipedCount(0);
     setCurrentPage(1);
     setHasMore(true);
+    setMatches([]);
+    setIsMatch(false);
+    setMatchUser(null);
+    setShowMatchModal(false);
     // Reload initial cards
     fetchUsers(1, false);
   };
@@ -349,6 +442,36 @@ const Content = () => {
 
   return (
     <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
+      {/* Match Modal */}
+      {showMatchModal && matchUser && (
+        <div className={styles.matchModal}>
+          <div className={styles.matchModalContent}>
+            <div className={styles.matchAnimation}>
+              <div className={styles.matchHearts}>
+                <i className="fa fa-heart"></i>
+                <i className="fa fa-heart"></i>
+              </div>
+            </div>
+            <h2>It's a Match!</h2>
+            <p>You and {matchUser.name} liked each other!</p>
+            <div className={styles.matchActions}>
+              <button 
+                onClick={closeMatchModal}
+                className={`${styles.button} ${styles.matchButton}`}
+              >
+                Keep Swiping
+              </button>
+              <button 
+                onClick={closeMatchModal}
+                className={`${styles.button} ${styles.messageButton}`}
+              >
+                Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className={styles.cardContainer}>
         <div className={styles.cards}>
           {allCardsSwiped ? (
@@ -454,22 +577,10 @@ const Content = () => {
                 <i className="fa fa-times"></i>
               </button>
               <button 
-                onClick={() => handleButtonClick('superlike')}
-                className={`${styles.button} ${styles.superLikeButton}`}
-              >
-                <i className="fa fa-star"></i>
-              </button>
-              <button 
                 onClick={() => handleButtonClick('like')}
                 className={`${styles.button} ${styles.likeButton}`}
               >
                 <i className="fa fa-heart"></i>
-              </button>
-              <button 
-                onClick={() => handleButtonClick('boost')}
-                className={`${styles.button} ${styles.boostButton}`}
-              >
-                <i className="fa fa-paper-plane"></i>
               </button>
             </>
           )}
