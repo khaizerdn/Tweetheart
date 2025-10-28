@@ -33,6 +33,8 @@ const Matches = () => {
         id: match.id,
         name: `${match.first_name} ${match.last_name}`.trim(),
         age: match.age || null,
+        bio: match.bio || null,
+        gender: match.gender || null,
         photos: match.photos || [],
         lastMessage: match.lastMessage || null,
         matchedAt: match.matched_at
@@ -123,8 +125,8 @@ const Matches = () => {
                  <div className={styles.nameAge}>
                    <h3>{match.name}, {match.age}</h3>
                    <div className={styles.category}>
-                     <i className="fa fa-heart"></i>
-                     <span>It's a Match!</span>
+                     <i className="fa fa-venus-mars"></i>
+                     <span>{match.gender === 'male' ? 'Male' : match.gender === 'female' ? 'Female' : 'Other'}</span>
                    </div>
                  </div>
                  

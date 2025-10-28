@@ -27,15 +27,15 @@
 /* Grid Layout */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 350px);
+  grid-template-columns: repeat(auto-fill, 250px);
   gap: var(--padding-020);
   justify-content: start;
 }
 
 /* Match Card - using Card component */
 .matchCard {
-  width: 350px !important;
-  height: 600px !important;
+  width: 250px !important;
+  height: 450px !important;
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -217,6 +217,8 @@
 }
 
 /* Responsive Design */
+
+/* Tablets and mobile - squares in 2 columns, no user info */
 @media (max-width: 768px) {
   .matches {
     padding: var(--padding-016);
@@ -231,26 +233,22 @@
   }
   
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--padding-016);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--padding-012);
+    justify-content: start;
   }
   
   .matchCard {
-    aspect-ratio: 3/4;
-  }
-}
-
-@media (max-width: 480px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: var(--padding-012);
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1/1;
   }
   
-  .name {
-    font-size: var(--font-size-018);
-  }
-  
-  .age {
-    font-size: var(--font-size-014);
+  /* Hide user information on tablets and mobile */
+  .matchCard .cardInfo,
+  .matchCard .nameAge,
+  .matchCard .category,
+  .matchCard .bioPreview {
+    display: none !important;
   }
 }
