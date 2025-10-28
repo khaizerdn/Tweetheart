@@ -3,7 +3,7 @@
   min-height: 100vh;
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
-  padding: var(--padding-024);
+  padding: var(--padding-016);
 }
 
 .container {
@@ -21,6 +21,7 @@
 
 .header h1 {
   color: var(--background-color-secondary-default);
+  font-size: var(--font-size-024);
   margin: 0;
 }
 
