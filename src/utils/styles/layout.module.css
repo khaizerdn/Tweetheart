@@ -1,12 +1,12 @@
 .containerShortcut {
   display: flex;
-  width: 280px;
+  width: 320px;
   height: 100%;
 }
 
 .containerComplementary {
   display: flex;
-  width: 280px;
+  width: 320px;
   height: 100%;
 }
 
@@ -56,29 +56,29 @@
     width: 70px;
   }
   .containerComplementary {
-    width: 280px;
-    min-width: 280px;
+    width: 320px;
+    min-width: 320px;
   }
 }
 
 @media screen and (min-width: 1245px) and (max-width: 1921px) {
   .containerShortcut {
-    width: 280px;
-    min-width: 280px;
+    width: 320px;
+    min-width: 320px;
   }
   .containerComplementary {
-    width: 280px;
-    min-width: 280px;
+    width: 320px;
+    min-width: 320px;
   }
 }
 
 @media screen and (min-width: 1921px) {
   .containerShortcut {
-    width: 280px;
-    min-width: 280px;
+    width: 320px;
+    min-width: 320px;
   }
   .containerComplementary {
-    width: 280px;
-    min-width: 280px;
+    width: 320px;
+    min-width: 320px;
   }
 }

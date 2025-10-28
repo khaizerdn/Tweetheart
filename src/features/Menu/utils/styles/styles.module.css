@@ -5,6 +5,7 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  border-right: 1px solid var(--background-color-primary-default-1);
 }
 
 /* Container Layout */
