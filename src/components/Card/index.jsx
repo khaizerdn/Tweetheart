@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
 /**
@@ -18,8 +18,50 @@ const Card = React.forwardRef(({
   overlays,
   ...props
 }, ref) => {
+  const [loadedPhotos, setLoadedPhotos] = useState(new Set());
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
   const hasPhotos = photos && photos.length > 0;
   const hasMultiplePhotos = photos && photos.length > 1;
+
+  // Preload all photos when component mounts or photos change
+  useEffect(() => {
+    if (!hasPhotos) return;
+
+    const preloadImages = () => {
+      photos.forEach((photoUrl, index) => {
+        if (!loadedPhotos.has(index)) {
+          const img = new Image();
+          img.onload = () => {
+            setLoadedPhotos(prev => new Set([...prev, index]));
+          };
+          img.onerror = () => {
+            console.warn(`Failed to load photo ${index}:`, photoUrl);
+          };
+          img.src = photoUrl;
+        }
+      });
+    };
+
+    preloadImages();
+  }, [photos, loadedPhotos]);
+
+  // Handle photo transition with loading state
+  const handlePhotoChange = (newIndex) => {
+    if (newIndex === currentPhotoIndex) return;
+    
+    setIsTransitioning(true);
+    
+    // Reset transition state after a short delay
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 150);
+  };
+
+  // Trigger transition when photo index changes
+  useEffect(() => {
+    handlePhotoChange(currentPhotoIndex);
+  }, [currentPhotoIndex]);
 
   return (
     <div ref={ref} className={`${styles.card} ${className}`} {...props}>
@@ -29,11 +71,19 @@ const Card = React.forwardRef(({
       <div className={styles.photoContainer}>
         {hasPhotos ? (
           <>
-            <img 
-              src={photos[currentPhotoIndex]} 
-              alt={`Photo ${currentPhotoIndex + 1}`} 
-              className={styles.photo}
-            />
+            {/* Render all photos but only show the current one */}
+            {photos.map((photo, index) => (
+              <img 
+                key={index}
+                src={photo} 
+                alt={`Photo ${index + 1}`} 
+                className={`${styles.photo} ${index === currentPhotoIndex ? styles.activePhoto : styles.hiddenPhoto}`}
+                style={{
+                  opacity: index === currentPhotoIndex ? 1 : 0,
+                  transition: isTransitioning ? 'opacity 0.15s ease-in-out' : 'none'
+                }}
+              />
+            ))}
             
             {/* Photo indicators */}
             {showIndicators && hasMultiplePhotos && (

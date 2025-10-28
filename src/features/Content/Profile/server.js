@@ -634,7 +634,7 @@ router.get("/api/photos/:userId", async (req, res) => {
 });
 
 // ========================================================
-// ✅ GET ALL USERS FOR DATING FEED
+// ✅ GET ALL USERS FOR DATING FEED (WITH PAGINATION)
 // ========================================================
 router.get("/api/users/feed", async (req, res) => {
   try {
@@ -644,7 +644,12 @@ router.get("/api/users/feed", async (req, res) => {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
-    // Get all users except the current user
+    // Get pagination parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    // Get users except the current user with pagination
     const sql = `
       SELECT 
         id,
@@ -657,9 +662,9 @@ router.get("/api/users/feed", async (req, res) => {
       FROM users 
       WHERE id != ?
       ORDER BY created_at DESC
-      LIMIT 50
+      LIMIT ? OFFSET ?
     `;
-    const users = await queryDB(sql, [currentUserId]);
+    const users = await queryDB(sql, [currentUserId, limit, offset]);
 
     if (!users.length) {
       return res.json({ users: [] });
@@ -728,7 +733,23 @@ router.get("/api/users/feed", async (req, res) => {
       })
     );
 
-    res.json({ users: usersWithPhotos });
+    // Get total count for pagination metadata
+    const countSql = `SELECT COUNT(*) as total FROM users WHERE id != ?`;
+    const countResult = await queryDB(countSql, [currentUserId]);
+    const totalUsers = countResult[0].total;
+    const totalPages = Math.ceil(totalUsers / limit);
+    const hasMore = page < totalPages;
+
+    res.json({ 
+      users: usersWithPhotos,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalUsers,
+        hasMore,
+        limit
+      }
+    });
   } catch (error) {
     console.error("❌ Error retrieving users for feed:", error);
     res.status(500).json({ message: "Server error while retrieving users" });

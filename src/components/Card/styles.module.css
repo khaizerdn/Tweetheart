@@ -22,6 +22,19 @@
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.activePhoto {
+  opacity: 1;
+  z-index: 1;
+}
+
+.hiddenPhoto {
+  opacity: 0;
+  z-index: 0;
 }
 
 /* Placeholder Photo */
@@ -48,6 +61,11 @@
   margin: 0;
   text-align: center;
   padding: 0 var(--padding-024);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
 }
 
 /* Photo Indicators */
@@ -123,11 +141,19 @@
   padding: var(--padding-020);
   color: var(--color-white);
   pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
-/* Allow child elements to be interactive */
+/* Allow child elements to be interactive but prevent text selection */
 .cardInfo * {
   pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 /* Responsive design */

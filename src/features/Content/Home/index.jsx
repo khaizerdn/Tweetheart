@@ -8,6 +8,7 @@ const Content = () => {
 
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const [isLoved, setIsLoved] = useState(false);
   const [isNoped, setIsNoped] = useState(false);
@@ -18,54 +19,99 @@ const Content = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState({});
   const [swipeDistance, setSwipeDistance] = useState(0);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [swipedCount, setSwipedCount] = useState(0);
+  const [swipingCards, setSwipingCards] = useState(new Set());
 
   const containerRef = useRef(null);
   const cardRefs = useRef({});
 
-  // Fetch users data on component mount
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
+  // Fetch users data with pagination
+  const fetchUsers = async (page = 1, append = false) => {
+    try {
+      if (append) {
+        setLoadingMore(true);
+      } else {
         setLoading(true);
         setError("");
-        
-        const response = await requestAccessToken.get('/api/users/feed');
-        const usersData = response.data.users || [];
-        
-        // Transform the data to match the expected format
-        const transformedCards = usersData.map(user => ({
-          id: user.id,
-          name: user.name,
-          age: user.age,
-          bio: user.bio,
-          category: "Basics & Lifestyle",
-          tags: ["Looking for connections"],
-          photos: user.photos || []
-        }));
-        
+      }
+      
+      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10`);
+      const { users: usersData, pagination } = response.data;
+      
+      // Transform the data to match the expected format
+      const transformedCards = usersData.map(user => ({
+        id: user.id,
+        name: user.name,
+        age: user.age,
+        bio: user.bio,
+        category: "Basics & Lifestyle",
+        tags: ["Looking for connections"],
+        photos: user.photos || []
+      }));
+      
+      if (append) {
+        setCards(prevCards => [...prevCards, ...transformedCards]);
+      } else {
         setCards(transformedCards);
         setLoaded(true);
-      } catch (err) {
-        console.error("Error fetching users:", err);
+      }
+      
+      // Update pagination state
+      setCurrentPage(pagination.currentPage);
+      setHasMore(pagination.hasMore);
+      setTotalUsers(pagination.totalUsers);
+      
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      if (!append) {
         setError("Failed to load users. Please try again.");
-        // Fallback to empty array or show error state
         setCards([]);
         setLoaded(true);
-      } finally {
+      }
+    } finally {
+      if (append) {
+        setLoadingMore(false);
+      } else {
         setLoading(false);
       }
-    };
+    }
+  };
 
-    fetchUsers();
+  // Load more cards when needed
+  const loadMoreCards = async () => {
+    if (!loadingMore && hasMore) {
+      await fetchUsers(currentPage + 1, true);
+    }
+  };
+
+  // Fetch initial users data on component mount
+  useEffect(() => {
+    fetchUsers(1, false);
   }, []);
 
   const getCurrentCard = () => {
-    const visibleCards = cards.filter(card => !removedCards.has(card.id));
+    const visibleCards = cards.filter(card => 
+      !removedCards.has(card.id) && !swipingCards.has(card.id)
+    );
     return visibleCards[0] || null;
   };
 
+  // Check if we need to load more cards when swiped count changes
+  useEffect(() => {
+    if (swipedCount > 0 && swipedCount % 5 === 0 && hasMore && !loadingMore) {
+      loadMoreCards();
+    }
+  }, [swipedCount, hasMore, loadingMore, currentPage]);
+
   const initCards = () => {
-    const visibleCards = cards.filter(card => !removedCards.has(card.id));
+    const visibleCards = cards.filter(card => 
+      !removedCards.has(card.id) && !swipingCards.has(card.id)
+    );
     
     visibleCards.forEach((card, index) => {
       const cardElement = cardRefs.current[card.id];
@@ -143,10 +189,15 @@ const Content = () => {
 
     if (keep) {
       // Return card to original position
-      cardElement.style.transition = 'transform 0.3s ease-out';
+      cardElement.style.transition = 'transform 0.15s ease-out';
       cardElement.style.transform = 'scale(1) translateY(0px)';
       setSwipeDistance(0);
     } else {
+      // Mark card as swiping so it becomes non-interactive
+      setSwipingCards(prev => new Set([...prev, cardId]));
+      setSwipedCount(prev => prev + 1);
+      setSwipeDistance(0);
+      
       // Animate card out smoothly
       const moveOutWidth = window.innerWidth * 0.8;
       const toX = deltaX > 0 ? moveOutWidth : -moveOutWidth;
@@ -156,10 +207,16 @@ const Content = () => {
       cardElement.style.transition = 'transform 0.5s ease-out';
       cardElement.style.transform = `translate(${toX}px, -100px) rotate(${rotate}deg)`;
       
+      console.log('Card swiping animation started:', cardId, 'toX:', toX, 'rotate:', rotate);
+      
       // Remove card from state after animation completes
       setTimeout(() => {
         setRemovedCards(prev => new Set([...prev, cardId]));
-        setSwipeDistance(0);
+        setSwipingCards(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(cardId);
+          return newSet;
+        });
       }, 500); // Match the transition duration
     }
   };
@@ -184,6 +241,10 @@ const Content = () => {
       return;
     }
 
+    // Mark card as swiping so it becomes non-interactive
+    setSwipingCards(prev => new Set([...prev, currentCard.id]));
+    setSwipedCount(prev => prev + 1);
+    
     const moveOutWidth = window.innerWidth * 1.5;
     
     // Enable transition for smooth animation
@@ -191,19 +252,32 @@ const Content = () => {
     
     if (action === 'like') {
       cardElement.style.transform = `translate(${moveOutWidth}px, -100px) rotate(30deg)`;
+      console.log('Card like animation started:', currentCard.id, 'moveOutWidth:', moveOutWidth);
     } else if (action === 'nope') {
       cardElement.style.transform = `translate(-${moveOutWidth}px, -100px) rotate(-30deg)`;
+      console.log('Card nope animation started:', currentCard.id, 'moveOutWidth:', -moveOutWidth);
     }
     
     // Remove card from state after animation completes
     setTimeout(() => {
       setRemovedCards(prev => new Set([...prev, currentCard.id]));
+      setSwipingCards(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(currentCard.id);
+        return newSet;
+      });
     }, 500); // Match the transition duration
   };
 
   const resetCards = () => {
     setRemovedCards(new Set());
+    setSwipingCards(new Set());
     setCurrentPhotoIndex({});
+    setSwipedCount(0);
+    setCurrentPage(1);
+    setHasMore(true);
+    // Reload initial cards
+    fetchUsers(1, false);
   };
 
   const nextPhoto = (cardId, e) => {
@@ -284,13 +358,15 @@ const Content = () => {
             <div className={styles.emptyState}>
               <i className="fa fa-heart-broken"></i>
               <h3>No more cards!</h3>
-              <p>You've swiped through all the cards. Click reset to start over.</p>
+              <p>You've swiped through all {totalUsers} cards. Click reset to start over.</p>
             </div>
           ) : (
             <>
               {visibleCards.slice(0, 3).reverse().map((card, reverseIndex) => {
                 const index = visibleCards.slice(0, 3).length - 1 - reverseIndex;
                 const isTopCard = index === 0;
+                const isSwiping = swipingCards.has(card.id);
+                const isInteractive = isTopCard && !isSwiping;
                 
                 return (
                   <Card
@@ -299,19 +375,19 @@ const Content = () => {
                     className={`${styles.swipeCard} ${isTopCard && isMoving ? styles.moving : ''}`}
                     photos={card.photos}
                     currentPhotoIndex={currentPhotoIndex[card.id] || 0}
-                    onNextPhoto={(e) => nextPhoto(card.id, e)}
-                    onPrevPhoto={(e) => prevPhoto(card.id, e)}
-                    showNavigation={isTopCard && card.photos.length > 1}
-                    showIndicators={isTopCard && card.photos.length > 1}
-                    onTouchStart={isTopCard ? (e) => handleStart(e, card.id) : undefined}
-                    onTouchMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
-                    onTouchEnd={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
-                    onMouseDown={isTopCard ? (e) => handleStart(e, card.id) : undefined}
-                    onMouseMove={isTopCard ? (e) => handleMove(e, card.id) : undefined}
-                    onMouseUp={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
-                    onMouseLeave={isTopCard ? (e) => handleEnd(e, card.id) : undefined}
-                    style={{ pointerEvents: isTopCard ? 'auto' : 'none' }}
-                    overlays={isTopCard && (
+                    onNextPhoto={isInteractive ? (e) => nextPhoto(card.id, e) : undefined}
+                    onPrevPhoto={isInteractive ? (e) => prevPhoto(card.id, e) : undefined}
+                    showNavigation={isInteractive && card.photos.length > 1}
+                    showIndicators={isInteractive && card.photos.length > 1}
+                    onTouchStart={isInteractive ? (e) => handleStart(e, card.id) : undefined}
+                    onTouchMove={isInteractive ? (e) => handleMove(e, card.id) : undefined}
+                    onTouchEnd={isInteractive ? (e) => handleEnd(e, card.id) : undefined}
+                    onMouseDown={isInteractive ? (e) => handleStart(e, card.id) : undefined}
+                    onMouseMove={isInteractive ? (e) => handleMove(e, card.id) : undefined}
+                    onMouseUp={isInteractive ? (e) => handleEnd(e, card.id) : undefined}
+                    onMouseLeave={isInteractive ? (e) => handleEnd(e, card.id) : undefined}
+                    style={{ pointerEvents: isInteractive ? 'auto' : 'none' }}
+                    overlays={isInteractive && (
                       <>
                         <div 
                           className={styles.swipeOverlayLeft} 
@@ -345,6 +421,14 @@ const Content = () => {
                 );
               })}
             </>
+          )}
+          
+          {/* Loading more cards indicator */}
+          {loadingMore && (
+            <div className={styles.loadingMore}>
+              <i className="fa fa-spinner fa-spin"></i>
+              <span>Loading more cards...</span>
+            </div>
           )}
         </div>
 
