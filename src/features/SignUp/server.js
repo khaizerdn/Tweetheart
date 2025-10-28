@@ -2,6 +2,10 @@ import express from "express";
 import mysql from "mysql";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import multer from "multer";
+import sharp from "sharp";
+import { v4 as uuidv4 } from "uuid";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { generateVerificationCode, sendVerificationEmail } from "../../api/requestOTP.js";
 import SnowflakeID from "../../utils/SnowflakeID.js";
 
@@ -12,6 +16,40 @@ dotenv.config();
 
 const router = express.Router();
 const snowflake = new SnowflakeID(1);
+
+// ======================
+// ✅ MULTER STORAGE
+// ======================
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
+
+// ======================
+// ✅ AWS S3 CONFIG
+// ======================
+const bucketName = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region,
+});
 
 // ======================
 // ✅ LOCAL DATABASE POOL
@@ -134,6 +172,68 @@ router.post("/signup", async (req, res) => {
   } catch (error) {
     console.error("❌ Error during account creation:", error);
     res.status(500).send("Error creating account. Please try again.");
+  }
+});
+
+// ========================================================
+// ✅ UPLOAD MULTIPLE PHOTOS (for signup)
+// ========================================================
+router.post("/api/signup/photos/upload-multiple", upload.array("photos", 6), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No files provided" });
+    }
+
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const photos = [];
+
+    // Upload all photos to S3
+    for (let i = 0; i < req.files.length; i++) {
+      const file = req.files[i];
+      const fileExtension = file.originalname.split(".").pop();
+      const uniqueFileName = `photos/${userId}/${uuidv4()}.${fileExtension}`;
+
+      // Resize image
+      const resizedImageBuffer = await sharp(file.buffer)
+        .resize(800, 800, { fit: "cover" })
+        .jpeg({ quality: 85 })
+        .toBuffer();
+
+      // Upload to S3
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: uniqueFileName,
+          Body: resizedImageBuffer,
+          ContentType: "image/jpeg",
+        })
+      );
+
+      photos.push({
+        key: uniqueFileName,
+        order: i + 1,
+        uploadedAt: new Date().toISOString()
+      });
+    }
+
+    // Update database with photos JSON
+    await dbQuery("UPDATE users SET photos = ? WHERE id = ?", [
+      JSON.stringify(photos),
+      userId
+    ]);
+
+    res.json({ 
+      success: true,
+      message: `${photos.length} photos uploaded successfully`,
+      photoCount: photos.length
+    });
+  } catch (error) {
+    console.error("❌ Error uploading multiple photos:", error);
+    res.status(500).json({ message: "Server error while uploading photos" });
   }
 });
 

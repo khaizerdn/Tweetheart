@@ -225,7 +225,7 @@ function Profile() {
 
           // Upload photos to S3
           await axios.post(
-            `${API_URL}/api/photos/upload-multiple`,
+            `${API_URL}/api/profile/photos/upload-multiple`,
             formData,
             { 
               withCredentials: true,

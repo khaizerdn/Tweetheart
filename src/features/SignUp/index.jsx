@@ -145,7 +145,7 @@ function SignUp() {
 
           // Upload photos to S3
           await axios.post(
-            `${API_URL}/api/photos/upload-multiple`,
+            `${API_URL}/api/signup/photos/upload-multiple`,
             formData,
             { 
               withCredentials: true,
