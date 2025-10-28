@@ -27,7 +27,6 @@ const clearProfileCache = () => {
   }
   profileCache.data = null;
   profileCache.timestamp = null;
-  console.log("🗑️ Profile cache cleared");
 };
 
 const startCacheTimer = () => {
@@ -40,8 +39,6 @@ const startCacheTimer = () => {
   profileCache.timer = setTimeout(() => {
     clearProfileCache();
   }, CACHE_DURATION);
-  
-  console.log("⏰ Cache timer started - will clear in 1 minute");
 };
 
 const isCacheValid = () => {
@@ -60,12 +57,10 @@ const saveToCache = (profileData, photosData) => {
     photos: photosData
   };
   profileCache.timestamp = Date.now();
-  console.log("💾 Profile data cached");
 };
 
 const loadFromCache = () => {
   if (isCacheValid()) {
-    console.log("📦 Loading profile data from cache");
     return profileCache.data;
   }
   return null;
@@ -342,7 +337,6 @@ function Profile() {
     if (profileCache.timer) {
       clearTimeout(profileCache.timer);
       profileCache.timer = null;
-      console.log("🔄 Cache timer cleared - user returned to profile");
     }
     
     return () => {
