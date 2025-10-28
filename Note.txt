@@ -2,3 +2,4 @@ Technical Limitations
 - I think we can separate the node packages on each features so they will be fully modular and handle its own npm packages. I do not know what is the industry standard since I'm still not exposed unto it and this is just my own opinion is that for better scalability and orgnized always make it modular so it will not interfere with other features.
 - Implement react-skeleton-loading for more good looking loading screens
 - When logging users likes, it can be optimize more if using debounce or batchupdate.
+- Add lazy loading in Matches page
