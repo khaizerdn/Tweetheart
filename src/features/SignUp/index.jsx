@@ -155,7 +155,6 @@ function SignUp() {
             }
           );
           
-          console.log("✅ Photos uploaded successfully to S3");
         } catch (photoErr) {
           console.error("⚠️ Photo upload failed (account created):", photoErr);
           // Don't block navigation - photos can be added later

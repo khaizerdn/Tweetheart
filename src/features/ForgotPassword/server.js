@@ -86,7 +86,6 @@ router.post("/check-email", async (req, res) => {
 
     // Step 4: Send verification email asynchronously
     await sendVerificationEmail(email, verificationCode);
-    console.log(`📧 Verification email sent to: ${email}`);
   } catch (error) {
     console.error("❌ Error checking email:", error);
     res

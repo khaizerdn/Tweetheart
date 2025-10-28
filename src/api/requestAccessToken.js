@@ -30,7 +30,6 @@ requestAccessToken.interceptors.response.use(
         // Retry original request
         return requestAccessToken(originalRequest);
       } catch (refreshError) {
-        console.log("[CLIENT] Refresh failed. User needs to login again.");
         // Optionally: redirect to login page
         window.location.href = "/";
         return Promise.reject(refreshError);

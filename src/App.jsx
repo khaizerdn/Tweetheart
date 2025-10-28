@@ -25,10 +25,8 @@ function App() {
     const checkAuth = async () => {
       try {
         const res = await axios.post(`${API_URL}/refresh`, {}, { withCredentials: true });
-        console.log("[CLIENT] Refresh successful:", res.data.message);
         setIsLoggedIn(true);
       } catch (err) {
-        console.log("[CLIENT] No valid session, user must login.");
         setIsLoggedIn(false);
       } finally {
         setLoading(false);

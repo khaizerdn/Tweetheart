@@ -207,7 +207,6 @@ const Content = () => {
       cardElement.style.transition = 'transform 0.5s ease-out';
       cardElement.style.transform = `translate(${toX}px, -100px) rotate(${rotate}deg)`;
       
-      console.log('Card swiping animation started:', cardId, 'toX:', toX, 'rotate:', rotate);
       
       // Remove card from state after animation completes
       setTimeout(() => {
@@ -252,10 +251,8 @@ const Content = () => {
     
     if (action === 'like') {
       cardElement.style.transform = `translate(${moveOutWidth}px, -100px) rotate(30deg)`;
-      console.log('Card like animation started:', currentCard.id, 'moveOutWidth:', moveOutWidth);
     } else if (action === 'nope') {
       cardElement.style.transform = `translate(-${moveOutWidth}px, -100px) rotate(-30deg)`;
-      console.log('Card nope animation started:', currentCard.id, 'moveOutWidth:', -moveOutWidth);
     }
     
     // Remove card from state after animation completes

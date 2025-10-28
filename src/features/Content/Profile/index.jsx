@@ -483,7 +483,6 @@ function Profile() {
             }
           );
           
-          console.log("✅ Photos uploaded successfully to S3");
         } catch (photoErr) {
           console.error("⚠️ Photo upload failed:", photoErr);
           setError("Profile updated but photo upload failed. Please try uploading photos again.");

@@ -16,7 +16,6 @@ function Menu() {
   const [currentUserId, setCurrentUserId] = useState(null);
 
   const logout = async () => {
-    console.log("Attempting to log out...");
     try {
       const response = await requestAccessToken.post('/logout');
 
