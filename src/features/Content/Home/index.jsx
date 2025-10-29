@@ -8,6 +8,7 @@ import styles from './styles.module.css';
 
 const Content = () => {
   const [cards, setCards] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -98,6 +99,22 @@ const Content = () => {
     }
   };
 
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 685);
+    };
+    
+    // Check on mount
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Fetch initial users data on component mount
   useEffect(() => {
@@ -379,7 +396,7 @@ const Content = () => {
   if (loading) {
     return (
       <div className={styles.home}>
-        <Header title="Home" />
+        {!isMobile && <Header title="Home" />}
         <div className={styles.container}>
           <div className={styles.cardContainer}>
             <div className={styles.cards}>
@@ -399,7 +416,7 @@ const Content = () => {
   if (error) {
     return (
       <div className={styles.home}>
-        <Header title="Home" />
+        {!isMobile && <Header title="Home" />}
         <div className={styles.container}>
           <div className={styles.cardContainer}>
             <div className={styles.cards}>
@@ -423,7 +440,7 @@ const Content = () => {
 
   return (
     <div className={styles.home} ref={containerRef}>
-      <Header title="Home" />
+      {!isMobile && <Header title="Home" />}
       <div className={styles.container}>
         {/* Match Modal */}
         {showMatchModal && matchUser && (
