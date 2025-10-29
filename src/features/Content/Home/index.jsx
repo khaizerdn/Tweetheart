@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Card from '../../../components/Card';
+import Header from '../../../components/Header';
 import MobileMenu from '../../../components/MobileMenu';
 import requestAccessToken from '../../../api/requestAccessToken';
 // Remove likesAPI import since we'll use direct fetch calls
@@ -377,13 +378,16 @@ const Content = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
-        <div className={styles.cardContainer}>
-          <div className={styles.cards}>
-            <div className={styles.emptyState}>
-              <i className="fa fa-spinner fa-spin"></i>
-              <h3>Loading users...</h3>
-              <p>Finding people near you</p>
+      <div className={styles.home}>
+        <Header title="Home" />
+        <div className={styles.container}>
+          <div className={styles.cardContainer}>
+            <div className={styles.cards}>
+              <div className={styles.emptyState}>
+                <i className="fa fa-spinner fa-spin"></i>
+                <h3>Loading users...</h3>
+                <p>Finding people near you</p>
+              </div>
             </div>
           </div>
         </div>
@@ -394,19 +398,22 @@ const Content = () => {
   // Show error state
   if (error) {
     return (
-      <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
-        <div className={styles.cardContainer}>
-          <div className={styles.cards}>
-            <div className={styles.emptyState}>
-              <i className="fa fa-exclamation-triangle"></i>
-              <h3>Oops! Something went wrong</h3>
-              <p>{error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
-                className={styles.button}
-              >
-                Try Again
-              </button>
+      <div className={styles.home}>
+        <Header title="Home" />
+        <div className={styles.container}>
+          <div className={styles.cardContainer}>
+            <div className={styles.cards}>
+              <div className={styles.emptyState}>
+                <i className="fa fa-exclamation-triangle"></i>
+                <h3>Oops! Something went wrong</h3>
+                <p>{error}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className={styles.button}
+                >
+                  Try Again
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -415,9 +422,11 @@ const Content = () => {
   }
 
   return (
-    <div className={`${styles.tinder} ${loaded ? styles.loaded : ''}`} ref={containerRef}>
-      {/* Match Modal */}
-      {showMatchModal && matchUser && (
+    <div className={styles.home} ref={containerRef}>
+      <Header title="Home" />
+      <div className={styles.container}>
+        {/* Match Modal */}
+        {showMatchModal && matchUser && (
         <div className={styles.matchModal}>
           <div className={styles.matchModalContent}>
             <div className={styles.matchAnimation}>
@@ -559,6 +568,7 @@ const Content = () => {
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

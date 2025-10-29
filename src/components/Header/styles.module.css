@@ -20,9 +20,6 @@
 
 @media screen and (max-width: 685px) {
   .header {
-    padding-top: var(--padding-016);
-    padding-bottom: var(--padding-010);
-    padding-left: var(--padding-032);
-    padding-right: var(--padding-032);
+    display: none;
   }
 }
