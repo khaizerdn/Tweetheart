@@ -589,6 +589,7 @@
 
 .filterButton i {
   font-size: var(--font-size-016);
+  color: var(--background-color-secondary-active);
 }
 
 .filterBadge {

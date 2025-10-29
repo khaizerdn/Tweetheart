@@ -99,240 +99,24 @@
   margin-bottom: var(--margin-032);
 }
 
-.sectionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--margin-016);
-}
 
 .sectionTitle {
   margin: 0;
+  margin-bottom: var(--margin-016);
   font-size: var(--font-size-018);
   font-weight: var(--font-weight-semi-bold);
   color: var(--font-color-active);
   line-height: var(--line-height-h4);
 }
 
-.rangeDisplay,
-.countDisplay {
-  font-size: var(--font-size-014);
-  font-weight: var(--font-weight-medium);
-  color: var(--background-color-secondary-default);
-  background: var(--background-color-secondary-muted);
-  padding: var(--padding-004) var(--padding-012);
-  border-radius: var(--border-radius-999);
-  min-width: 60px;
-  text-align: center;
-}
 
 /* Age Range Filter */
-.ageRangeContainer {
-  background: var(--background-color-2);
-  border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-016);
-  padding: var(--padding-024);
-}
-
 .ageInputs {
   display: flex;
   gap: var(--gap-016);
-  margin-bottom: var(--margin-024);
 }
 
-.ageInputGroup {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-008);
-}
-
-.inputLabel {
-  font-size: var(--font-size-014);
-  font-weight: var(--font-weight-medium);
-  color: var(--font-color-default);
-  line-height: var(--line-height-p);
-}
-
-.ageInput {
-  padding: var(--padding-012);
-  border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-008);
-  background: var(--background-color-1);
-  color: var(--font-color-active);
-  font-size: var(--font-size-016);
-  font-weight: var(--font-weight-medium);
-  text-align: center;
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.ageInput:focus {
-  border-color: var(--background-color-secondary-default);
-  box-shadow: 0 0 0 2px var(--background-color-secondary-muted);
-}
-
-.ageSliderContainer {
-  position: relative;
-  height: 40px;
-  display: flex;
-  align-items: center;
-}
-
-.sliderTrack {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: var(--background-color-primary-muted-1);
-  border-radius: var(--border-radius-999);
-  transform: translateY(-50%);
-}
-
-.sliderRange {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  background: var(--background-color-secondary-default);
-  border-radius: var(--border-radius-999);
-  transition: all 0.2s ease;
-}
-
-.ageSlider {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: none;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-}
-
-.ageSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--border-radius-999);
-  background: var(--background-color-secondary-default);
-  cursor: pointer;
-  box-shadow: var(--shadow-1);
-  transition: all 0.2s ease;
-  border: 2px solid var(--background-color-1);
-}
-
-.ageSlider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: var(--shadow-2);
-}
-
-.ageSlider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--border-radius-999);
-  background: var(--background-color-secondary-default);
-  cursor: pointer;
-  border: 2px solid var(--background-color-1);
-  box-shadow: var(--shadow-1);
-  transition: all 0.2s ease;
-}
-
-.ageSlider::-moz-range-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: var(--shadow-2);
-}
-
-/* Distance Filter */
-.distanceContainer {
-  background: var(--background-color-2);
-  border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-016);
-  padding: var(--padding-024);
-}
-
-.distanceSliderContainer {
-  position: relative;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  margin-bottom: var(--margin-016);
-}
-
-.sliderProgress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: var(--background-color-secondary-default);
-  border-radius: var(--border-radius-999);
-  transition: all 0.2s ease;
-}
-
-.distanceSlider {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: none;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-}
-
-.distanceSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--border-radius-999);
-  background: var(--background-color-secondary-default);
-  cursor: pointer;
-  box-shadow: var(--shadow-1);
-  transition: all 0.2s ease;
-  border: 2px solid var(--background-color-1);
-}
-
-.distanceSlider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: var(--shadow-2);
-}
-
-.distancePresets {
-  display: flex;
-  gap: var(--gap-008);
-  flex-wrap: wrap;
-}
-
-.presetButton {
-  padding: var(--padding-008) var(--padding-012);
-  background: var(--background-color-primary-muted-1);
-  border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-999);
-  color: var(--font-color-muted);
-  font-size: var(--font-size-012);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.presetButton:hover {
-  background: var(--background-color-primary-hover-1);
-  color: var(--font-color-hover);
-  transform: translateY(-1px);
-}
-
-.presetButtonActive {
-  background: var(--background-color-secondary-default);
-  color: var(--font-color-secondary-selected);
-  border-color: var(--background-color-secondary-default);
-}
+/* Distance Filter - No specific styles needed as InputField handles styling */
 
 /* Chip Container */
 .chipContainer {
@@ -375,71 +159,7 @@
   box-shadow: var(--shadow-2);
 }
 
-/* Select Container */
-.selectContainer {
-  background: var(--background-color-2);
-  border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-016);
-  padding: var(--padding-024);
-}
-
-.select {
-  width: 100%;
-  padding: var(--padding-012);
-  border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-008);
-  background: var(--background-color-1);
-  color: var(--font-color-active);
-  font-size: var(--font-size-016);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  outline: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 12px center;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  padding-right: 40px;
-}
-
-.select:focus {
-  border-color: var(--background-color-secondary-default);
-  box-shadow: 0 0 0 2px var(--background-color-secondary-muted);
-}
-
-/* Checkbox Container */
-.checkboxContainer {
-  background: var(--background-color-2);
-  border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-016);
-  padding: var(--padding-024);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-016);
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-012);
-  cursor: pointer;
-  user-select: none;
-}
-
-.checkbox {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--background-color-secondary-default);
-  cursor: pointer;
-}
-
-.checkboxText {
-  font-size: var(--font-size-014);
-  font-weight: var(--font-weight-medium);
-  color: var(--font-color-default);
-  line-height: var(--line-height-p);
-}
+/* Select and Checkbox styles removed - InputField handles styling */
 
 /* Footer */
 .footer {
@@ -541,10 +261,6 @@
     gap: var(--gap-012);
   }
   
-  .distancePresets {
-    justify-content: center;
-  }
-  
   .chipContainer {
     justify-content: center;
   }
@@ -568,8 +284,4 @@
     padding: var(--padding-006) var(--padding-010);
   }
   
-  .presetButton {
-    font-size: var(--font-size-010);
-    padding: var(--padding-006) var(--padding-010);
-  }
 }

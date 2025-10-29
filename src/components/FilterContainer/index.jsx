@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import InputField from '../InputFields';
 import styles from './styles.module.css';
 
 const FilterContainer = ({ 
@@ -19,6 +20,12 @@ const FilterContainer = ({
     setHasChanges(false);
   }, [filters, isOpen]);
 
+  // Additional options for chips
+  const additionalOptions = [
+    'Online now', 'Has photos', 'Verified profile', 'New profiles', 
+    'Recently active', 'Premium members', 'Nearby only'
+  ];
+
   const handleFilterChange = (filterType, value) => {
     setLocalFilters(prev => ({
       ...prev,
@@ -35,15 +42,14 @@ const FilterContainer = ({
 
   const handleReset = () => {
     const defaultFilters = {
-      ageRange: { min: 18, max: 65 },
+      minAge: 18,
+      maxAge: 65,
       distance: 50,
       interests: [],
       lifestyle: [],
       education: 'any',
       relationshipType: 'any',
-      height: { min: 140, max: 200 },
-      hasPhotos: true,
-      onlineNow: false
+      additionalOptions: []
     };
     setLocalFilters(defaultFilters);
     onResetFilters();
@@ -131,126 +137,67 @@ const FilterContainer = ({
         >
           {/* Age Range Filter */}
           <div className={styles.filterSection}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>Age Range</h3>
-              <span className={styles.rangeDisplay}>
-                {localFilters.ageRange.min} - {localFilters.ageRange.max}
-              </span>
-            </div>
-            <div className={styles.ageRangeContainer}>
-              <div className={styles.ageInputs}>
-                <div className={styles.ageInputGroup}>
-                  <label className={styles.inputLabel}>Min Age</label>
-                  <input
-                    type="number"
-                    min="18"
-                    max="65"
-                    value={localFilters.ageRange.min}
-                    onChange={(e) => handleFilterChange('ageRange', {
-                      ...localFilters.ageRange,
-                      min: Math.min(parseInt(e.target.value) || 18, localFilters.ageRange.max - 1)
-                    })}
-                    className={styles.ageInput}
-                  />
-                </div>
-                <div className={styles.ageInputGroup}>
-                  <label className={styles.inputLabel}>Max Age</label>
-                  <input
-                    type="number"
-                    min="18"
-                    max="65"
-                    value={localFilters.ageRange.max}
-                    onChange={(e) => handleFilterChange('ageRange', {
-                      ...localFilters.ageRange,
-                      max: Math.max(parseInt(e.target.value) || 65, localFilters.ageRange.min + 1)
-                    })}
-                    className={styles.ageInput}
-                  />
-                </div>
-              </div>
-              <div className={styles.ageSliderContainer}>
-                <div className={styles.sliderTrack}>
-                  <div 
-                    className={styles.sliderRange}
-                    style={{
-                      left: `${((localFilters.ageRange.min - 18) / 47) * 100}%`,
-                      width: `${((localFilters.ageRange.max - localFilters.ageRange.min) / 47) * 100}%`
-                    }}
-                  />
-                </div>
-                <input
-                  type="range"
-                  min="18"
-                  max="65"
-                  value={localFilters.ageRange.min}
-                  onChange={(e) => handleFilterChange('ageRange', {
-                    ...localFilters.ageRange,
-                    min: Math.min(parseInt(e.target.value), localFilters.ageRange.max - 1)
-                  })}
-                  className={styles.ageSlider}
-                />
-                <input
-                  type="range"
-                  min="18"
-                  max="65"
-                  value={localFilters.ageRange.max}
-                  onChange={(e) => handleFilterChange('ageRange', {
-                    ...localFilters.ageRange,
-                    max: Math.max(parseInt(e.target.value), localFilters.ageRange.min + 1)
-                  })}
-                  className={styles.ageSlider}
-                />
-              </div>
+            <h3 className={styles.sectionTitle}>Age Range</h3>
+            <div className={styles.ageInputs}>
+              <InputField
+                type="text"
+                label="Minimum"
+                value={localFilters.minAge}
+                onChange={(e) => handleFilterChange('minAge', Math.min(parseInt(e.target.value) || 18, localFilters.maxAge - 1))}
+                styles={{
+                  background: 'var(--background-color-2)',
+                  backgroundOption: 'var(--background-color-3)',
+                  disabled: 'var(--background-color-primary-disabled-2)',
+                  muted: 'var(--background-color-primary-muted-2)',
+                  default: 'var(--background-color-primary-default-2)',
+                  hover: 'var(--background-color-primary-hover-2)',
+                  active: 'var(--background-color-primary-active-2)',
+                  selected: 'var(--background-color-primary-selected-2)',
+                }}
+              />
+              <InputField
+                type="text"
+                label="Maximum"
+                value={localFilters.maxAge}
+                onChange={(e) => handleFilterChange('maxAge', Math.max(parseInt(e.target.value) || 65, localFilters.minAge + 1))}
+                styles={{
+                  background: 'var(--background-color-2)',
+                  backgroundOption: 'var(--background-color-3)',
+                  disabled: 'var(--background-color-primary-disabled-2)',
+                  muted: 'var(--background-color-primary-muted-2)',
+                  default: 'var(--background-color-primary-default-2)',
+                  hover: 'var(--background-color-primary-hover-2)',
+                  active: 'var(--background-color-primary-active-2)',
+                  selected: 'var(--background-color-primary-selected-2)',
+                }}
+              />
             </div>
           </div>
 
           {/* Distance Filter */}
           <div className={styles.filterSection}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>Distance</h3>
-              <span className={styles.rangeDisplay}>
-                {localFilters.distance} km
-              </span>
-            </div>
-            <div className={styles.distanceContainer}>
-              <div className={styles.distanceSliderContainer}>
-                <div className={styles.sliderTrack}>
-                  <div 
-                    className={styles.sliderProgress}
-                    style={{ width: `${(localFilters.distance / 100) * 100}%` }}
-                  />
-                </div>
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value={localFilters.distance}
-                  onChange={(e) => handleFilterChange('distance', parseInt(e.target.value))}
-                  className={styles.distanceSlider}
-                />
-              </div>
-              <div className={styles.distancePresets}>
-                {[5, 10, 25, 50, 100].map(distance => (
-                  <button
-                    key={distance}
-                    className={`${styles.presetButton} ${localFilters.distance === distance ? styles.presetButtonActive : ''}`}
-                    onClick={() => handleFilterChange('distance', distance)}
-                  >
-                    {distance}km
-                  </button>
-                ))}
-              </div>
-            </div>
+            <h3 className={styles.sectionTitle}>Distance</h3>
+            <InputField
+              type="text"
+              label="Kilometers"
+              value={localFilters.distance}
+              onChange={(e) => handleFilterChange('distance', parseInt(e.target.value) || 50)}
+              styles={{
+                background: 'var(--background-color-2)',
+                backgroundOption: 'var(--background-color-3)',
+                disabled: 'var(--background-color-primary-disabled-2)',
+                muted: 'var(--background-color-primary-muted-2)',
+                default: 'var(--background-color-primary-default-2)',
+                hover: 'var(--background-color-primary-hover-2)',
+                active: 'var(--background-color-primary-active-2)',
+                selected: 'var(--background-color-primary-selected-2)',
+              }}
+            />
           </div>
 
           {/* Interests Filter */}
           <div className={styles.filterSection}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>Interests</h3>
-              <span className={styles.countDisplay}>
-                {localFilters.interests.length} selected
-              </span>
-            </div>
+            <h3 className={styles.sectionTitle}>Interests</h3>
             <div className={styles.chipContainer}>
               {interestOptions.map(interest => (
                 <button
@@ -266,12 +213,7 @@ const FilterContainer = ({
 
           {/* Lifestyle Filter */}
           <div className={styles.filterSection}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>Lifestyle</h3>
-              <span className={styles.countDisplay}>
-                {localFilters.lifestyle.length} selected
-              </span>
-            </div>
+            <h3 className={styles.sectionTitle}>Lifestyle</h3>
             <div className={styles.chipContainer}>
               {lifestyleOptions.map(lifestyle => (
                 <button
@@ -287,68 +229,61 @@ const FilterContainer = ({
 
           {/* Education Filter */}
           <div className={styles.filterSection}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>Education</h3>
-            </div>
-            <div className={styles.selectContainer}>
-              <select
-                value={localFilters.education}
-                onChange={(e) => handleFilterChange('education', e.target.value)}
-                className={styles.select}
-              >
-                {educationOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <h3 className={styles.sectionTitle}>Education</h3>
+            <InputField
+              type="select"
+              label="Education Level"
+              value={localFilters.education}
+              onChange={(e) => handleFilterChange('education', e.target.value)}
+              options={educationOptions}
+              styles={{
+                background: 'var(--background-color-2)',
+                backgroundOption: 'var(--background-color-3)',
+                disabled: 'var(--background-color-primary-disabled-2)',
+                muted: 'var(--background-color-primary-muted-2)',
+                default: 'var(--background-color-primary-default-2)',
+                hover: 'var(--background-color-primary-hover-2)',
+                active: 'var(--background-color-primary-active-2)',
+                selected: 'var(--background-color-primary-selected-2)',
+              }}
+            />
           </div>
 
           {/* Relationship Type Filter */}
           <div className={styles.filterSection}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>Looking For</h3>
-            </div>
-            <div className={styles.selectContainer}>
-              <select
-                value={localFilters.relationshipType}
-                onChange={(e) => handleFilterChange('relationshipType', e.target.value)}
-                className={styles.select}
-              >
-                {relationshipOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <h3 className={styles.sectionTitle}>Looking For</h3>
+            <InputField
+              type="select"
+              label="Relationship Type"
+              value={localFilters.relationshipType}
+              onChange={(e) => handleFilterChange('relationshipType', e.target.value)}
+              options={relationshipOptions}
+              styles={{
+                background: 'var(--background-color-2)',
+                backgroundOption: 'var(--background-color-3)',
+                disabled: 'var(--background-color-primary-disabled-2)',
+                muted: 'var(--background-color-primary-muted-2)',
+                default: 'var(--background-color-primary-default-2)',
+                hover: 'var(--background-color-primary-hover-2)',
+                active: 'var(--background-color-primary-active-2)',
+                selected: 'var(--background-color-primary-selected-2)',
+              }}
+            />
           </div>
 
           {/* Additional Options */}
           <div className={styles.filterSection}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>Additional Options</h3>
-            </div>
-            <div className={styles.checkboxContainer}>
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={localFilters.hasPhotos}
-                  onChange={(e) => handleFilterChange('hasPhotos', e.target.checked)}
-                  className={styles.checkbox}
-                />
-                <span className={styles.checkboxText}>Has photos</span>
-              </label>
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={localFilters.onlineNow}
-                  onChange={(e) => handleFilterChange('onlineNow', e.target.checked)}
-                  className={styles.checkbox}
-                />
-                <span className={styles.checkboxText}>Online now</span>
-              </label>
+            <h3 className={styles.sectionTitle}>Additional Options</h3>
+            <div className={styles.chipContainer}>
+              {additionalOptions.map(option => (
+                <button
+                  key={option}
+                  className={`${styles.chip} ${localFilters.additionalOptions?.includes(option) ? styles.chipActive : ''}`}
+                  onClick={() => handleFilterChange('additionalOptions', toggleArrayItem(localFilters.additionalOptions || [], option))}
+                >
+                  {option}
+                </button>
+              ))}
             </div>
           </div>
         </OverlayScrollbarsComponent>

@@ -41,15 +41,14 @@ const Content = () => {
   // Filter state
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
-    ageRange: { min: 18, max: 65 },
+    minAge: 18,
+    maxAge: 65,
     distance: 50,
     interests: [],
     lifestyle: [],
     education: 'any',
     relationshipType: 'any',
-    height: { min: 140, max: 200 },
-    hasPhotos: true,
-    onlineNow: false
+    additionalOptions: []
   });
 
   const containerRef = useRef(null);
@@ -65,7 +64,7 @@ const Content = () => {
         setError("");
       }
       
-      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10&minAge=${filters.ageRange.min}&maxAge=${filters.ageRange.max}&distance=${filters.distance}&hasPhotos=${filters.hasPhotos}&onlineNow=${filters.onlineNow}`);
+      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10&minAge=${filters.minAge}&maxAge=${filters.maxAge}&distance=${filters.distance}`);
       const { users: usersData, pagination } = response.data;
       
       // Transform the data to match the expected format
@@ -476,11 +475,10 @@ const Content = () => {
                 filters.lifestyle.length > 0 ||
                 filters.education !== 'any' ||
                 filters.relationshipType !== 'any' ||
-                filters.hasPhotos !== true ||
-                filters.onlineNow !== false ||
+                filters.additionalOptions?.length > 0 ||
                 filters.distance !== 50 ||
-                filters.ageRange.min !== 18 ||
-                filters.ageRange.max !== 65;
+                filters.minAge !== 18 ||
+                filters.maxAge !== 65;
               return hasActiveFilters && <span className={styles.filterBadge} />;
             })()}
           </button>
@@ -537,15 +535,14 @@ const Content = () => {
         }}
         onResetFilters={() => {
           const defaultFilters = {
-            ageRange: { min: 18, max: 65 },
+            minAge: 18,
+            maxAge: 65,
             distance: 50,
             interests: [],
             lifestyle: [],
             education: 'any',
             relationshipType: 'any',
-            height: { min: 140, max: 200 },
-            hasPhotos: true,
-            onlineNow: false
+            additionalOptions: []
           };
           setFilters(defaultFilters);
           setRemovedCards(new Set());
