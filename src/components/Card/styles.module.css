@@ -137,8 +137,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-  padding: var(--padding-020);
+  background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.60) 60%, rgba(0, 0, 0, 0.95) 100%, rgba(0, 0, 0, 1) 100%);
+  padding: var(--padding-020) var(--padding-020) calc(var(--padding-020) + 35px) var(--padding-020); /* Extra bottom padding for button overlap */
   color: var(--color-white);
   pointer-events: none;
   user-select: none;
@@ -161,6 +161,10 @@
 @media (max-width: 768px) {
   .card {
     height: 550px;
+  }
+  
+  .cardInfo {
+    padding: var(--padding-020) var(--padding-020) calc(var(--padding-020) + 35px) var(--padding-020); /* Maintain button overlap padding */
   }
   
   .navButton {
@@ -186,6 +190,10 @@
 @media (max-width: 480px) {
   .card {
     height: 500px;
+  }
+  
+  .cardInfo {
+    padding: var(--padding-016) var(--padding-016) calc(var(--padding-016) + 35px) var(--padding-016); /* Maintain button overlap padding with smaller base padding */
   }
   
   .navButton {

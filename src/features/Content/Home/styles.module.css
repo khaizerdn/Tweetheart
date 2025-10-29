@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: var(--padding-020);
   position: relative;
   width: 350px; /* Fixed width to match card width */
@@ -37,6 +37,7 @@
   position: relative;
   width: 350px; /* Fixed width to match card width */
   height: 600px; /* Fixed height to match card height */
+  margin-bottom: -35px; /* Negative margin to allow button overlap */
 }
 
 /* Swipe card specific styles - override Card component for swipe functionality */
@@ -146,21 +147,22 @@
   align-items: center;
   gap: var(--padding-012);
   z-index: 100;
-  margin-top: var(--padding-024);
+  margin-top: 0; /* No top margin since buttons overlap with card */
   flex-shrink: 0; /* Prevent buttons from shrinking */
   width: 350px; /* Fixed width to match card width */
+  position: relative;
 }
 
 .button {
   border-radius: var(--border-radius-999);
   width: 60px !important;
   height: 60px !important;
-  border: none;
+  border: 2px solid rgba(255, 255, 255, 0.2); /* Subtle border for definition */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: var(--shadow-2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow for overlapping effect */
   transition: all 0.3s ease;
   font-size: var(--font-size-020);
   flex-shrink: 0;
@@ -394,4 +396,135 @@
   }
 }
 
-/* Fixed dimensions - no responsive scaling */
+/* Mobile Responsive Styles */
+@media screen and (max-width: 685px) {
+  .tinder {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: var(--color-primary-3);
+  }
+
+  .cardContainer {
+    width: 100vw;
+    height: 100vh;
+    padding: var(--padding-016);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+  }
+
+  .cards {
+    width: 100%;
+    height: calc(100vh - 100px); /* Full height minus space for mobile menu, buttons will overlap */
+    max-width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    margin-bottom: -35px; /* Maintain button overlap on mobile */
+  }
+
+  .swipeCard {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: var(--border-radius-016);
+  }
+
+  .buttons {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0; /* No top margin since buttons overlap with card */
+    margin-bottom: var(--padding-016);
+    padding: 0 var(--padding-016);
+    justify-content: center;
+    gap: var(--padding-020);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10; /* Higher z-index to appear above card */
+  }
+
+  .button {
+    width: 70px !important;
+    height: 70px !important;
+    font-size: var(--font-size-024);
+  }
+
+  .resetButton {
+    width: auto;
+    height: 60px;
+    padding: 0 var(--padding-024);
+    font-size: var(--font-size-018);
+  }
+
+  .emptyState {
+    height: 100%;
+    padding: var(--padding-024);
+  }
+
+  .emptyState h3 {
+    font-size: var(--font-size-028);
+  }
+
+  .emptyState p {
+    font-size: var(--font-size-016);
+    max-width: 100%;
+  }
+
+  .loadingMore {
+    width: 100%;
+    margin: var(--gap-012) 0;
+  }
+
+  /* Match modal adjustments for mobile */
+  .matchModalContent {
+    width: 95%;
+    max-width: 350px;
+    padding: var(--padding-032);
+  }
+
+  .matchActions {
+    flex-direction: column;
+    gap: var(--gap-012);
+  }
+
+  .matchButton,
+  .messageButton {
+    width: 100%;
+    height: 50px;
+  }
+}
+
+/* Very small mobile screens */
+@media screen and (max-width: 320px) {
+  .cardContainer {
+    padding: var(--padding-012);
+  }
+
+  .buttons {
+    gap: var(--padding-016);
+  }
+
+  .button {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: var(--font-size-020);
+  }
+
+  .resetButton {
+    height: 50px;
+    font-size: var(--font-size-016);
+  }
+}
+
+/* Fixed dimensions - no responsive scaling for desktop */
