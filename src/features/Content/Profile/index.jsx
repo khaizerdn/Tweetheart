@@ -4,6 +4,7 @@ import axios from "axios";
 import InputField from "../../../components/InputFields";
 import Button from "../../../components/Buttons/Button";
 import Card from "../../../components/Card";
+import Header from "../../../components/Header";
 import MobileMenu from "../../../components/MobileMenu";
 import requestAccessToken from "../../../api/requestAccessToken";
 import styles from "./styles.module.css";
@@ -576,6 +577,7 @@ function Profile() {
   // If viewing own profile, show edit form
   return (
     <div className={styles.profilePage}>
+      <Header title="Edit Profile" />
       <div className={styles.containerAccess}>
         {/* Left Container - Preview Card */}
         <div className={styles.leftContainer}>
