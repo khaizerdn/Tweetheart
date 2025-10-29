@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Header from "../../../components/Header";
 import styles from "./styles.module.css";
 
 function Settings() {
@@ -33,24 +34,24 @@ function Settings() {
 
   if (isLoading) {
     return (
-      <div className={styles.containerAccess}>
-        <div className={styles.loadingContainer}>
-          <div className={styles.loadingMessage}>Loading settings...</div>
+      <div className={styles.settingsPage}>
+        <Header title="Settings" />
+        <div className={styles.containerAccess}>
+          <div className={styles.loadingContainer}>
+            <div className={styles.loadingMessage}>Loading settings...</div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.containerAccess}>
-      <div className={styles.settingsContainer}>
-        <div className={styles.settingsCard}>
-          <div className={styles.settingsHeader}>
-            <h1>Settings</h1>
-            <p>Customize your app experience</p>
-          </div>
-
-          <div className={styles.settingsContent}>
+    <div className={styles.settingsPage}>
+      <Header title="Settings" />
+      <div className={styles.containerAccess}>
+        <div className={styles.settingsContainer}>
+          <div className={styles.settingsCard}>
+            <div className={styles.settingsContent}>
             {/* Theme Toggle Section */}
             <div className={styles.settingSection}>
               <div className={styles.settingInfo}>
@@ -95,6 +96,7 @@ function Settings() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -1,3 +1,11 @@
+.settingsPage {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-primary-3);
+  font-family: var(--font-family-primary);
+  padding: var(--padding-016);
+}
+
 .containerAccess {
   display: flex;
   justify-content: center;
@@ -5,7 +13,7 @@
   width: 100%;
   background-color: var(--background-color-1);
   font-family: var(--font-family-primary);
-  min-height: 100vh;
+  min-height: calc(100vh - 80px);
   padding: var(--padding-048) var(--padding-016);
 }
 
@@ -25,27 +33,9 @@
   overflow: hidden;
 }
 
-.settingsHeader {
-  padding: var(--padding-040) var(--padding-040) var(--padding-032);
-  border-bottom: 1px solid var(--background-color-primary-default-1);
-  text-align: center;
-}
-
-.settingsHeader h1 {
-  margin: 0 0 var(--margin-008) 0;
-  font-size: var(--font-size-040);
-  font-weight: var(--font-weight-bold);
-  color: var(--font-color-default);
-}
-
-.settingsHeader p {
-  margin: 0;
-  font-size: var(--font-size-016);
-  color: var(--font-color-muted);
-}
 
 .settingsContent {
-  padding: var(--padding-032) var(--padding-040);
+  padding: var(--padding-040) var(--padding-040) var(--padding-032);
 }
 
 .settingSection {
