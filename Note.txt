@@ -7,3 +7,4 @@ Technical Limitations
 
 Fix
 - Sign up page: There is a delay after clicking the confirm button
+- Bug in confirm password when if it doesn't match and try to change in password input, the error doesn't remove.
