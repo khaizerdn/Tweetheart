@@ -58,10 +58,8 @@ const Matches = () => {
     fetchMatches();
   }, []);
 
-  // Handle start chat button click
-  const handleStartChat = async (matchId, e) => {
-    e.stopPropagation(); // Prevent card click
-    
+  // Handle card click to start chat
+  const handleCardClick = async (matchId) => {
     // Get current user ID
     const userId = document.cookie
       .split('; ')
@@ -166,6 +164,7 @@ const Matches = () => {
                  currentPhotoIndex={0}
                  showNavigation={false}
                  showIndicators={false}
+                 onClick={() => handleCardClick(match.id)}
                >
                  <div className={styles.nameAge}>
                    <h3>{match.name}, {match.age}</h3>
@@ -180,16 +179,6 @@ const Matches = () => {
                      {match.bio}
                    </div>
                  )}
-                 
-                 <div className={styles.actions}>
-                   <button 
-                     className={styles.startChatButton}
-                     onClick={(e) => handleStartChat(match.id, e)}
-                   >
-                     <i className="fa fa-comment"></i>
-                     Start Chat
-                   </button>
-                 </div>
                </Card>
              ))}
            </div>
