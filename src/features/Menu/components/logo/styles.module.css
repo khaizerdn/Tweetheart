@@ -46,7 +46,7 @@
 .logoText {
   font-size: var(--font-size-024);
   font-weight: 600;
-  color: var(--background-color-secondary-active);
+  color: var(--background-color-secondary-default);
   white-space: nowrap;
   user-select: none;
   transition: none;

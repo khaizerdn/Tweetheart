@@ -25,7 +25,7 @@
 
 .buttonDefault.selected {
   background-color: var(--background-color-2); 
-  color: var(--font-color-selected);
+  color: var(--background-color-secondary-default);
 }
 
 /* Button Logo Container */
@@ -60,7 +60,7 @@
 }
 
 .buttonDefault.selected .buttonLogo {
-  color: var(--font-color-selected);
+  color: var(--background-color-secondary-default);
 }
 
 /* Button Text */
@@ -73,11 +73,11 @@
 /* Selected state */
 .selected {
   background-color: var(--background-color-2);
-  color: var(--font-color-default);
+  color: var(--background-color-secondary-default);
 }
 
 .selected .buttonLogo {
-  color: var(--font-color-default);
+  color: var(--background-color-secondary-default);
 }
 
 /* Responsive Styles */
