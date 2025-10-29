@@ -429,7 +429,7 @@
     align-items: center;
     position: relative;
     z-index: 1;
-    margin-bottom: -70px; /* Increased negative margin for more button overlap on mobile */
+    margin-bottom: -80px; /* Increased negative margin for more button overlap on mobile */
   }
 
   .swipeCard {
