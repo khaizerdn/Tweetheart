@@ -13,10 +13,20 @@ const FilterContainer = ({
 }) => {
   const [localFilters, setLocalFilters] = useState(filters);
   const [hasChanges, setHasChanges] = useState(false);
+  const [tempValues, setTempValues] = useState({
+    minAge: filters.minAge,
+    maxAge: filters.maxAge,
+    distance: filters.distance
+  });
 
   // Update local filters when props change
   useEffect(() => {
     setLocalFilters(filters);
+    setTempValues({
+      minAge: filters.minAge,
+      maxAge: filters.maxAge,
+      distance: filters.distance
+    });
     setHasChanges(false);
   }, [filters, isOpen]);
 
@@ -32,6 +42,32 @@ const FilterContainer = ({
       [filterType]: value
     }));
     setHasChanges(true);
+  };
+
+  const handleTempValueChange = (field, value) => {
+    setTempValues(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleValueBlur = (field, value) => {
+    let constrainedValue = value;
+    
+    if (field === 'minAge') {
+      constrainedValue = Math.min(Math.max(parseInt(value) || 18, 18), localFilters.maxAge - 1);
+    } else if (field === 'maxAge') {
+      constrainedValue = Math.max(Math.min(parseInt(value) || 65, 65), localFilters.minAge + 1);
+    } else if (field === 'distance') {
+      constrainedValue = Math.min(Math.max(parseInt(value) || 50, 1), 100);
+    }
+    
+    setTempValues(prev => ({
+      ...prev,
+      [field]: constrainedValue
+    }));
+    
+    handleFilterChange(field, constrainedValue);
   };
 
   const handleApply = () => {
@@ -52,6 +88,11 @@ const FilterContainer = ({
       additionalOptions: []
     };
     setLocalFilters(defaultFilters);
+    setTempValues({
+      minAge: 18,
+      maxAge: 65,
+      distance: 50
+    });
     onResetFilters();
     setHasChanges(true);
   };
@@ -60,6 +101,11 @@ const FilterContainer = ({
     if (hasChanges) {
       // Revert to original filters
       setLocalFilters(filters);
+      setTempValues({
+        minAge: filters.minAge,
+        maxAge: filters.maxAge,
+        distance: filters.distance
+      });
       setHasChanges(false);
     }
     onClose();
@@ -140,10 +186,13 @@ const FilterContainer = ({
             <h3 className={styles.sectionTitle}>Age Range</h3>
             <div className={styles.ageInputs}>
               <InputField
-                type="text"
+                type="number"
                 label="Minimum"
-                value={localFilters.minAge}
-                onChange={(e) => handleFilterChange('minAge', Math.min(parseInt(e.target.value) || 18, localFilters.maxAge - 1))}
+                value={tempValues.minAge}
+                onChange={(e) => handleTempValueChange('minAge', e.target.value)}
+                onBlur={(e) => handleValueBlur('minAge', e.target.value)}
+                min="18"
+                max="65"
                 styles={{
                   background: 'var(--background-color-2)',
                   backgroundOption: 'var(--background-color-3)',
@@ -156,10 +205,13 @@ const FilterContainer = ({
                 }}
               />
               <InputField
-                type="text"
+                type="number"
                 label="Maximum"
-                value={localFilters.maxAge}
-                onChange={(e) => handleFilterChange('maxAge', Math.max(parseInt(e.target.value) || 65, localFilters.minAge + 1))}
+                value={tempValues.maxAge}
+                onChange={(e) => handleTempValueChange('maxAge', e.target.value)}
+                onBlur={(e) => handleValueBlur('maxAge', e.target.value)}
+                min="18"
+                max="65"
                 styles={{
                   background: 'var(--background-color-2)',
                   backgroundOption: 'var(--background-color-3)',
@@ -178,10 +230,13 @@ const FilterContainer = ({
           <div className={styles.filterSection}>
             <h3 className={styles.sectionTitle}>Distance</h3>
             <InputField
-              type="text"
+              type="number"
               label="Kilometers"
-              value={localFilters.distance}
-              onChange={(e) => handleFilterChange('distance', parseInt(e.target.value) || 50)}
+              value={tempValues.distance}
+              onChange={(e) => handleTempValueChange('distance', e.target.value)}
+              onBlur={(e) => handleValueBlur('distance', e.target.value)}
+              min="1"
+              max="100"
               styles={{
                 background: 'var(--background-color-2)',
                 backgroundOption: 'var(--background-color-3)',
