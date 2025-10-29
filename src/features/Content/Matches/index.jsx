@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
 import styles from './styles.module.css';
 
 const Matches = () => {
   const [matches, setMatches] = useState([]);
+  const [filteredMatches, setFilteredMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [socket, setSocket] = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
+  const [filterType, setFilterType] = useState('all'); // 'all', 'with_chat', 'without_chat'
   const navigate = useNavigate();
 
   // Fetch matches data
@@ -39,10 +44,13 @@ const Matches = () => {
         gender: match.gender || null,
         photos: match.photos || [],
         lastMessage: match.lastMessage || null,
-        matchedAt: match.matched_at
+        matchedAt: match.matched_at,
+        chatId: match.chat_id,
+        hasChat: match.has_chat || false
       }));
       
       setMatches(transformedMatches);
+      setFilteredMatches(transformedMatches);
       
     } catch (err) {
       console.error("Error fetching matches:", err);
@@ -52,6 +60,81 @@ const Matches = () => {
       setLoading(false);
     }
   };
+
+  // Initialize socket connection for real-time updates
+  useEffect(() => {
+    const newSocket = io('http://localhost:8081', {
+      withCredentials: true,
+      transports: ['websocket']
+    });
+
+    newSocket.on('connect', () => {
+      console.log('Connected to matches server');
+      
+      // Get current user ID
+      const userId = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('userId='))
+        ?.split('=')[1];
+      
+      if (userId) {
+        // Join user's personal room for match updates
+        newSocket.emit('join_user_room', { userId });
+      }
+    });
+
+    newSocket.on('match_removed', (data) => {
+      console.log('Match removed event received:', data);
+      const { matchId } = data;
+      
+      // Update the match to show it has a chat instead of removing it
+      setMatches(prev => prev.map(match => 
+        match.id === matchId 
+          ? { ...match, hasChat: true, chatId: data.chatId || true }
+          : match
+      ));
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('Disconnected from matches server');
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  // Filter matches based on filter type
+  const filterMatches = (matches, filterType) => {
+    switch (filterType) {
+      case 'with_chat':
+        return matches.filter(match => match.hasChat);
+      case 'without_chat':
+        return matches.filter(match => !match.hasChat);
+      case 'all':
+      default:
+        return matches;
+    }
+  };
+
+  // Get counts for each filter type
+  const getFilterCounts = () => {
+    const allCount = matches.length;
+    const withChatCount = matches.filter(match => match.hasChat).length;
+    const withoutChatCount = matches.filter(match => !match.hasChat).length;
+    
+    return { allCount, withChatCount, withoutChatCount };
+  };
+
+  const { allCount, withChatCount, withoutChatCount } = getFilterCounts();
+
+  // Apply filter when filterType changes
+  useEffect(() => {
+    const filtered = filterMatches(matches, filterType);
+    setFilteredMatches(filtered);
+  }, [matches, filterType]);
 
   // Fetch matches on component mount
   useEffect(() => {
@@ -71,8 +154,16 @@ const Matches = () => {
       return;
     }
     
+    // Check if this match already has a chat
+    const match = matches.find(m => m.id === matchId);
+    if (match && match.hasChat && match.chatId) {
+      // Navigate to existing chat
+      navigate(`/chats/${match.chatId}`);
+      return;
+    }
+    
     try {
-      // Create preparation chat
+      // Create new chat
       const response = await fetch('http://localhost:8081/api/chats', {
         method: 'POST',
         credentials: 'include',
@@ -89,7 +180,14 @@ const Matches = () => {
       const data = await response.json();
       const chatId = data.chat.id;
       
-      // Navigate to the preparation chat
+      // Update the match to show it has a chat (no removal)
+      setMatches(prev => prev.map(match => 
+        match.id === matchId 
+          ? { ...match, hasChat: true, chatId: chatId }
+          : match
+      ));
+      
+      // Navigate to the chat
       navigate(`/chats/${chatId}`);
     } catch (error) {
       console.error('Error creating chat:', error);
@@ -145,18 +243,89 @@ const Matches = () => {
     <div className={styles.matches}>
       <div className={styles.header}>
         <h1>Matches</h1>
+        <button 
+          className={styles.filterButton}
+          onClick={() => setShowFilter(!showFilter)}
+          title="Filter matches"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"></polygon>
+          </svg>
+        </button>
       </div>
+      
+      {showFilter && (
+        <div 
+          className={styles.filterBackdrop}
+          onClick={() => setShowFilter(false)}
+        />
+      )}
+      
+      <div className={`${styles.filterContainer} ${showFilter ? styles.filterContainerOpen : ''}`}>
+        <div className={styles.filterHeader}>
+          <h3>Filter Matches</h3>
+          <button 
+            className={styles.closeButton}
+            onClick={() => setShowFilter(false)}
+          >
+            <i className="fa fa-times"></i>
+          </button>
+        </div>
+        
+        <div className={styles.filterOptions}>
+          <button 
+            className={`${styles.filterOption} ${filterType === 'all' ? styles.active : ''}`}
+            onClick={() => {
+              setFilterType('all');
+              setShowFilter(false);
+            }}
+          >
+            <i className="fa fa-users"></i>
+            <div className={styles.filterOptionContent}>
+              <span>All Matches</span>
+              <span className={styles.filterCount}>({allCount})</span>
+            </div>
+          </button>
+          <button 
+            className={`${styles.filterOption} ${filterType === 'without_chat' ? styles.active : ''}`}
+            onClick={() => {
+              setFilterType('without_chat');
+              setShowFilter(false);
+            }}
+          >
+            <i className="fa fa-heart"></i>
+            <div className={styles.filterOptionContent}>
+              <span>New Matches</span>
+              <span className={styles.filterCount}>({withoutChatCount})</span>
+            </div>
+          </button>
+          <button 
+            className={`${styles.filterOption} ${filterType === 'with_chat' ? styles.active : ''}`}
+            onClick={() => {
+              setFilterType('with_chat');
+              setShowFilter(false);
+            }}
+          >
+            <i className="fa fa-comments"></i>
+            <div className={styles.filterOptionContent}>
+              <span>With Chats</span>
+              <span className={styles.filterCount}>({withChatCount})</span>
+            </div>
+          </button>
+        </div>
+      </div>
+      
       <div className={styles.container}>
 
-        {matches.length === 0 ? (
+        {filteredMatches.length === 0 ? (
           <div className={styles.emptyState}>
             <i className="fa fa-heart"></i>
-            <h3>No matches yet</h3>
-            <p>Keep swiping to find your perfect match!</p>
+            <h3>No matches found</h3>
+            <p>{filterType === 'all' ? 'Keep swiping to find your perfect match!' : 'No matches match your current filter.'}</p>
           </div>
         ) : (
            <div className={styles.grid}>
-             {matches.map((match) => (
+             {filteredMatches.map((match) => (
                <Card
                  key={match.id}
                  className={styles.matchCard}
@@ -171,6 +340,12 @@ const Matches = () => {
                    <div className={styles.category}>
                      <i className="fa fa-venus-mars"></i>
                      <span>{match.gender === 'male' ? 'Male' : match.gender === 'female' ? 'Female' : 'Other'}</span>
+                     {match.hasChat && (
+                       <div className={styles.chatIndicator}>
+                         <i className="fa fa-comments"></i>
+                         <span>Chat</span>
+                       </div>
+                     )}
                    </div>
                  </div>
                  

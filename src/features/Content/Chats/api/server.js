@@ -424,18 +424,46 @@ router.post('/api/chats', [
     const existingChat = await queryDB(existingChatQuery, [userId, matchId, matchId, userId]);
     
     if (existingChat.length > 0) {
+      // If chat already exists, make sure the users_likes table is updated with chat_id
+      const updateExistingLikesQuery = `
+        UPDATE users_likes 
+        SET chat_id = ? 
+        WHERE ((liker_id = ? AND liked_id = ?) OR (liker_id = ? AND liked_id = ?)) 
+        AND like_type = 'like' AND is_mutual = 1
+        AND chat_id IS NULL
+      `;
+      await queryDB(updateExistingLikesQuery, [existingChat[0].id, userId, matchId, matchId, userId]);
+      console.log('Updated existing chat users_likes with chat_id:', existingChat[0].id);
+
       return res.json({ 
         chat: { id: existingChat[0].id, is_active: existingChat[0].is_active },
         message: 'Chat already exists'
       });
     }
 
-    // Generate a temporary chat ID using user IDs (not saved to DB yet)
-    const tempChatId = `${userId}_${matchId}`;
+    // Create the actual chat in the database immediately
+    const actualChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const insertChatQuery = `
+      INSERT INTO chats (id, user1_id, user2_id, is_active, created_at) 
+      VALUES (?, ?, ?, 1, NOW())
+    `;
+    
+    console.log('Creating new chat with ID:', actualChatId, 'for users:', userId, 'and', matchId);
+    await queryDB(insertChatQuery, [actualChatId, userId, matchId]);
+
+    // Update users_likes table to set chat_id for both mutual likes
+    const updateLikesQuery = `
+      UPDATE users_likes 
+      SET chat_id = ? 
+      WHERE ((liker_id = ? AND liked_id = ?) OR (liker_id = ? AND liked_id = ?)) 
+      AND like_type = 'like' AND is_mutual = 1
+    `;
+    await queryDB(updateLikesQuery, [actualChatId, userId, matchId, matchId, userId]);
+    console.log('Updated users_likes table with chat_id:', actualChatId, 'for users:', userId, 'and', matchId);
 
     res.json({ 
-      chat: { id: tempChatId, is_preparation: true },
-      message: 'Preparation chat created'
+      chat: { id: actualChatId, is_preparation: false },
+      message: 'Chat created successfully'
     });
   } catch (error) {
     console.error('Error creating chat:', error);

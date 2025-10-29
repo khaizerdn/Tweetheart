@@ -147,7 +147,8 @@ router.get("/api/likes/matches", async (req, res) => {
         u.bio,
         u.photos,
         u.birthdate,
-        ul.created_at as matched_at
+        ul.created_at as matched_at,
+        ul.chat_id
       FROM users u
       INNER JOIN users_likes ul ON u.id = ul.liked_id
       WHERE ul.liker_id = ? 
@@ -208,7 +209,9 @@ router.get("/api/likes/matches", async (req, res) => {
           bio: match.bio,
           age: age,
           photos: photos,
-          matched_at: match.matched_at
+          matched_at: match.matched_at,
+          chat_id: match.chat_id,
+          has_chat: !!match.chat_id
         };
       })
     );
