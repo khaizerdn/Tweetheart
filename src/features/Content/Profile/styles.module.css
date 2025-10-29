@@ -365,7 +365,7 @@
   }
 
   .formSection {
-    padding: var(--padding-024) 0;
+    padding: 0;
     max-width: 100%;
   }
 
@@ -557,12 +557,33 @@
   .profilePage {
     padding-bottom: var(--padding-016); /* Remove mobile menu padding when container shortcut is visible */
   }
+
+  .centerContainer {
+    padding: 0;
+  }
 }
 
 @media screen and (max-width: 685px) {
+
+  .centerContainer {
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .previewCard {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .photoCard {
+    border-radius: 0;
+  }
+
   .profilePage {
     padding: 0;
-    padding-bottom: calc(var(--padding-016) + 80px); /* Keep mobile menu padding when container shortcut is hidden */
+    padding-bottom: calc(var(--padding-016) + 60px); /* Keep mobile menu padding when container shortcut is hidden */
   }
 }
 

@@ -4,7 +4,7 @@ import axios from "axios";
 import InputField from "../../../components/InputFields";
 import Button from "../../../components/Buttons/Button";
 import Card from "../../../components/Card";
-import Header from "../../../components/Header";
+import MobileMenu from "../../../components/MobileMenu";
 import requestAccessToken from "../../../api/requestAccessToken";
 import styles from "./styles.module.css";
 
@@ -532,7 +532,6 @@ function Profile() {
   if (!isOwnProfile) {
     return (
       <div className={styles.profilePage}>
-        <Header title="Profile" />
         <div className={styles.containerAccess}>
           {/* Center Container - Preview Card Only */}
           <div className={styles.centerContainer}>
@@ -569,6 +568,7 @@ function Profile() {
           </div>
         </div>
         </div>
+        <MobileMenu />
       </div>
     );
   }
@@ -576,7 +576,6 @@ function Profile() {
   // If viewing own profile, show edit form
   return (
     <div className={styles.profilePage}>
-      <Header title="Profile" />
       <div className={styles.containerAccess}>
         {/* Left Container - Preview Card */}
         <div className={styles.leftContainer}>
@@ -768,6 +767,7 @@ function Profile() {
         </div>
       </div>
       </div>
+      <MobileMenu />
     </div>
   );
 }

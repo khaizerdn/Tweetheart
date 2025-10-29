@@ -1,8 +1,7 @@
 .header {
   text-align: left;
   background: var(--color-primary-3);
-  margin-bottom: var(--margin-016);
-  padding: 0 var(--padding-016);
+  padding: 0 var(--padding-016) var(--padding-016) var(--padding-016);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,4 +16,13 @@
 
 .header > *:not(h1) {
   margin-left: var(--margin-012);
+}
+
+@media screen and (max-width: 685px) {
+  .header {
+    padding-top: var(--padding-016);
+    padding-bottom: var(--padding-010);
+    padding-left: var(--padding-032);
+    padding-right: var(--padding-032);
+  }
 }
