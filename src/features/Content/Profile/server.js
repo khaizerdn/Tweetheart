@@ -528,7 +528,26 @@ router.get("/api/users/feed", async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
-    // Get users except the current user with pagination
+    // Get age filter parameters
+    const minAge = parseInt(req.query.minAge);
+    const maxAge = parseInt(req.query.maxAge);
+
+    // Build age filter condition
+    let ageFilter = '';
+    let ageParams = [];
+    
+    if (minAge && maxAge) {
+      ageFilter = `AND TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN ? AND ?`;
+      ageParams = [minAge, maxAge];
+    } else if (minAge) {
+      ageFilter = `AND TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) >= ?`;
+      ageParams = [minAge];
+    } else if (maxAge) {
+      ageFilter = `AND TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) <= ?`;
+      ageParams = [maxAge];
+    }
+
+    // Get users except the current user with pagination and age filtering
     const sql = `
       SELECT 
         id,
@@ -539,11 +558,11 @@ router.get("/api/users/feed", async (req, res) => {
         bio,
         photos
       FROM users 
-      WHERE id != ?
+      WHERE id != ? ${ageFilter}
       ORDER BY created_at DESC
       LIMIT ? OFFSET ?
     `;
-    const users = await queryDB(sql, [currentUserId, limit, offset]);
+    const users = await queryDB(sql, [currentUserId, ...ageParams, limit, offset]);
 
     if (!users.length) {
       return res.json({ users: [] });
@@ -612,9 +631,9 @@ router.get("/api/users/feed", async (req, res) => {
       })
     );
 
-    // Get total count for pagination metadata
-    const countSql = `SELECT COUNT(*) as total FROM users WHERE id != ?`;
-    const countResult = await queryDB(countSql, [currentUserId]);
+    // Get total count for pagination metadata with age filtering
+    const countSql = `SELECT COUNT(*) as total FROM users WHERE id != ? ${ageFilter}`;
+    const countResult = await queryDB(countSql, [currentUserId, ...ageParams]);
     const totalUsers = countResult[0].total;
     const totalPages = Math.ceil(totalUsers / limit);
     const hasMore = page < totalPages;

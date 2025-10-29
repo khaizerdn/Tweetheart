@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Card from '../../../components/Card';
 import Header from '../../../components/Header';
 import MobileMenu from '../../../components/MobileMenu';
@@ -37,11 +37,15 @@ const Content = () => {
   const [matchUser, setMatchUser] = useState(null);
   const [showMatchModal, setShowMatchModal] = useState(false);
 
+  // Age filter state
+  const [showAgeFilter, setShowAgeFilter] = useState(false);
+  const [ageRange, setAgeRange] = useState({ min: 18, max: 65 });
+
   const containerRef = useRef(null);
   const cardRefs = useRef({});
 
   // Fetch users data with pagination
-  const fetchUsers = async (page = 1, append = false) => {
+  const fetchUsers = useCallback(async (page = 1, append = false) => {
     try {
       if (append) {
         setLoadingMore(true);
@@ -50,7 +54,7 @@ const Content = () => {
         setError("");
       }
       
-      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10`);
+      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10&minAge=${ageRange.min}&maxAge=${ageRange.max}`);
       const { users: usersData, pagination } = response.data;
       
       // Transform the data to match the expected format
@@ -90,7 +94,7 @@ const Content = () => {
         setLoading(false);
       }
     }
-  };
+  }, [ageRange]);
 
   // Load more cards when needed
   const loadMoreCards = async () => {
@@ -119,7 +123,14 @@ const Content = () => {
   // Fetch initial users data on component mount
   useEffect(() => {
     fetchUsers(1, false);
-  }, []);
+  }, [fetchUsers]);
+
+  // Refetch users when age range changes
+  useEffect(() => {
+    if (loaded) {
+      fetchUsers(1, false);
+    }
+  }, [ageRange, loaded, fetchUsers]);
 
   const getCurrentCard = () => {
     const visibleCards = cards.filter(card => 
@@ -440,7 +451,19 @@ const Content = () => {
 
   return (
     <div className={styles.home} ref={containerRef}>
-      {!isMobile && <Header title="Home" />}
+      {!isMobile && (
+        <Header title="Home">
+          <button 
+            className={styles.filterButton}
+            onClick={() => setShowAgeFilter(!showAgeFilter)}
+            title="Filter by age"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"></polygon>
+            </svg>
+          </button>
+        </Header>
+      )}
       <div className={styles.container}>
         {/* Match Modal */}
         {showMatchModal && matchUser && (
@@ -471,6 +494,88 @@ const Content = () => {
           </div>
         </div>
       )}
+
+      {/* Age Filter Modal */}
+      {showAgeFilter && (
+        <div 
+          className={styles.filterBackdrop}
+          onClick={() => setShowAgeFilter(false)}
+        />
+      )}
+      
+      <div className={`${styles.filterContainer} ${showAgeFilter ? styles.filterContainerOpen : ''}`}>
+        <div className={styles.filterHeader}>
+          <h3>Filter by Age</h3>
+          <button 
+            className={styles.closeButton}
+            onClick={() => setShowAgeFilter(false)}
+          >
+            <i className="fa fa-times"></i>
+          </button>
+        </div>
+        
+        <div className={styles.filterOptions}>
+          <div className={styles.ageRangeContainer}>
+            <label className={styles.ageRangeLabel}>
+              Age Range: {ageRange.min} - {ageRange.max}
+            </label>
+            <div className={styles.ageRangeInputs}>
+              <div className={styles.ageInputGroup}>
+                <label>Min Age</label>
+                <input
+                  type="number"
+                  min="18"
+                  max="65"
+                  value={ageRange.min}
+                  onChange={(e) => setAgeRange(prev => ({ 
+                    ...prev, 
+                    min: Math.min(parseInt(e.target.value) || 18, prev.max - 1) 
+                  }))}
+                  className={styles.ageInput}
+                />
+              </div>
+              <div className={styles.ageInputGroup}>
+                <label>Max Age</label>
+                <input
+                  type="number"
+                  min="18"
+                  max="65"
+                  value={ageRange.max}
+                  onChange={(e) => setAgeRange(prev => ({ 
+                    ...prev, 
+                    max: Math.max(parseInt(e.target.value) || 65, prev.min + 1) 
+                  }))}
+                  className={styles.ageInput}
+                />
+              </div>
+            </div>
+            <div className={styles.ageRangeSlider}>
+              <input
+                type="range"
+                min="18"
+                max="65"
+                value={ageRange.min}
+                onChange={(e) => setAgeRange(prev => ({ 
+                  ...prev, 
+                  min: Math.min(parseInt(e.target.value), prev.max - 1) 
+                }))}
+                className={styles.rangeSlider}
+              />
+              <input
+                type="range"
+                min="18"
+                max="65"
+                value={ageRange.max}
+                onChange={(e) => setAgeRange(prev => ({ 
+                  ...prev, 
+                  max: Math.max(parseInt(e.target.value), prev.min + 1) 
+                }))}
+                className={styles.rangeSlider}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       
       <div className={styles.cardContainer}>
         <div className={styles.cards}>
