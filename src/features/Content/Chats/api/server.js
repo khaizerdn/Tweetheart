@@ -326,38 +326,61 @@ router.post('/api/chats/:chatId/messages', [
           const user = otherUser[0];
           const photos = await generatePhotoUrls(user.photos);
           
-          const chatData = {
-            id: actualChatId,
-            other_user: {
-              id: otherUserId,
-              name: `${user.first_name} ${user.last_name}`.trim(),
-              age: user.age,
-              gender: user.gender,
-              bio: user.bio,
-              photos: photos
-            },
-            last_message: message,
-            last_message_time: new Date().toISOString(),
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            is_preparation: false
-          };
+          // Get the current user's info for the receiver
+          const currentUserQuery = `
+            SELECT first_name, last_name, photos, gender, bio, 
+                   TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) as age
+            FROM users WHERE id = ?
+          `;
+          const currentUser = await queryDB(currentUserQuery, [userId]);
+          
+          if (currentUser.length > 0) {
+            const currentUserData = currentUser[0];
+            const currentUserPhotos = await generatePhotoUrls(currentUserData.photos);
+            
+            const chatData = {
+              id: actualChatId,
+              other_user: {
+                id: otherUserId,
+                name: `${user.first_name} ${user.last_name}`.trim(),
+                age: user.age,
+                gender: user.gender,
+                bio: user.bio,
+                photos: photos
+              },
+              last_message: message,
+              last_message_time: new Date().toISOString(),
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              is_preparation: false
+            };
 
-          // Emit to both users
-          console.log('Emitting to user:', userId);
-          io.to(`user_${userId}`).emit('new_chat_created', chatData);
-          console.log('Emitting to user:', otherUserId);
-          io.to(`user_${otherUserId}`).emit('new_chat_created', {
-            ...chatData,
-            other_user: {
-              id: userId,
-              name: 'You', // This will be replaced with actual user data
-              age: null,
-              gender: null,
-              bio: null,
-              photos: []
-            }
-          });
+            const receiverChatData = {
+              id: actualChatId,
+              other_user: {
+                id: userId,
+                name: `${currentUserData.first_name} ${currentUserData.last_name}`.trim(),
+                age: currentUserData.age,
+                gender: currentUserData.gender,
+                bio: currentUserData.bio,
+                photos: currentUserPhotos
+              },
+              last_message: message,
+              last_message_time: new Date().toISOString(),
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              is_preparation: false
+            };
+
+            // Emit to both users with proper data
+            console.log('Emitting to user:', userId, 'room:', `user_${userId}`);
+            console.log('Sender chat data:', JSON.stringify(chatData, null, 2));
+            io.to(`user_${userId}`).emit('new_chat_created', chatData);
+            
+            console.log('Emitting to user:', otherUserId, 'room:', `user_${otherUserId}`);
+            console.log('Receiver chat data:', JSON.stringify(receiverChatData, null, 2));
+            io.to(`user_${otherUserId}`).emit('new_chat_created', receiverChatData);
+          }
 
           // Emit match_removed event to both users to update their matches list
           console.log('Emitting match_removed for users:', userId, 'and', otherUserId);

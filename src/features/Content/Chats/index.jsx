@@ -72,17 +72,27 @@ const Chats = () => {
         ?.split('=')[1];
       
       if (userId) {
+        console.log('Joining user room for userId:', userId);
         // Join user's personal room for chat list updates
         newSocket.emit('join_user_room', { userId });
+      } else {
+        console.error('No userId found in cookies');
       }
     });
 
     newSocket.on('new_chat_created', (chatData) => {
       console.log('New chat created:', chatData);
+      console.log('Chat data structure:', JSON.stringify(chatData, null, 2));
       
       // Check if we've already processed this chat ID
       if (addedChatIdsRef.current.has(chatData.id)) {
         console.log('Chat already processed, skipping:', chatData.id);
+        return;
+      }
+      
+      // Validate chat data structure
+      if (!chatData.id || !chatData.other_user) {
+        console.error('Invalid chat data structure:', chatData);
         return;
       }
       
