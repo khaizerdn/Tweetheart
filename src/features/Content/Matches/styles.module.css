@@ -212,7 +212,7 @@
 /* Tablets and mobile - squares in 2 columns, no user info */
 @media (max-width: 768px) {
   .matches {
-    padding: var(--padding-016);
+    padding: 0;
   }
   
   .container {

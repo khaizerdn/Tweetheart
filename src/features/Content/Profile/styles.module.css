@@ -577,7 +577,7 @@
   .profilePage {
     width: 100vw;
     min-height: 100vh;
-    padding: var(--padding-016);
+    padding: 0;
     margin: 0;
     background: var(--color-primary-3);
     padding-bottom: calc(var(--padding-016) + 60px); /* Keep mobile menu padding when container shortcut is hidden */
