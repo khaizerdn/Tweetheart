@@ -526,23 +526,10 @@ const Matches = () => {
               setShowFilter(false);
             }}
           >
-            <i className="fa fa-heart"></i>
-            <div className={styles.filterOptionContent}>
-              <span>New Matches</span>
-              <span className={styles.filterCount}>({withoutChatCount})</span>
-            </div>
-          </button>
-          <button 
-            className={`${styles.filterOption} ${filterType === 'with_chat' ? styles.active : ''}`}
-            onClick={() => {
-              setFilterType('with_chat');
-              setShowFilter(false);
-            }}
-          >
             <i className="fa fa-comments"></i>
             <div className={styles.filterOptionContent}>
-              <span>With Chats</span>
-              <span className={styles.filterCount}>({withChatCount})</span>
+              <span>Without Chats</span>
+              <span className={styles.filterCount}>({withoutChatCount})</span>
             </div>
           </button>
         </div>
