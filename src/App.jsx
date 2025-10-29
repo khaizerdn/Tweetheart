@@ -8,7 +8,7 @@ import layoutStyles from './utils/styles/layout.module.css';
 import Menu from './features/Menu/features';
 import BlankPage from './components/BlankPage';
 import Content from './features/Content/Home';
-import Profile from './features/Content/Profile';
+import ProfileWrapper from './features/Content/ProfileWrapper';
 import Matches from './features/Content/Matches';
 import Chats from './features/Content/Chats';
 import ChatRoom from './features/Content/Chats/ChatRoom';
@@ -109,7 +109,7 @@ function App() {
                           </OverlayScrollbarsComponent>
                         } />
                         <Route path="/chats/:chatId" element={<ChatRoom />} />
-                        <Route path="/profile/:userId" element={<Profile />} />
+                        <Route path="/profile/:userId" element={<ProfileWrapper />} />
                         <Route path="/settings" element={
                           <OverlayScrollbarsComponent
                             options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },

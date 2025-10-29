@@ -1,0 +1,196 @@
+.profilePage {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-primary-3);
+  font-family: var(--font-family-primary);
+  padding: var(--padding-016);
+  padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
+}
+
+.containerAccess {
+  --container-gap: 0;
+  display: flex;
+  gap: var(--container-gap);
+  width: 100%;
+  background-color: var(--background-color-1);
+  font-family: var(--font-family-primary);
+}
+
+/* Center Container - Preview Card Only */
+.centerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.previewCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-016);
+  width: 100%;
+  max-width: 350px;
+}
+
+/* Custom placeholder for Profile preview */
+.placeholderPhoto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-016);
+  color: var(--font-color-muted);
+  background: var(--background-color-2);
+}
+
+.placeholderPhoto i {
+  font-size: var(--font-size-064);
+  color: var(--font-color-muted);
+}
+
+.placeholderPhoto p {
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+  text-align: center;
+  padding: 0 var(--padding-024);
+}
+
+/* Card info content styles specific to Profile */
+.nameAge {
+  margin-bottom: var(--padding-012);
+}
+
+.nameAge h3 {
+  margin: 0 0 var(--margin-004) 0;
+  font-size: var(--font-size-028);
+  color: var(--color-white);
+  font-weight: var(--font-weight-semi-bold);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.category {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.category i {
+  font-size: var(--font-size-012);
+}
+
+.bioPreview {
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.95);
+  line-height: var(--line-height-default);
+  margin-top: var(--margin-008);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Loading styles */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.loadingMessage {
+  font-size: var(--font-size-018);
+  color: var(--font-color-muted);
+}
+
+/* Message styles */
+.errorMessage {
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+}
+
+/* Mobile menu responsive adjustments - show when container shortcut is hidden (685px and below) */
+@media screen and (min-width: 686px) {
+  .profilePage {
+    padding-bottom: var(--padding-016); /* Remove mobile menu padding when container shortcut is visible */
+  }
+
+  .centerContainer {
+    padding: 0;
+  }
+
+  .previewCard {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+  }
+}
+
+@media screen and (max-width: 685px) {
+  .profilePage {
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: var(--color-primary-3);
+    padding-bottom: calc(var(--padding-016) + 60px); /* Keep mobile menu padding when container shortcut is hidden */
+  }
+
+  .containerAccess {
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+  }
+
+  .centerContainer {
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+  }
+
+  .previewCard {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+}
+
+/* Small screens: 286px - 685px */
+@media screen and (min-width: 286px) and (max-width: 820px) {
+  .nameAge h3 {
+    font-size: var(--font-size-020);
+  }
+}
+
+/* Medium screens / Tablet: 685px - 1006px */
+@media screen and (min-width: 820px) and (max-width: 1006px) {
+  .nameAge h3 {
+    font-size: var(--font-size-024);
+  }
+}

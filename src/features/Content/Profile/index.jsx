@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../../../components/InputFields";
 import Button from "../../../components/Buttons/Button";
@@ -70,8 +70,6 @@ const loadFromCache = () => {
 
 function Profile() {
   const navigate = useNavigate();
-  const { userId } = useParams();
-  const [currentUserId, setCurrentUserId] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -109,11 +107,6 @@ function Profile() {
   };
 
   const age = useMemo(() => calculateAge(birthDate), [birthDate]);
-
-  // Determine if viewing own profile
-  const isOwnProfile = useMemo(() => {
-    return currentUserId && userId && currentUserId === userId;
-  }, [currentUserId, userId]);
 
   // Get display name
   const displayName = useMemo(() => {
@@ -226,18 +219,6 @@ function Profile() {
     setPhotos(newPhotos);
   };
 
-  // Get current user ID and determine if viewing own profile
-  useEffect(() => {
-    const userIdFromCookie = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('userId='))
-      ?.split('=')[1];
-    
-    if (userIdFromCookie) {
-      setCurrentUserId(userIdFromCookie);
-    }
-  }, []);
-
   // Load user data on component mount
   useEffect(() => {
     const fetchUserData = async () => {
@@ -255,11 +236,11 @@ function Profile() {
           const birthDateData = userData.birthDate || "";
           const bioData = userData.bio || "";
 
-        setFirstName(firstNameData);
-        setLastName(lastNameData);
-        setGender(genderData);
-        setBirthDate(birthDateData);
-        setBio(bioData);
+          setFirstName(firstNameData);
+          setLastName(lastNameData);
+          setGender(genderData);
+          setBirthDate(birthDateData);
+          setBio(bioData);
 
           // Convert photo URLs to preview format and maintain order
           const photoPreviews = [null, null, null, null, null, null]; // Initialize with 6 null slots
@@ -293,7 +274,7 @@ function Profile() {
         }
         
         // Fetch from API if not in cache
-        const userResponse = await requestAccessToken.get(`/user-profile/${userId}`);
+        const userResponse = await requestAccessToken.get(`/user-profile`);
         const userData = userResponse.data;
         
         const firstNameData = userData.firstName || "";
@@ -309,7 +290,7 @@ function Profile() {
         setBio(bioData);
 
         // Fetch user photos
-        const photosResponse = await requestAccessToken.get(`/api/photos/${userId}`);
+        const photosResponse = await requestAccessToken.get(`/api/photos`);
         const photosData = photosResponse.data.photos || [];
         
         // Save to cache
@@ -350,10 +331,8 @@ function Profile() {
       }
     };
 
-    if (userId) {
-      fetchUserData();
-    }
-  }, [userId]);
+    fetchUserData();
+  }, []);
 
   // Cleanup effect - start timer when component unmounts
   useEffect(() => {
@@ -450,13 +429,18 @@ function Profile() {
         try {
           const formData = new FormData();
           
-          // Use userId from URL params
-          if (!userId) {
-            setError("User ID not found in URL");
+          // Get userId from cookie
+          const userIdFromCookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('userId='))
+            ?.split('=')[1];
+          
+          if (!userIdFromCookie) {
+            setError("User not authenticated");
             return;
           }
           
-          formData.append('userId', userId);
+          formData.append('userId', userIdFromCookie);
           
           // Send the complete photos array as JSON to preserve existing photos
           formData.append('photosData', JSON.stringify(photos.map((photo, index) => ({
@@ -529,52 +513,7 @@ function Profile() {
     );
   }
 
-  // If viewing another user's profile, show only the preview card
-  if (!isOwnProfile) {
-    return (
-      <div className={styles.profilePage}>
-        <div className={styles.containerAccess}>
-          {/* Center Container - Preview Card Only */}
-          <div className={styles.centerContainer}>
-          <div className={styles.previewCard}>
-            <Card
-              photos={uploadedPhotos}
-              currentPhotoIndex={currentPhotoIndex}
-              onNextPhoto={nextPhoto}
-              onPrevPhoto={prevPhoto}
-              placeholder={
-                <div className={styles.placeholderPhoto}>
-                  <i className="fa fa-user"></i>
-                  <p>No photos available</p>
-                </div>
-              }
-            >
-              <div className={styles.nameAge}>
-                <h3>
-                  {displayName}
-                  {age && `, ${age}`}
-                </h3>
-                <div className={styles.category}>
-                  <i className="fa fa-venus-mars"></i>
-                  <span>{displayGender}</span>
-                </div>
-              </div>
-              
-              {bio && (
-                <div className={styles.bioPreview}>
-                  {bio}
-                </div>
-              )}
-            </Card>
-          </div>
-        </div>
-        </div>
-        <MobileMenu />
-      </div>
-    );
-  }
-
-  // If viewing own profile, show edit form
+  // Show edit form for own profile
   return (
     <div className={styles.profilePage}>
       <Header title="Edit Profile" />
