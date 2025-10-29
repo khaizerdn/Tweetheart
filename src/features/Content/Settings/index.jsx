@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header";
+import MobileMenu from "../../../components/MobileMenu";
 import styles from "./styles.module.css";
 
 function Settings() {
@@ -35,12 +36,13 @@ function Settings() {
   if (isLoading) {
     return (
       <div className={styles.settingsPage}>
-        <Header title="Settings" />
+        <Header title="Settings" className={styles.settingsHeader} />
         <div className={styles.containerAccess}>
           <div className={styles.loadingContainer}>
             <div className={styles.loadingMessage}>Loading settings...</div>
           </div>
         </div>
+        <MobileMenu />
       </div>
     );
   }
@@ -98,6 +100,7 @@ function Settings() {
         </div>
       </div>
       </div>
+      <MobileMenu />
     </div>
   );
 }

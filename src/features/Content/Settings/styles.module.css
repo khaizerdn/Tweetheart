@@ -4,6 +4,11 @@
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
   padding: var(--padding-016);
+  padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
+}
+
+.settingsHeader {
+  display: flex !important;
 }
 
 .containerAccess {
@@ -91,13 +96,14 @@
   border: 1px solid var(--background-color-primary-default-1);
 }
 
-/* Theme Toggle Styles */
+/* Theme Toggle Styles - Simplified */
 .themeToggleContainer {
   display: flex;
   align-items: center;
-  gap: var(--gap-024);
-  flex: 1;
-  margin-right: var(--margin-024);
+  justify-content: space-between;
+  width: 100%;
+  max-width: 200px;
+  margin-left: auto;
 }
 
 .themeOption {
@@ -109,11 +115,11 @@
 }
 
 .themePreview {
-  width: 60px;
-  height: 40px;
+  width: 40px;
+  height: 30px;
   border-radius: var(--border-radius-008);
   border: 2px solid var(--background-color-primary-muted-1);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -121,7 +127,6 @@
 
 .themePreview.active {
   border-color: var(--background-color-secondary-default);
-  box-shadow: 0 0 0 2px var(--background-color-secondary-default);
 }
 
 .themePreviewContent {
@@ -131,13 +136,13 @@
 }
 
 .themePreviewHeader {
-  height: 12px;
+  height: 8px;
   background-color: var(--color-primary-1);
   border-bottom: 1px solid var(--color-primary-3);
 }
 
 .themePreviewBody {
-  height: 28px;
+  height: 22px;
   background-color: var(--color-primary-2);
   position: relative;
 }
@@ -145,10 +150,10 @@
 .themePreviewBody::after {
   content: '';
   position: absolute;
-  top: 4px;
-  left: 8px;
-  right: 8px;
-  height: 2px;
+  top: 3px;
+  left: 6px;
+  right: 6px;
+  height: 1px;
   background-color: var(--color-primary-4);
   border-radius: 1px;
 }
@@ -156,10 +161,10 @@
 .themePreviewBody::before {
   content: '';
   position: absolute;
-  top: 8px;
-  left: 8px;
-  right: 12px;
-  height: 2px;
+  top: 6px;
+  left: 6px;
+  right: 8px;
+  height: 1px;
   background-color: var(--color-primary-5);
   border-radius: 1px;
 }
@@ -182,7 +187,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 var(--margin-016);
+  margin: 0 var(--margin-012);
 }
 
 .toggleInput {
@@ -192,14 +197,13 @@
 .toggleLabel {
   display: flex;
   align-items: center;
-  width: 60px;
-  height: 32px;
+  width: 44px;
+  height: 22px;
   background-color: var(--background-color-primary-muted-1);
-  border-radius: var(--border-radius-999);
+  border-radius: 11px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
-  border: 2px solid transparent;
 }
 
 .toggleLabel:hover {
@@ -210,23 +214,19 @@
   background-color: var(--background-color-secondary-default);
 }
 
-.toggleInput:checked + .toggleLabel:hover {
-  background-color: var(--background-color-secondary-hover);
-}
-
 .toggleSlider {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   background-color: var(--color-white);
   border-radius: 50%;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: absolute;
   left: 2px;
-  box-shadow: var(--shadow-1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .toggleInput:checked + .toggleLabel .toggleSlider {
-  transform: translateX(28px);
+  transform: translateX(22px);
 }
 
 /* Loading styles */
@@ -245,6 +245,10 @@
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
+  .settingsPage {
+    padding: 0;
+  }
+  
   .containerAccess {
     padding: var(--padding-024) var(--padding-012);
   }
@@ -278,28 +282,52 @@
   }
 
   .themeToggleContainer {
-    flex-direction: column;
-    gap: var(--gap-016);
-    margin-right: 0;
     width: 100%;
-  }
-
-  .toggleSwitch {
-    margin: var(--margin-008) 0;
-  }
-
-  .themeOption {
+    max-width: 100%;
+    margin-left: 0;
+    justify-content: space-between;
     flex-direction: row;
     gap: var(--gap-012);
   }
 
+  .themeOption {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-008);
+  }
+
   .themePreview {
-    width: 50px;
-    height: 32px;
+    width: 40px;
+    height: 30px;
+  }
+
+  .themePreviewHeader {
+    height: 8px;
+  }
+
+  .themePreviewBody {
+    height: 22px;
+  }
+
+  .themePreviewBody::after {
+    top: 3px;
+    left: 6px;
+    right: 6px;
+  }
+
+  .themePreviewBody::before {
+    top: 6px;
+    left: 6px;
+    right: 8px;
   }
 
   .themeLabel {
-    font-size: var(--font-size-014);
+    font-size: var(--font-size-012);
+  }
+
+  .toggleSwitch {
+    margin: 0 var(--margin-012);
   }
 }
 
@@ -321,16 +349,30 @@
   }
 
   .themeToggleContainer {
-    gap: var(--gap-012);
+    gap: var(--gap-008);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .themeOption {
+    flex: 0 0 auto;
+    min-width: 60px;
   }
 
   .themePreview {
-    width: 45px;
-    height: 28px;
+    width: 35px;
+    height: 25px;
   }
 
   .themeLabel {
-    font-size: var(--font-size-012);
+    font-size: var(--font-size-010);
+  }
+
+  .toggleSwitch {
+    margin: var(--margin-008) 0;
+    order: -1;
+    width: 100%;
+    justify-content: center;
   }
 
   .toggleLabel {
