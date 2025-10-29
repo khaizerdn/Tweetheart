@@ -256,7 +256,7 @@
 }
 
 .filterButton {
-  background: var(--color-primary);
+  background: var(--background-color-secondary-default);
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -266,15 +266,22 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: white;
+  color: var(--color-white);
+  position: relative;
+}
+
+.filterButton i {
+  font-size: 16px;
+  color: var(--color-white);
 }
 
 .filterButton:hover {
-  background: var(--color-primary-dark, #d32f2f);
+  background: var(--background-color-secondary-hover);
   transform: scale(1.05);
 }
 
 .filterButton:active {
+  background: var(--background-color-secondary-active);
   transform: scale(0.95);
 }
 
