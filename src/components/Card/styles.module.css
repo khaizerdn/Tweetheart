@@ -148,6 +148,15 @@
   z-index: 3;
 }
 
+/* Unmatch Button Container */
+.unmatchButtonContainer {
+  position: absolute;
+  bottom: var(--padding-012);
+  right: var(--padding-012);
+  z-index: 4;
+  pointer-events: auto;
+}
+
 /* Allow child elements to be interactive but prevent text selection */
 .cardInfo * {
   pointer-events: auto;

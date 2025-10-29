@@ -16,6 +16,7 @@ const Card = React.forwardRef(({
   showIndicators = true,
   placeholder,
   overlays,
+  unmatchButton,
   ...props
 }, ref) => {
   const [loadedPhotos, setLoadedPhotos] = useState(new Set());
@@ -133,6 +134,13 @@ const Card = React.forwardRef(({
       {children && (
         <div className={styles.cardInfo}>
           {children}
+        </div>
+      )}
+      
+      {/* Unmatch button - positioned in bottom right */}
+      {unmatchButton && (
+        <div className={styles.unmatchButtonContainer}>
+          {unmatchButton}
         </div>
       )}
     </div>

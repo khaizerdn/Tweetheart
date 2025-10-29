@@ -320,6 +320,61 @@ router.get("/api/likes/liked-by", async (req, res) => {
 });
 
 // =============================
+// ✅ UNMATCH USER
+// =============================
+router.delete("/api/likes/unmatch/:matchId", async (req, res) => {
+  try {
+    const currentUserId = req.cookies?.userId;
+    const { matchId } = req.params;
+
+    if (!currentUserId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    if (!matchId) {
+      return res.status(400).json({ message: "Match ID is required" });
+    }
+
+    // Get the chat_id before deleting the match
+    const matchData = await queryDB(`
+      SELECT chat_id FROM users_likes 
+      WHERE liker_id = ? AND liked_id = ? AND is_mutual = 1
+    `, [currentUserId, matchId]);
+
+    const chatId = matchData.length > 0 ? matchData[0].chat_id : null;
+
+    // Delete the mutual likes (both directions)
+    await queryDB(`
+      DELETE FROM users_likes 
+      WHERE (liker_id = ? AND liked_id = ?) OR (liker_id = ? AND liked_id = ?)
+    `, [currentUserId, matchId, matchId, currentUserId]);
+
+    // If there was a chat, delete it and all its messages
+    if (chatId) {
+      // Delete all messages in the chat
+      await queryDB(`
+        DELETE FROM messages WHERE chat_id = ?
+      `, [chatId]);
+
+      // Delete the chat itself
+      await queryDB(`
+        DELETE FROM chats WHERE id = ?
+      `, [chatId]);
+    }
+
+    res.json({
+      success: true,
+      message: "Successfully unmatched user",
+      chatDeleted: !!chatId
+    });
+
+  } catch (error) {
+    console.error("Error unmatching user:", error);
+    res.status(500).json({ message: "Server error while unmatching user" });
+  }
+});
+
+// =============================
 // ✅ TEST ENDPOINT
 // =============================
 router.get("/api/likes/test", async (req, res) => {

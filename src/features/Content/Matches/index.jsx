@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
 import Header from '../../../components/Header';
+import ModalAlertDialog from '../../../components/Modals/ModalAlertDialog';
+import { unmatchUser } from './server';
 import styles from './styles.module.css';
 
 const Matches = () => {
@@ -18,6 +20,9 @@ const Matches = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isConnected, setIsConnected] = useState(false);
+  const [showUnmatchModal, setShowUnmatchModal] = useState(false);
+  const [unmatchTarget, setUnmatchTarget] = useState(null);
+  const [isUnmatching, setIsUnmatching] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const navigate = useNavigate();
@@ -280,6 +285,46 @@ const Matches = () => {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  // Handle unmatch button click
+  const handleUnmatchClick = (matchId, event) => {
+    event.stopPropagation(); // Prevent card click
+    const match = matches.find(m => m.id === matchId);
+    setUnmatchTarget(match);
+    setShowUnmatchModal(true);
+  };
+
+  // Handle unmatch confirmation
+  const handleUnmatchConfirm = async () => {
+    if (!unmatchTarget || isUnmatching) return;
+
+    try {
+      setIsUnmatching(true);
+      
+      // Call the unmatch API
+      await unmatchUser(unmatchTarget.id);
+      
+      // Remove the match from the local state
+      setMatches(prev => prev.filter(match => match.id !== unmatchTarget.id));
+      setFilteredMatches(prev => prev.filter(match => match.id !== unmatchTarget.id));
+      
+      // Close the modal
+      setShowUnmatchModal(false);
+      setUnmatchTarget(null);
+      
+    } catch (error) {
+      console.error('Error unmatching user:', error);
+      // You could add a toast notification here for better UX
+    } finally {
+      setIsUnmatching(false);
+    }
+  };
+
+  // Handle unmatch cancellation
+  const handleUnmatchCancel = () => {
+    setShowUnmatchModal(false);
+    setUnmatchTarget(null);
   };
 
   // Scroll to bottom when messages change
@@ -550,6 +595,16 @@ const Matches = () => {
                  showNavigation={false}
                  showIndicators={false}
                  onClick={() => handleCardClick(match.id)}
+                 unmatchButton={
+                   <button
+                     className={styles.unmatchButton}
+                     onClick={(e) => handleUnmatchClick(match.id, e)}
+                     title="Unmatch"
+                     disabled={isUnmatching}
+                   >
+                     Unmatch
+                   </button>
+                 }
                >
                  <div className={styles.nameAge}>
                    <h3>{match.name}, {match.age}</h3>
@@ -575,6 +630,18 @@ const Matches = () => {
            </div>
         )}
       </div>
+      
+      {/* Unmatch Confirmation Modal */}
+      <ModalAlertDialog
+        isOpen={showUnmatchModal}
+        title="Unmatch User"
+        message={`Are you sure you want to unmatch with ${unmatchTarget?.name}? This will delete your chat history and you won't be able to message them again.`}
+        confirmText={isUnmatching ? "Unmatching..." : "Unmatch"}
+        cancelText="Cancel"
+        onConfirm={handleUnmatchConfirm}
+        onCancel={handleUnmatchCancel}
+        type="confirm"
+      />
     </div>
   );
 };

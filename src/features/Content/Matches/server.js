@@ -90,7 +90,7 @@ export const fetchMessages = async (matchId) => {
 // Unmatch with a user
 export const unmatchUser = async (matchId) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/matches/${matchId}`, {
+    const response = await fetch(`http://localhost:8081/api/likes/unmatch/${matchId}`, {
       method: 'DELETE',
       credentials: 'include',
       headers: {
