@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from './styles.module.css';
-import { fetchChatMessages, sendChatMessage, markMessagesAsRead } from './server';
+import { fetchChatMessages, sendChatMessage, markMessagesAsRead, createChat } from './server';
 
 const ChatRoom = () => {
   const { chatId } = useParams();
@@ -13,6 +13,8 @@ const ChatRoom = () => {
   const [error, setError] = useState('');
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [chatExists, setChatExists] = useState(false);
+  const [otherUserId, setOtherUserId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -85,15 +87,38 @@ const ChatRoom = () => {
         setLoading(true);
         setError('');
         
-        const data = await fetchChatMessages(chatId);
-        setMessages(data.messages || []);
-        
-        // Mark messages as read
-        await markMessagesAsRead(chatId);
+        // Check if this is a new chat (format: userId1_userId2)
+        if (chatId.includes('_') && !chatId.startsWith('chat_')) {
+          // This is a new chat, extract the other user ID
+          const userId = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('userId='))
+            ?.split('=')[1];
+          
+          if (userId) {
+            const userIds = chatId.split('_');
+            const otherId = userIds.find(id => id !== userId);
+            setOtherUserId(otherId);
+            setChatExists(false);
+            setMessages([]);
+          }
+        } else {
+          // This is an existing chat
+          const data = await fetchChatMessages(chatId);
+          setMessages(data.messages || []);
+          setChatExists(true);
+          
+          // Mark messages as read
+          await markMessagesAsRead(chatId);
+        }
         
       } catch (err) {
         console.error('Error fetching messages:', err);
-        setError('Failed to load messages. Please try again.');
+        if (err.message.includes('Access denied')) {
+          setError('You do not have access to this chat.');
+        } else {
+          setError('Failed to load messages. Please try again.');
+        }
       } finally {
         setLoading(false);
       }
@@ -129,19 +154,36 @@ const ChatRoom = () => {
         throw new Error('User not authenticated');
       }
 
+      let actualChatId = chatId;
+
+      // If this is a new chat, create it first
+      if (!chatExists && otherUserId) {
+        try {
+          const chatResponse = await createChat(otherUserId);
+          actualChatId = chatResponse.chat.id;
+          setChatExists(true);
+          
+          // Update the URL to reflect the new chat ID
+          window.history.replaceState(null, '', `/chats/${actualChatId}`);
+        } catch (createErr) {
+          console.error('Error creating chat:', createErr);
+          throw new Error('Failed to create chat. Please try again.');
+        }
+      }
+
       // Send message via socket
       socket.emit('send_message', {
-        chatId: chatId,
+        chatId: actualChatId,
         message: messageText,
         senderId: userId
       });
       
       // Also save to database via API
-      await sendChatMessage(chatId, messageText);
+      await sendChatMessage(actualChatId, messageText);
       
     } catch (err) {
       console.error('Error sending message:', err);
-      setError('Failed to send message. Please try again.');
+      setError(err.message || 'Failed to send message. Please try again.');
       // Restore the message to input
       setNewMessage(messageText);
     }
@@ -244,7 +286,7 @@ const ChatRoom = () => {
           {messages.length === 0 ? (
             <div className={styles.emptyMessages}>
               <i className="fa fa-comments"></i>
-              <p>No messages yet. Start the conversation!</p>
+              <p>{chatExists ? 'No messages yet. Start the conversation!' : 'Send your first message to start the conversation!'}</p>
             </div>
           ) : (
             messages.map((message) => (

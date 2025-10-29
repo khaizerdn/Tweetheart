@@ -2,69 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Card from '../../../components/Card';
 import styles from './styles.module.css';
-import { fetchMatches } from '../Matches/server';
+import { fetchChats } from './server';
 
 const Chats = () => {
-  const [matches, setMatches] = useState([]);
+  const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { chatId } = useParams();
 
-  // Fetch matches data (same as Matches component)
-  const fetchMatchesData = async () => {
+  // Fetch existing chats data
+  const fetchChatsData = async () => {
     try {
       setLoading(true);
       setError("");
       
-      const data = await fetchMatches();
-      const { matches: matchesData } = data;
+      const data = await fetchChats();
+      const { chats: chatsData } = data;
       
-      // Transform the data to match the expected format
-      const transformedMatches = matchesData.map(match => ({
-        id: match.id,
-        name: `${match.first_name} ${match.last_name}`.trim(),
-        age: match.age || null,
-        bio: match.bio || null,
-        gender: match.gender || null,
-        photos: match.photos || [],
-        lastMessage: match.lastMessage || null,
-        matchedAt: match.matched_at
-      }));
-      
-      setMatches(transformedMatches);
+      setChats(chatsData);
       
     } catch (err) {
-      console.error("Error fetching matches:", err);
-      setError("Failed to load matches. Please try again.");
-      setMatches([]);
+      console.error("Error fetching chats:", err);
+      setError("Failed to load chats. Please try again.");
+      setChats([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch matches on component mount
+  // Fetch chats on component mount
   useEffect(() => {
-    fetchMatchesData();
+    fetchChatsData();
   }, []);
 
   // Handle card click to open chat room
-  const handleCardClick = (matchId) => {
-    // Get current user ID to create a consistent chat room ID
-    const userId = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('userId='))
-      ?.split('=')[1];
-    
-    if (!userId) {
-      console.error('User not authenticated');
-      return;
-    }
-    
-    // Create a consistent chat room ID that both users will use
-    // Sort the IDs to ensure both users get the same room ID regardless of who clicks first
-    const chatRoomId = [userId, matchId].sort().join('_');
-    navigate(`/chats/${chatRoomId}`);
+  const handleCardClick = (chatId) => {
+    navigate(`/chats/${chatId}`);
   };
 
   // Show loading state
@@ -115,7 +89,7 @@ const Chats = () => {
         <h1>Chats</h1>
       </div>
       <div className={styles.container}>
-        {matches.length === 0 ? (
+        {chats.length === 0 ? (
           <div className={styles.emptyState}>
             <i className="fa fa-comments"></i>
             <h3>No conversations yet</h3>
@@ -123,34 +97,34 @@ const Chats = () => {
           </div>
         ) : (
            <div className={styles.grid}>
-             {matches.map((match) => (
+             {chats.map((chat) => (
                <Card
-                 key={match.id}
+                 key={chat.id}
                  className={styles.chatCard}
-                 photos={match.photos}
+                 photos={chat.other_user.photos}
                  currentPhotoIndex={0}
                  showNavigation={false}
                  showIndicators={false}
-                 onClick={() => handleCardClick(match.id)}
+                 onClick={() => handleCardClick(chat.id)}
                >
                  <div className={styles.nameAge}>
-                   <h3>{match.name}, {match.age}</h3>
+                   <h3>{chat.other_user.name}, {chat.other_user.age}</h3>
                    <div className={styles.category}>
                      <i className="fa fa-venus-mars"></i>
-                     <span>{match.gender === 'male' ? 'Male' : match.gender === 'female' ? 'Female' : 'Other'}</span>
+                     <span>{chat.other_user.gender === 'Male' ? 'Male' : chat.other_user.gender === 'Female' ? 'Female' : 'Other'}</span>
                    </div>
                  </div>
                  
-                 {match.lastMessage && (
+                 {chat.last_message && (
                    <div className={styles.lastMessage}>
                      <i className="fa fa-comment"></i>
-                     <span>{match.lastMessage}</span>
+                     <span>{chat.last_message}</span>
                    </div>
                  )}
                  
-                 {match.bio && (
+                 {chat.other_user.bio && (
                    <div className={styles.bioPreview}>
-                     {match.bio}
+                     {chat.other_user.bio}
                    </div>
                  )}
                </Card>

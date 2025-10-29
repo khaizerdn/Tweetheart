@@ -58,8 +58,10 @@ const Matches = () => {
     fetchMatches();
   }, []);
 
-  // Handle card click to open chat room
-  const handleCardClick = (matchId) => {
+  // Handle start chat button click
+  const handleStartChat = (matchId, e) => {
+    e.stopPropagation(); // Prevent card click
+    
     // Get current user ID to create a consistent chat room ID
     const userId = document.cookie
       .split('; ')
@@ -142,7 +144,6 @@ const Matches = () => {
                  currentPhotoIndex={0}
                  showNavigation={false}
                  showIndicators={false}
-                 onClick={() => handleCardClick(match.id)}
                >
                  <div className={styles.nameAge}>
                    <h3>{match.name}, {match.age}</h3>
@@ -157,6 +158,16 @@ const Matches = () => {
                      {match.bio}
                    </div>
                  )}
+                 
+                 <div className={styles.actions}>
+                   <button 
+                     className={styles.startChatButton}
+                     onClick={(e) => handleStartChat(match.id, e)}
+                   >
+                     <i className="fa fa-comment"></i>
+                     Start Chat
+                   </button>
+                 </div>
                </Card>
              ))}
            </div>
