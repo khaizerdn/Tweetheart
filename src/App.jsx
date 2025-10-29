@@ -13,6 +13,7 @@ import Matches from './features/Content/Matches';
 import Chats from './features/Content/Chats';
 import ChatRoom from './features/Content/Chats/ChatRoom';
 import Settings from './features/Content/Settings';
+import Notifications from './features/Content/Notifications';
 
 import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
@@ -90,6 +91,14 @@ function App() {
                             overflow: { x: 'hidden', y: 'hidden' } }}
                             className="content">
                             <Content />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="/notifications" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Notifications />
                           </OverlayScrollbarsComponent>
                         } />
                         <Route path="/matches" element={
