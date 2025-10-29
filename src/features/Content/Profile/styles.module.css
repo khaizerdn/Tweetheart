@@ -561,29 +561,64 @@
   .centerContainer {
     padding: 0;
   }
+
+  .previewCard {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+  }
 }
 
 @media screen and (max-width: 685px) {
+  .profilePage {
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: var(--color-primary-3);
+    padding-bottom: calc(var(--padding-016) + 60px); /* Keep mobile menu padding when container shortcut is hidden */
+  }
+
+  .containerAccess {
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+  }
 
   .centerContainer {
-    padding: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
   }
 
   .previewCard {
-    max-width: 100% !important;
     width: 100% !important;
+    max-width: 100% !important;
     height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
   }
 
   .photoCard {
     border-radius: 0;
-  }
-
-  .profilePage {
-    padding: 0;
-    padding-bottom: calc(var(--padding-016) + 60px); /* Keep mobile menu padding when container shortcut is hidden */
   }
 }
 
@@ -711,4 +746,31 @@ form {
 .centerContainer .previewCard {
   max-width: 400px;
   width: 100%;
+}
+
+/* Mobile-specific centerContainer styles */
+@media screen and (max-width: 685px) {
+  .centerContainer {
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+  }
+  
+  .centerContainer .previewCard {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
 }
