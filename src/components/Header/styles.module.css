@@ -1,0 +1,20 @@
+.header {
+  text-align: left;
+  background: var(--color-primary-3);
+  margin-bottom: var(--margin-016);
+  padding: 0 var(--padding-016);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  color: var(--background-color-secondary-default);
+  font-size: var(--font-size-024);
+  margin: 0;
+  flex: 1;
+}
+
+.header > *:not(h1) {
+  margin-left: var(--margin-012);
+}

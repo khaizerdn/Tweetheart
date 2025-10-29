@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
+import Header from '../../../components/Header';
 import styles from './styles.module.css';
 
 const Matches = () => {
@@ -360,9 +361,7 @@ const Matches = () => {
   if (loading) {
     return (
       <div className={styles.matches}>
-        <div className={styles.header}>
-          <h1>Matches</h1>
-        </div>
+        <Header title="Matches" />
         <div className={styles.container}>
           <div className={styles.loadingState}>
             <i className="fa fa-spinner fa-spin"></i>
@@ -378,9 +377,7 @@ const Matches = () => {
   if (error) {
     return (
       <div className={styles.matches}>
-        <div className={styles.header}>
-          <h1>Matches</h1>
-        </div>
+        <Header title="Matches" />
         <div className={styles.container}>
           <div className={styles.errorState}>
             <i className="fa fa-exclamation-triangle"></i>
@@ -474,8 +471,7 @@ const Matches = () => {
 
   return (
     <div className={styles.matches}>
-      <div className={styles.header}>
-        <h1>Matches</h1>
+      <Header title="Matches">
         <button 
           className={styles.filterButton}
           onClick={() => setShowFilter(!showFilter)}
@@ -485,7 +481,7 @@ const Matches = () => {
             <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"></polygon>
           </svg>
         </button>
-      </div>
+      </Header>
       
       {showFilter && (
         <div 

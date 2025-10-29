@@ -13,18 +13,6 @@
   padding: 0;
 }
 
-.header {
-  text-align: left;
-  background: var(--color-primary-3);
-  margin-bottom: var(--margin-016);
-  padding: 0 var(--padding-016);
-}
-
-.header h1 {
-  color: var(--background-color-secondary-default);
-  font-size: var(--font-size-024);
-  margin: 0;
-}
 
 /* Grid Layout */
 .grid {
