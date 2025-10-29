@@ -12,6 +12,7 @@ import Profile from './features/Content/Profile';
 import Matches from './features/Content/Matches';
 import Chats from './features/Content/Chats';
 import ChatRoom from './features/Content/Chats/ChatRoom';
+import Settings from './features/Content/Settings';
 
 import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
@@ -109,6 +110,14 @@ function App() {
                         } />
                         <Route path="/chats/:chatId" element={<ChatRoom />} />
                         <Route path="/profile/:userId" element={<Profile />} />
+                        <Route path="/settings" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Settings />
+                          </OverlayScrollbarsComponent>
+                        } />
                         <Route path="*" element={
                           <OverlayScrollbarsComponent
                             options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },

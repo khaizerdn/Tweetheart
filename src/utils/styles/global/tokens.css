@@ -93,33 +93,61 @@
   --color-black: hsl(230, 7%, 0%);
   --color-white: hsl(230, 7%, 100%);
 
-  /* Primary */
-  --color-primary-1: hsl(230, 7%, 0%);
-  --color-primary-2: hsl(230, 7%, 4%);
-  --color-primary-3: hsl(230, 7%, 8%);
-  --color-primary-4: hsl(230, 7%, 12%);
-  --color-primary-5: hsl(230, 7%, 16%);
-  --color-primary-6: hsl(230, 7%, 20%);
-  --color-primary-7: hsl(230, 7%, 24%);
-  --color-primary-8: hsl(230, 7%, 28%);
-  --color-primary-9: hsl(230, 7%, 32%);
-  --color-primary-10: hsl(230, 7%, 36%);
-  --color-primary-11: hsl(230, 7%, 40%);
-  --color-primary-12: hsl(230, 7%, 44%);
-  --color-primary-13: hsl(230, 7%, 48%);
-  --color-primary-14: hsl(230, 7%, 52%);
-  --color-primary-15: hsl(230, 7%, 56%);
-  --color-primary-16: hsl(230, 7%, 60%);
-  --color-primary-17: hsl(230, 7%, 64%);
-  --color-primary-18: hsl(230, 7%, 68%);
-  --color-primary-19: hsl(230, 7%, 72%);
-  --color-primary-20: hsl(230, 7%, 76%);
-  --color-primary-21: hsl(230, 7%, 80%);
-  --color-primary-22: hsl(230, 7%, 84%);
-  --color-primary-23: hsl(230, 7%, 88%);
-  --color-primary-24: hsl(230, 7%, 92%);
-  --color-primary-25: hsl(230, 7%, 96%);
-  --color-primary-26: hsl(230, 7%, 100%);
+  /* Primary - Dynamic theme support */
+  --color-primary-1: var(--theme-primary-1);
+  --color-primary-2: var(--theme-primary-2);
+  --color-primary-3: var(--theme-primary-3);
+  --color-primary-4: var(--theme-primary-4);
+  --color-primary-5: var(--theme-primary-5);
+  --color-primary-6: var(--theme-primary-6);
+  --color-primary-7: var(--theme-primary-7);
+  --color-primary-8: var(--theme-primary-8);
+  --color-primary-9: var(--theme-primary-9);
+  --color-primary-10: var(--theme-primary-10);
+  --color-primary-11: var(--theme-primary-11);
+  --color-primary-12: var(--theme-primary-12);
+  --color-primary-13: var(--theme-primary-13);
+  --color-primary-14: var(--theme-primary-14);
+  --color-primary-15: var(--theme-primary-15);
+  --color-primary-16: var(--theme-primary-16);
+  --color-primary-17: var(--theme-primary-17);
+  --color-primary-18: var(--theme-primary-18);
+  --color-primary-19: var(--theme-primary-19);
+  --color-primary-20: var(--theme-primary-20);
+  --color-primary-21: var(--theme-primary-21);
+  --color-primary-22: var(--theme-primary-22);
+  --color-primary-23: var(--theme-primary-23);
+  --color-primary-24: var(--theme-primary-24);
+  --color-primary-25: var(--theme-primary-25);
+  --color-primary-26: var(--theme-primary-26);
+
+  /* Dark Theme Primary Colors (default) */
+  --theme-primary-1: hsl(230, 7%, 0%);
+  --theme-primary-2: hsl(230, 7%, 4%);
+  --theme-primary-3: hsl(230, 7%, 8%);
+  --theme-primary-4: hsl(230, 7%, 12%);
+  --theme-primary-5: hsl(230, 7%, 16%);
+  --theme-primary-6: hsl(230, 7%, 20%);
+  --theme-primary-7: hsl(230, 7%, 24%);
+  --theme-primary-8: hsl(230, 7%, 28%);
+  --theme-primary-9: hsl(230, 7%, 32%);
+  --theme-primary-10: hsl(230, 7%, 36%);
+  --theme-primary-11: hsl(230, 7%, 40%);
+  --theme-primary-12: hsl(230, 7%, 44%);
+  --theme-primary-13: hsl(230, 7%, 48%);
+  --theme-primary-14: hsl(230, 7%, 52%);
+  --theme-primary-15: hsl(230, 7%, 56%);
+  --theme-primary-16: hsl(230, 7%, 60%);
+  --theme-primary-17: hsl(230, 7%, 64%);
+  --theme-primary-18: hsl(230, 7%, 68%);
+  --theme-primary-19: hsl(230, 7%, 72%);
+  --theme-primary-20: hsl(230, 7%, 76%);
+  --theme-primary-21: hsl(230, 7%, 80%);
+  --theme-primary-22: hsl(230, 7%, 84%);
+  --theme-primary-23: hsl(230, 7%, 88%);
+  --theme-primary-24: hsl(230, 7%, 92%);
+  --theme-primary-25: hsl(230, 7%, 96%);
+  --theme-primary-26: hsl(230, 7%, 100%);
 
   /* Secondary - Pink to Red Gradient for Dating App */
   --color-secondary-1: hsl(345, 70%, 0%);
@@ -232,4 +260,34 @@
   --background-color-status-success: rgb(28, 58, 47);
   --background-color-status-warning: rgb(59, 46, 32);
   --background-color-status-inform: rgb(31, 47, 61);
+}
+
+/* Light Theme Primary Colors */
+[data-theme="light"] {
+  --theme-primary-1: hsl(230, 7%, 100%);
+  --theme-primary-2: hsl(230, 7%, 96%);
+  --theme-primary-3: hsl(230, 7%, 92%);
+  --theme-primary-4: hsl(230, 7%, 88%);
+  --theme-primary-5: hsl(230, 7%, 84%);
+  --theme-primary-6: hsl(230, 7%, 80%);
+  --theme-primary-7: hsl(230, 7%, 76%);
+  --theme-primary-8: hsl(230, 7%, 72%);
+  --theme-primary-9: hsl(230, 7%, 68%);
+  --theme-primary-10: hsl(230, 7%, 64%);
+  --theme-primary-11: hsl(230, 7%, 60%);
+  --theme-primary-12: hsl(230, 7%, 56%);
+  --theme-primary-13: hsl(230, 7%, 52%);
+  --theme-primary-14: hsl(230, 7%, 48%);
+  --theme-primary-15: hsl(230, 7%, 44%);
+  --theme-primary-16: hsl(230, 7%, 40%);
+  --theme-primary-17: hsl(230, 7%, 36%);
+  --theme-primary-18: hsl(230, 7%, 32%);
+  --theme-primary-19: hsl(230, 7%, 28%);
+  --theme-primary-20: hsl(230, 7%, 24%);
+  --theme-primary-21: hsl(230, 7%, 20%);
+  --theme-primary-22: hsl(230, 7%, 16%);
+  --theme-primary-23: hsl(230, 7%, 12%);
+  --theme-primary-24: hsl(230, 7%, 8%);
+  --theme-primary-25: hsl(230, 7%, 4%);
+  --theme-primary-26: hsl(230, 7%, 0%);
 }
