@@ -4,3 +4,6 @@ Technical Limitations
 - When logging users likes, it can be optimize more if using debounce or batchupdate.
 - Add lazy loading in Matches page.
 - Use request access token in some sensitive areas for security.
+
+Fix
+- Sign up page: There is a delay after clicking the confirm button
