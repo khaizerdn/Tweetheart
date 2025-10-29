@@ -240,15 +240,30 @@ router.post('/api/chats/:chatId/messages', [
         return res.status(400).json({ error: 'Invalid chat ID format' });
       }
       
-      // Create the actual chat in the database
-      actualChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const insertChatQuery = `
-        INSERT INTO chats (id, user1_id, user2_id, is_active, created_at) 
-        VALUES (?, ?, ?, 1, NOW())
+      // Check if chat already exists to prevent duplicates
+      const existingChatQuery = `
+        SELECT id FROM chats 
+        WHERE (user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)
       `;
+      const existingChat = await queryDB(existingChatQuery, [userId, otherUserId, otherUserId, userId]);
       
-      await queryDB(insertChatQuery, [actualChatId, userId, otherUserId]);
-      isNewChat = true;
+      if (existingChat.length > 0) {
+        // Chat already exists, use the existing one
+        actualChatId = existingChat[0].id;
+        isNewChat = false;
+        console.log('Chat already exists, using existing ID:', actualChatId);
+      } else {
+        // Create the actual chat in the database
+        actualChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const insertChatQuery = `
+          INSERT INTO chats (id, user1_id, user2_id, is_active, created_at) 
+          VALUES (?, ?, ?, 1, NOW())
+        `;
+        
+        console.log('Creating new chat with ID:', actualChatId, 'for users:', userId, 'and', otherUserId);
+        await queryDB(insertChatQuery, [actualChatId, userId, otherUserId]);
+        isNewChat = true;
+      }
     } else {
       // This is an existing chat, verify access
       const chatQuery = `
@@ -286,6 +301,8 @@ router.post('/api/chats/:chatId/messages', [
         const userIds = chatId.split('_');
         const otherUserId = userIds.find(id => id !== userId);
         
+        console.log('Emitting new_chat_created for chat:', actualChatId, 'to users:', userId, 'and', otherUserId);
+        
         // Get the other user's info for the socket event
         const otherUserQuery = `
           SELECT first_name, last_name, photos, gender, bio, 
@@ -316,7 +333,9 @@ router.post('/api/chats/:chatId/messages', [
           };
 
           // Emit to both users
+          console.log('Emitting to user:', userId);
           io.to(`user_${userId}`).emit('new_chat_created', chatData);
+          console.log('Emitting to user:', otherUserId);
           io.to(`user_${otherUserId}`).emit('new_chat_created', {
             ...chatData,
             other_user: {

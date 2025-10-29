@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
@@ -12,6 +12,21 @@ const Chats = () => {
   const [socket, setSocket] = useState(null);
   const navigate = useNavigate();
   const { chatId } = useParams();
+  
+  // Use a ref to track added chat IDs to prevent duplicates
+  const addedChatIdsRef = useRef(new Set());
+  
+  // Function to deduplicate chats by ID
+  const deduplicateChats = (chatList) => {
+    const seen = new Set();
+    return chatList.filter(chat => {
+      if (seen.has(chat.id)) {
+        return false;
+      }
+      seen.add(chat.id);
+      return true;
+    });
+  };
 
   // Fetch existing chats data
   const fetchChatsData = async () => {
@@ -22,7 +37,14 @@ const Chats = () => {
       const data = await fetchChats();
       const { chats: chatsData } = data;
       
-      setChats(chatsData);
+      // Deduplicate the initial data
+      const deduplicatedChats = deduplicateChats(chatsData);
+      setChats(deduplicatedChats);
+      
+      // Initialize the ref with existing chat IDs
+      deduplicatedChats.forEach(chat => {
+        addedChatIdsRef.current.add(chat.id);
+      });
       
     } catch (err) {
       console.error("Error fetching chats:", err);
@@ -57,12 +79,27 @@ const Chats = () => {
 
     newSocket.on('new_chat_created', (chatData) => {
       console.log('New chat created:', chatData);
+      
+      // Check if we've already processed this chat ID
+      if (addedChatIdsRef.current.has(chatData.id)) {
+        console.log('Chat already processed, skipping:', chatData.id);
+        return;
+      }
+      
       // Add the new chat to the list
       setChats(prev => {
-        // Check if chat already exists to avoid duplicates
+        // Double-check if chat already exists in the list
         const exists = prev.some(chat => chat.id === chatData.id);
+        console.log('Chat exists check:', exists, 'for chat ID:', chatData.id);
         if (!exists) {
-          return [chatData, ...prev];
+          console.log('Adding new chat to list');
+          addedChatIdsRef.current.add(chatData.id);
+          const newChats = [chatData, ...prev];
+          // Deduplicate just in case
+          return deduplicateChats(newChats);
+        } else {
+          console.log('Chat already exists in list, skipping');
+          addedChatIdsRef.current.add(chatData.id);
         }
         return prev;
       });
@@ -86,6 +123,8 @@ const Chats = () => {
 
     return () => {
       newSocket.close();
+      // Clear the ref when component unmounts
+      addedChatIdsRef.current.clear();
     };
   }, []);
 
