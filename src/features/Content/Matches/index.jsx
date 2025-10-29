@@ -59,10 +59,10 @@ const Matches = () => {
   }, []);
 
   // Handle start chat button click
-  const handleStartChat = (matchId, e) => {
+  const handleStartChat = async (matchId, e) => {
     e.stopPropagation(); // Prevent card click
     
-    // Get current user ID to create a consistent chat room ID
+    // Get current user ID
     const userId = document.cookie
       .split('; ')
       .find(row => row.startsWith('userId='))
@@ -73,10 +73,32 @@ const Matches = () => {
       return;
     }
     
-    // Create a consistent chat room ID that both users will use
-    // Sort the IDs to ensure both users get the same room ID regardless of who clicks first
-    const chatRoomId = [userId, matchId].sort().join('_');
-    navigate(`/chats/${chatRoomId}`);
+    try {
+      // Create preparation chat
+      const response = await fetch('http://localhost:8081/api/chats', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ matchId })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create chat');
+      }
+
+      const data = await response.json();
+      const chatId = data.chat.id;
+      
+      // Navigate to the preparation chat
+      navigate(`/chats/${chatId}`);
+    } catch (error) {
+      console.error('Error creating chat:', error);
+      // Fallback to old method if API fails
+      const chatRoomId = [userId, matchId].sort().join('_');
+      navigate(`/chats/${chatRoomId}`);
+    }
   };
 
   // Show loading state

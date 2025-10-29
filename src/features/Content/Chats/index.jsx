@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
 import styles from './styles.module.css';
 import { fetchChats } from './server';
@@ -8,6 +9,7 @@ const Chats = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [socket, setSocket] = useState(null);
   const navigate = useNavigate();
   const { chatId } = useParams();
 
@@ -30,6 +32,62 @@ const Chats = () => {
       setLoading(false);
     }
   };
+
+  // Initialize socket connection for real-time updates
+  useEffect(() => {
+    const newSocket = io('http://localhost:8081', {
+      withCredentials: true,
+      transports: ['websocket']
+    });
+
+    newSocket.on('connect', () => {
+      console.log('Connected to chat list server');
+      
+      // Get current user ID
+      const userId = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('userId='))
+        ?.split('=')[1];
+      
+      if (userId) {
+        // Join user's personal room for chat list updates
+        newSocket.emit('join_user_room', { userId });
+      }
+    });
+
+    newSocket.on('new_chat_created', (chatData) => {
+      console.log('New chat created:', chatData);
+      // Add the new chat to the list
+      setChats(prev => {
+        // Check if chat already exists to avoid duplicates
+        const exists = prev.some(chat => chat.id === chatData.id);
+        if (!exists) {
+          return [chatData, ...prev];
+        }
+        return prev;
+      });
+    });
+
+    newSocket.on('chat_activated', (chatData) => {
+      console.log('Chat activated:', chatData);
+      // Update the chat in the list with new message
+      setChats(prev => prev.map(chat => 
+        chat.id === chatData.id 
+          ? { ...chat, last_message: chatData.last_message }
+          : chat
+      ));
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('Disconnected from chat list server');
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
 
   // Fetch chats on component mount
   useEffect(() => {

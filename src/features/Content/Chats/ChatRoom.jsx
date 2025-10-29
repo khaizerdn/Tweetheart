@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from './styles.module.css';
-import { fetchChatMessages, sendChatMessage, markMessagesAsRead, createChat } from './server';
+import { fetchChatMessages, sendChatMessage, markMessagesAsRead } from './server';
 
 const ChatRoom = () => {
   const { chatId } = useParams();
@@ -64,7 +64,18 @@ const ChatRoom = () => {
         is_own: message.sender_id === userId
       };
       
-      setMessages(prev => [...prev, messageWithOwnFlag]);
+      setMessages(prev => {
+        // If this is our own message, replace any temporary message with the same content
+        if (message.sender_id === userId) {
+          const filteredMessages = prev.filter(msg => 
+            !(msg.id && typeof msg.id === 'string' && msg.id.startsWith('temp_') && msg.content === message.content)
+          );
+          return [...filteredMessages, messageWithOwnFlag];
+        } else {
+          // For other users' messages, just add them
+          return [...prev, messageWithOwnFlag];
+        }
+      });
       scrollToBottom();
     });
 
@@ -87,9 +98,9 @@ const ChatRoom = () => {
         setLoading(true);
         setError('');
         
-        // Check if this is a new chat (format: userId1_userId2)
+        // Check if this is a temporary chat (format: userId1_userId2)
         if (chatId.includes('_') && !chatId.startsWith('chat_')) {
-          // This is a new chat, extract the other user ID
+          // This is a temporary chat with user IDs
           const userId = document.cookie
             .split('; ')
             .find(row => row.startsWith('userId='))
@@ -102,14 +113,38 @@ const ChatRoom = () => {
             setChatExists(false);
             setMessages([]);
           }
-        } else {
+        } else if (chatId.startsWith('chat_')) {
           // This is an existing chat
-          const data = await fetchChatMessages(chatId);
-          setMessages(data.messages || []);
-          setChatExists(true);
+          try {
+            const data = await fetchChatMessages(chatId);
+            setMessages(data.messages || []);
+            setChatExists(true);
+            
+            // Mark messages as read if there are any
+            if (data.messages && data.messages.length > 0) {
+              await markMessagesAsRead(chatId);
+            }
+          } catch (err) {
+            if (err.message.includes('Access denied')) {
+              throw err;
+            }
+            setMessages([]);
+            setChatExists(true);
+          }
+        } else {
+          // This is a legacy format (userId1_userId2), extract other user ID
+          const userId = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('userId='))
+            ?.split('=')[1];
           
-          // Mark messages as read
-          await markMessagesAsRead(chatId);
+          if (userId) {
+            const userIds = chatId.split('_');
+            const otherId = userIds.find(id => id !== userId);
+            setOtherUserId(otherId);
+            setChatExists(false);
+            setMessages([]);
+          }
         }
         
       } catch (err) {
@@ -134,6 +169,7 @@ const ChatRoom = () => {
     scrollToBottom();
   }, [messages]);
 
+
   // Handle sending a message
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -156,20 +192,22 @@ const ChatRoom = () => {
 
       let actualChatId = chatId;
 
-      // If this is a new chat, create it first
-      if (!chatExists && otherUserId) {
-        try {
-          const chatResponse = await createChat(otherUserId);
-          actualChatId = chatResponse.chat.id;
-          setChatExists(true);
-          
-          // Update the URL to reflect the new chat ID
-          window.history.replaceState(null, '', `/chats/${actualChatId}`);
-        } catch (createErr) {
-          console.error('Error creating chat:', createErr);
-          throw new Error('Failed to create chat. Please try again.');
-        }
+      // If this is a temporary chat, we'll create it when sending the message
+      if (chatId.includes('_') && !chatId.startsWith('chat_')) {
+        // This is a temporary chat with user IDs, we'll create it in the database when sending the message
+        actualChatId = chatId;
+        setChatExists(true);
       }
+
+      // Add message to local state immediately for instant UI update
+      const tempMessage = {
+        id: `temp_${Date.now()}`,
+        content: messageText,
+        sender_id: userId,
+        created_at: new Date().toISOString(),
+        is_own: true
+      };
+      setMessages(prev => [...prev, tempMessage]);
 
       // Send message via socket
       socket.emit('send_message', {
@@ -179,7 +217,13 @@ const ChatRoom = () => {
       });
       
       // Also save to database via API
-      await sendChatMessage(actualChatId, messageText);
+      const response = await sendChatMessage(actualChatId, messageText);
+      
+      // If this was a new chat, update the URL with the real chat ID
+      if (response.is_new_chat && response.chat_id) {
+        // Update the URL to reflect the new chat ID
+        navigate(`/chats/${response.chat_id}`, { replace: true });
+      }
       
     } catch (err) {
       console.error('Error sending message:', err);
