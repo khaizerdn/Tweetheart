@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import styles from './styles.module.css';
+import layoutStyles from '../../utils/styles/layout.module.css';
 
 const MobileMenu = () => {
   const navigate = useNavigate();
@@ -42,11 +42,11 @@ const MobileMenu = () => {
   };
 
   return (
-    <div className={styles.mobileMenu}>
+    <div className={layoutStyles.mobileMenu}>
       {menuItems.map((item) => (
         <button
           key={item.id}
-          className={`${styles.menuItem} ${isActive(item.path) ? styles.active : ''}`}
+          className={`${layoutStyles.menuItem} ${isActive(item.path) ? layoutStyles.active : ''}`}
           onClick={() => handleNavigation(item.path)}
           aria-label={item.label}
           title={item.label}

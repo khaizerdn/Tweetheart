@@ -4,6 +4,7 @@
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
   padding: var(--padding-016);
+  padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
 }
 
 .containerAccess {
@@ -544,6 +545,19 @@
   .actionsContainer {
     order: 3;
     flex: 0 0 auto;
+  }
+}
+
+/* Mobile menu responsive adjustments - show when container shortcut is hidden (685px and below) */
+@media screen and (min-width: 686px) {
+  .profilePage {
+    padding-bottom: var(--padding-016); /* Remove mobile menu padding when container shortcut is visible */
+  }
+}
+
+@media screen and (max-width: 685px) {
+  .profilePage {
+    padding-bottom: calc(var(--padding-016) + 80px); /* Keep mobile menu padding when container shortcut is hidden */
   }
 }
 
