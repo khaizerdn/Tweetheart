@@ -297,6 +297,8 @@
 @media screen and (min-width: 1px) and (max-width: 286px) {
   .containerAccess {
     flex-direction: column;
+    padding: 0;
+    border-radius: 0;
   }
 
   .leftContainer {
@@ -349,6 +351,8 @@
 @media screen and (min-width: 286px) and (max-width: 820px) {
   .containerAccess {
     flex-direction: column;
+    padding: 0;
+    border-radius: 0;
   }
 
   .leftContainer {
@@ -557,6 +561,7 @@
 
 @media screen and (max-width: 685px) {
   .profilePage {
+    padding: 0;
     padding-bottom: calc(var(--padding-016) + 80px); /* Keep mobile menu padding when container shortcut is hidden */
   }
 }
