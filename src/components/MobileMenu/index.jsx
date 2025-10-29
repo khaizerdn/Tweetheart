@@ -21,7 +21,7 @@ const MobileMenu = () => {
       id: 'home',
       label: 'Home',
       icon: 'fa-home',
-      path: '/home'
+      path: '/'
     },
     {
       id: 'matches',

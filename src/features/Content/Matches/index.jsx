@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
 import Header from '../../../components/Header';
+import MobileMenu from '../../../components/MobileMenu';
 import ModalAlertDialog from '../../../components/Modals/ModalAlertDialog';
 import { unmatchUser } from './server';
 import styles from './styles.module.css';
@@ -414,6 +415,7 @@ const Matches = () => {
             <p>Finding your connections</p>
           </div>
         </div>
+        <MobileMenu />
       </div>
     );
   }
@@ -436,6 +438,7 @@ const Matches = () => {
             </button>
           </div>
         </div>
+        <MobileMenu />
       </div>
     );
   }
@@ -642,6 +645,8 @@ const Matches = () => {
         onCancel={handleUnmatchCancel}
         type="confirm"
       />
+      
+      <MobileMenu />
     </div>
   );
 };
