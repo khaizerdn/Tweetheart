@@ -112,19 +112,19 @@
   color: var(--background-color-secondary-default);
   margin: 0;
   padding: 0 var(--padding-016);
-  width: 320px;
+  width: 360px;
 }
 
 .formContent {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: 100%;
 }
 
 .inputFieldsSection {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 360px;
   padding: var(--padding-016);
   gap: var(--gap-016);
   min-height: fit-content;
@@ -135,7 +135,7 @@
 .photoSection {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 360px;
   gap: var(--gap-016);
   flex-shrink: 0;
   padding: var(--padding-016);
@@ -145,7 +145,7 @@
 .actionsContainer {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 360px;
   flex-shrink: 0;
   order: 3;
 }
@@ -318,19 +318,19 @@
   }
 
   .inputFieldsSection {
-    width: 320px;
+    width: 360px;
     padding: var(--padding-008);
     order: 1;
   }
 
   .photoSection {
-    width: 320px;
+    width: 360px;
     padding: var(--padding-008);
     order: 2;
   }
 
   .actionsContainer {
-    width: 320px;
+    width: 360px;
     order: 3;
   }
 
@@ -345,7 +345,7 @@
 }
 
 /* Small screens: 286px - 685px */
-@media screen and (min-width: 286px) and (max-width: 685px) {
+@media screen and (min-width: 286px) and (max-width: 820px) {
   .containerAccess {
     flex-direction: column;
   }
@@ -370,19 +370,19 @@
   }
 
   .inputFieldsSection {
-    width: 320px;
+    width: 360px;
     padding: var(--padding-012);
     order: 1;
   }
 
   .photoSection {
-    width: 320px;
+    width: 360px;
     padding: var(--padding-012);
     order: 2;
   }
 
   .actionsContainer {
-    width: 320px;
+    width: 360px;
     order: 3;
   }
 
@@ -401,7 +401,7 @@
 }
 
 /* Medium screens / Tablet: 685px - 1006px */
-@media screen and (min-width: 685px) and (max-width: 1006px) {
+@media screen and (min-width: 820px) and (max-width: 1006px) {
   .rightContainer {
     position: relative;
     justify-content: center;
@@ -413,23 +413,22 @@
 
   .formContent {
     flex-direction: column;
-    align-items: center;
   }
 
   .inputFieldsSection {
-    width: 320px;
+    width: 360px;
     padding: var(--padding-016);
     order: 1;
   }
 
   .photoSection {
-    width: 320px;
+    width: 360px;
     padding: var(--padding-016);
     order: 2;
   }
 
   .actionsContainer {
-    width: 320px;
+    width: 360px;
     order: 3;
   }
 
@@ -454,8 +453,7 @@
   }
   
   .formContent {
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
   }
 
   .inputFieldsSection {
@@ -481,8 +479,7 @@
   }
   
   .formContent {
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
   }
 
   .inputFieldsSection {
@@ -504,7 +501,7 @@
 /* Extra large screens: 1280px - 1921px */
 @media screen and (min-width: 1280px) and (max-width: 1921px) {
   .formContent {
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .inputFieldsSection {
@@ -531,7 +528,7 @@
   }
 
   .formContent {
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .inputFieldsSection {
