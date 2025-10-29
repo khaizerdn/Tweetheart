@@ -262,6 +262,17 @@ router.post('/api/chats/:chatId/messages', [
         
         console.log('Creating new chat with ID:', actualChatId, 'for users:', userId, 'and', otherUserId);
         await queryDB(insertChatQuery, [actualChatId, userId, otherUserId]);
+        
+        // Update users_likes table to set chat_id for both mutual likes
+        const updateLikesQuery = `
+          UPDATE users_likes 
+          SET chat_id = ? 
+          WHERE ((liker_id = ? AND liked_id = ?) OR (liker_id = ? AND liked_id = ?)) 
+          AND like_type = 'like' AND is_mutual = 1
+        `;
+        await queryDB(updateLikesQuery, [actualChatId, userId, otherUserId, otherUserId, userId]);
+        console.log('Updated users_likes table with chat_id:', actualChatId, 'for users:', userId, 'and', otherUserId);
+        
         isNewChat = true;
       }
     } else {
@@ -347,6 +358,11 @@ router.post('/api/chats/:chatId/messages', [
               photos: []
             }
           });
+
+          // Emit match_removed event to both users to update their matches list
+          console.log('Emitting match_removed for users:', userId, 'and', otherUserId);
+          io.to(`user_${userId}`).emit('match_removed', { matchId: otherUserId, chatId: actualChatId });
+          io.to(`user_${otherUserId}`).emit('match_removed', { matchId: userId, chatId: actualChatId });
         }
       } else {
         // This is an existing chat, emit chat_activated event
@@ -424,46 +440,18 @@ router.post('/api/chats', [
     const existingChat = await queryDB(existingChatQuery, [userId, matchId, matchId, userId]);
     
     if (existingChat.length > 0) {
-      // If chat already exists, make sure the users_likes table is updated with chat_id
-      const updateExistingLikesQuery = `
-        UPDATE users_likes 
-        SET chat_id = ? 
-        WHERE ((liker_id = ? AND liked_id = ?) OR (liker_id = ? AND liked_id = ?)) 
-        AND like_type = 'like' AND is_mutual = 1
-        AND chat_id IS NULL
-      `;
-      await queryDB(updateExistingLikesQuery, [existingChat[0].id, userId, matchId, matchId, userId]);
-      console.log('Updated existing chat users_likes with chat_id:', existingChat[0].id);
-
       return res.json({ 
         chat: { id: existingChat[0].id, is_active: existingChat[0].is_active },
         message: 'Chat already exists'
       });
     }
 
-    // Create the actual chat in the database immediately
-    const actualChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const insertChatQuery = `
-      INSERT INTO chats (id, user1_id, user2_id, is_active, created_at) 
-      VALUES (?, ?, ?, 1, NOW())
-    `;
-    
-    console.log('Creating new chat with ID:', actualChatId, 'for users:', userId, 'and', matchId);
-    await queryDB(insertChatQuery, [actualChatId, userId, matchId]);
-
-    // Update users_likes table to set chat_id for both mutual likes
-    const updateLikesQuery = `
-      UPDATE users_likes 
-      SET chat_id = ? 
-      WHERE ((liker_id = ? AND liked_id = ?) OR (liker_id = ? AND liked_id = ?)) 
-      AND like_type = 'like' AND is_mutual = 1
-    `;
-    await queryDB(updateLikesQuery, [actualChatId, userId, matchId, matchId, userId]);
-    console.log('Updated users_likes table with chat_id:', actualChatId, 'for users:', userId, 'and', matchId);
+    // Generate a temporary chat ID using user IDs (not saved to DB yet)
+    const tempChatId = `${userId}_${matchId}`;
 
     res.json({ 
-      chat: { id: actualChatId, is_preparation: false },
-      message: 'Chat created successfully'
+      chat: { id: tempChatId, is_preparation: true },
+      message: 'Preparation chat created'
     });
   } catch (error) {
     console.error('Error creating chat:', error);

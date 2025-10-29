@@ -15,6 +15,7 @@ const ChatRoom = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [chatExists, setChatExists] = useState(false);
   const [otherUserId, setOtherUserId] = useState(null);
+  const [isPreparationChat, setIsPreparationChat] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -22,6 +23,30 @@ const ChatRoom = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Check if this is a preparation chat (temporary chat ID format: userId1_userId2)
+  const checkIfPreparationChat = () => {
+    // Preparation chats have format: userId1_userId2 (contains underscore and no 'chat_' prefix)
+    const isPrep = chatId.includes('_') && !chatId.startsWith('chat_');
+    setIsPreparationChat(isPrep);
+    return isPrep;
+  };
+
+  // Handle back button click
+  const handleBackClick = () => {
+    if (isPreparationChat) {
+      // For preparation chats, go back to matches page
+      navigate('/matches');
+    } else {
+      // For real chats, go to chats list
+      navigate('/chats');
+    }
+  };
+
+  // Check if this is a preparation chat when component mounts
+  useEffect(() => {
+    checkIfPreparationChat();
+  }, [chatId]);
 
   // Initialize socket connection
   useEffect(() => {
@@ -262,11 +287,11 @@ const ChatRoom = () => {
         <div className={styles.chatHeader}>
           <button 
             className={styles.backButton}
-            onClick={() => navigate('/chats')}
+            onClick={handleBackClick}
           >
             <i className="fa fa-arrow-left"></i>
           </button>
-          <h2>Loading...</h2>
+          <h2>{isPreparationChat ? 'New Chat' : 'Loading...'}</h2>
         </div>
         <div className={styles.chatContainer}>
           <div className={styles.loadingState}>
@@ -284,11 +309,11 @@ const ChatRoom = () => {
         <div className={styles.chatHeader}>
           <button 
             className={styles.backButton}
-            onClick={() => navigate('/chats')}
+            onClick={handleBackClick}
           >
             <i className="fa fa-arrow-left"></i>
           </button>
-          <h2>Error</h2>
+          <h2>{isPreparationChat ? 'New Chat' : 'Error'}</h2>
         </div>
         <div className={styles.chatContainer}>
           <div className={styles.errorState}>
@@ -311,11 +336,11 @@ const ChatRoom = () => {
       <div className={styles.chatHeader}>
         <button 
           className={styles.backButton}
-          onClick={() => navigate('/chats')}
+          onClick={handleBackClick}
         >
           <i className="fa fa-arrow-left"></i>
         </button>
-        <h2>Chat</h2>
+        <h2>{isPreparationChat ? 'New Chat' : 'Chat'}</h2>
         <div className={styles.connectionStatus}>
           {isConnected ? (
             <i className="fa fa-circle" style={{ color: '#4CAF50' }}></i>
@@ -330,7 +355,7 @@ const ChatRoom = () => {
           {messages.length === 0 ? (
             <div className={styles.emptyMessages}>
               <i className="fa fa-comments"></i>
-              <p>{chatExists ? 'No messages yet. Start the conversation!' : 'Send your first message to start the conversation!'}</p>
+              <p>{isPreparationChat ? 'Send your first message to start the conversation!' : (chatExists ? 'No messages yet. Start the conversation!' : 'Send your first message to start the conversation!')}</p>
             </div>
           ) : (
             messages.map((message) => (

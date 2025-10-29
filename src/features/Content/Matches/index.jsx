@@ -12,6 +12,13 @@ const Matches = () => {
   const [socket, setSocket] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
   const [filterType, setFilterType] = useState('all'); // 'all', 'with_chat', 'without_chat'
+  const [showPreparationChat, setShowPreparationChat] = useState(false);
+  const [preparationChatData, setPreparationChatData] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isConnected, setIsConnected] = useState(false);
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
   const navigate = useNavigate();
 
   // Fetch matches data
@@ -87,7 +94,7 @@ const Matches = () => {
       console.log('Match removed event received:', data);
       const { matchId } = data;
       
-      // Update the match to show it has a chat instead of removing it
+      // Update the match to show it has a chat when a real chat is created
       setMatches(prev => prev.map(match => 
         match.id === matchId 
           ? { ...match, hasChat: true, chatId: data.chatId || true }
@@ -162,40 +169,192 @@ const Matches = () => {
       return;
     }
     
+    // Show preparation chat in full screen for new matches
+    setPreparationChatData({
+      matchId: matchId,
+      match: match,
+      tempChatId: `${userId}_${matchId}`
+    });
+    setShowPreparationChat(true);
+    setMessages([]); // Clear any existing messages
+    setNewMessage(''); // Clear input
+  };
+
+  // Scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Handle back button click for preparation chat
+  const handleBackClick = () => {
+    setShowPreparationChat(false);
+    setPreparationChatData(null);
+    setMessages([]);
+    setNewMessage('');
+  };
+
+  // Handle sending message in preparation chat
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !preparationChatData) return;
+
+    const userId = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userId='))
+      ?.split('=')[1];
+
+    if (!userId) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    // Create temporary message for immediate display
+    const tempMessage = {
+      id: `temp_${Date.now()}`,
+      content: newMessage.trim(),
+      sender_id: userId,
+      is_own: true,
+      created_at: new Date().toISOString(),
+      is_temporary: true
+    };
+
+    // Add temporary message to UI immediately
+    setMessages(prev => [...prev, tempMessage]);
+    setNewMessage('');
+
     try {
-      // Create new chat
-      const response = await fetch('http://localhost:8081/api/chats', {
+      // Send message to server
+      const response = await fetch(`http://localhost:8081/api/chats/${preparationChatData.tempChatId}/messages`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ matchId })
+        body: JSON.stringify({
+          message: tempMessage.content
+        })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create chat');
+        const errorData = await response.json();
+        console.error('Server error:', errorData);
+        throw new Error(`Failed to send message: ${errorData.error || response.statusText}`);
       }
 
       const data = await response.json();
-      const chatId = data.chat.id;
       
-      // Update the match to show it has a chat (no removal)
-      setMatches(prev => prev.map(match => 
-        match.id === matchId 
-          ? { ...match, hasChat: true, chatId: chatId }
-          : match
-      ));
-      
-      // Navigate to the chat
-      navigate(`/chats/${chatId}`);
+      // If a real chat was created, navigate to it
+      if (data.is_new_chat && data.chat_id !== preparationChatData.tempChatId) {
+        // Real chat was created, navigate to it
+        navigate(`/chats/${data.chat_id}`);
+        return;
+      }
+
+      // If still preparation chat, update the message with real data
+      if (data.message_id) {
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === tempMessage.id 
+              ? { 
+                  id: data.message_id,
+                  content: tempMessage.content,
+                  sender_id: data.sender_id,
+                  created_at: new Date().toISOString(),
+                  is_own: true
+                }
+              : msg
+          )
+        );
+      }
     } catch (error) {
-      console.error('Error creating chat:', error);
-      // Fallback to old method if API fails
-      const chatRoomId = [userId, matchId].sort().join('_');
-      navigate(`/chats/${chatRoomId}`);
+      console.error('Error sending message:', error);
+      // Remove temporary message on error
+      setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
+      setNewMessage(tempMessage.content); // Restore message to input
     }
   };
+
+  // Handle Enter key press in message input
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Initialize socket connection for preparation chat
+  useEffect(() => {
+    if (showPreparationChat && preparationChatData) {
+      const newSocket = io('http://localhost:8081', {
+        withCredentials: true,
+        transports: ['websocket']
+      });
+
+      newSocket.on('connect', () => {
+        console.log('Connected to chat server for preparation chat');
+        setIsConnected(true);
+        
+        // Get current user ID
+        const userId = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('userId='))
+          ?.split('=')[1];
+        
+        // Join the specific chat room with user context
+        newSocket.emit('join_chat', {
+          chatId: preparationChatData.tempChatId,
+          userId: userId
+        });
+      });
+
+      newSocket.on('disconnect', () => {
+        console.log('Disconnected from chat server');
+        setIsConnected(false);
+      });
+
+      newSocket.on('new_message', (message) => {
+        // Get current user ID to determine if this is their own message
+        const userId = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('userId='))
+          ?.split('=')[1];
+        
+        const messageWithOwnFlag = {
+          ...message,
+          is_own: message.sender_id === userId
+        };
+        
+        setMessages(prev => {
+          // If this is our own message, replace any temporary message with the same content
+          if (message.sender_id === userId) {
+            const filteredMessages = prev.filter(msg => 
+              !(msg.id && typeof msg.id === 'string' && msg.id.startsWith('temp_') && msg.content === message.content)
+            );
+            return [...filteredMessages, messageWithOwnFlag];
+          } else {
+            // For other users' messages, just add them
+            return [...prev, messageWithOwnFlag];
+          }
+        });
+      });
+
+      newSocket.on('new_chat_created', (data) => {
+        console.log('Real chat created:', data);
+        // Navigate to the real chat
+        navigate(`/chats/${data.id}`);
+      });
+
+      setSocket(newSocket);
+
+      return () => {
+        newSocket.close();
+      };
+    }
+  }, [showPreparationChat, preparationChatData, navigate]);
 
   // Show loading state
   if (loading) {
@@ -233,6 +392,80 @@ const Matches = () => {
             >
               Try Again
             </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show preparation chat in full screen
+  if (showPreparationChat && preparationChatData) {
+    return (
+      <div className={styles.chatRoom}>
+        <div className={styles.chatHeader}>
+          <button 
+            className={styles.backButton}
+            onClick={handleBackClick}
+            title="Back to matches"
+          >
+            <i className="fa fa-arrow-left"></i>
+          </button>
+          <h2>New Chat</h2>
+          <div className={styles.connectionStatus}>
+            <i className="fa fa-circle" style={{ color: isConnected ? '#4CAF50' : '#f44336' }}></i>
+            <span>{isConnected ? 'Connected' : 'Connecting...'}</span>
+          </div>
+        </div>
+        
+        <div className={styles.chatContainer}>
+          <div className={styles.messagesContainer}>
+            {messages.length === 0 ? (
+              <div className={styles.emptyMessages}>
+                <i className="fa fa-comments"></i>
+                <p>Send your first message to start the conversation!</p>
+              </div>
+            ) : (
+              messages.map((message) => (
+                <div 
+                  key={message.id} 
+                  className={`${styles.message} ${message.is_own ? styles.ownMessage : styles.otherMessage}`}
+                >
+                  <div className={styles.messageContent}>
+                    <p>{message.content}</p>
+                    <span className={styles.messageTime}>
+                      {new Date(message.created_at).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+          
+          <div className={styles.messageInput}>
+            <div className={styles.inputContainer}>
+              <input
+                ref={inputRef}
+                type="text"
+                className={styles.textInput}
+                placeholder="Type your message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={!isConnected}
+              />
+              <button
+                className={styles.sendButton}
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim() || !isConnected}
+                title="Send message"
+              >
+                <i className="fa fa-paper-plane"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
