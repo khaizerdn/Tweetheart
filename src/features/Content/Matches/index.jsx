@@ -406,7 +406,7 @@ const Matches = () => {
   if (loading) {
     return (
       <div className={styles.matches}>
-        <Header title="Matches" />
+        <Header title="Matches" className={styles.matchesHeader} />
         <div className={styles.container}>
           <div className={styles.loadingState}>
             <i className="fa fa-spinner fa-spin"></i>
@@ -422,7 +422,7 @@ const Matches = () => {
   if (error) {
     return (
       <div className={styles.matches}>
-        <Header title="Matches" />
+        <Header title="Matches" className={styles.matchesHeader} />
         <div className={styles.container}>
           <div className={styles.errorState}>
             <i className="fa fa-exclamation-triangle"></i>
@@ -516,7 +516,7 @@ const Matches = () => {
 
   return (
     <div className={styles.matches}>
-      <Header title="Matches">
+      <Header title="Matches" className={styles.matchesHeader}>
         <button 
           className={styles.filterButton}
           onClick={() => setShowFilter(!showFilter)}

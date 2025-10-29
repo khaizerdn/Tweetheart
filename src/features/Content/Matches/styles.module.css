@@ -664,6 +664,11 @@
   box-shadow: none;
 }
 
+/* Override header hiding in mobile for Matches component */
+.matchesHeader {
+  display: flex !important;
+}
+
 /* Mobile responsiveness for chat room */
 @media (max-width: 768px) {
   .chatRoom {
