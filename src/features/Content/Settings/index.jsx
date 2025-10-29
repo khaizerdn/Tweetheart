@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Button from "../../../components/Buttons/Button";
 import styles from "./styles.module.css";
 
 function Settings() {
@@ -92,62 +91,6 @@ function Settings() {
                   </div>
                   <span className={styles.themeLabel}>Dark</span>
                 </div>
-              </div>
-            </div>
-
-            {/* Theme Test Section */}
-            <div className={styles.settingSection}>
-              <div className={styles.settingInfo}>
-                <h3>Theme Test</h3>
-                <p>Current theme colors preview</p>
-              </div>
-              <div className={styles.themeTestContainer}>
-                <div className={styles.colorTest} style={{ backgroundColor: 'var(--color-primary-1)', color: 'var(--color-primary-26)' }}>
-                  Primary 1
-                </div>
-                <div className={styles.colorTest} style={{ backgroundColor: 'var(--color-primary-26)', color: 'var(--color-primary-1)' }}>
-                  Primary 26
-                </div>
-                <div className={styles.colorTest} style={{ backgroundColor: 'var(--background-color-1)', color: 'var(--font-color-default)' }}>
-                  Background 1
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Settings Sections */}
-            <div className={styles.settingSection}>
-              <div className={styles.settingInfo}>
-                <h3>Notifications</h3>
-                <p>Manage your notification preferences</p>
-              </div>
-              <div className={styles.settingAction}>
-                <Button type="secondary" position="center">
-                  Configure
-                </Button>
-              </div>
-            </div>
-
-            <div className={styles.settingSection}>
-              <div className={styles.settingInfo}>
-                <h3>Privacy</h3>
-                <p>Control your privacy settings</p>
-              </div>
-              <div className={styles.settingAction}>
-                <Button type="secondary" position="center">
-                  Manage
-                </Button>
-              </div>
-            </div>
-
-            <div className={styles.settingSection}>
-              <div className={styles.settingInfo}>
-                <h3>Account</h3>
-                <p>Manage your account settings</p>
-              </div>
-              <div className={styles.settingAction}>
-                <Button type="secondary" position="center">
-                  Settings
-                </Button>
               </div>
             </div>
           </div>
