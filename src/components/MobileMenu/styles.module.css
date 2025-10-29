@@ -1,0 +1,90 @@
+.mobileMenu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--background-color-1);
+  border-top: 1px solid var(--background-color-primary-default-1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--padding-012);
+  border-radius: var(--border-radius-008);
+  transition: all 0.2s ease-in-out;
+  min-width: 60px;
+  height: 60px;
+  color: var(--font-color-muted);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-normal);
+}
+
+.menuItem:hover {
+  background-color: var(--background-color-3);
+  color: var(--font-color-hover);
+  transform: translateY(-1px);
+}
+
+.menuItem.active {
+  color: var(--background-color-secondary-default);
+  background-color: var(--background-color-primary-hover-1);
+}
+
+.menuItem.active:hover {
+  background-color: var(--background-color-primary-active-1);
+}
+
+.menuItem i {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  transition: all 0.2s ease-in-out;
+}
+
+.menuItem.active i {
+  color: var(--background-color-secondary-default);
+}
+
+/* Hide on desktop screens - show when container shortcut is hidden (685px and below) */
+@media screen and (min-width: 686px) {
+  .mobileMenu {
+    display: none;
+  }
+}
+
+/* Ensure proper spacing on very small screens */
+@media screen and (max-width: 320px) {
+  .menuItem {
+    min-width: 50px;
+    height: 50px;
+    padding: var(--padding-008);
+  }
+}
+
+/* Adjust for medium mobile screens */
+@media screen and (min-width: 321px) and (max-width: 480px) {
+  .menuItem {
+    min-width: 70px;
+  }
+}
+
+/* Adjust for larger mobile screens */
+@media screen and (min-width: 481px) and (max-width: 685px) {
+  .menuItem {
+    min-width: 80px;
+  }
+}
+
