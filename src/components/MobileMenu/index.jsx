@@ -12,16 +12,16 @@ const MobileMenu = () => {
 
   const menuItems = [
     {
-      id: 'home',
-      label: 'Home',
-      icon: 'fa-home',
-      path: '/home'
-    },
-    {
       id: 'notifications',
       label: 'Notifications',
       icon: 'fa-bell',
       path: '/notifications'
+    },
+    {
+      id: 'home',
+      label: 'Home',
+      icon: 'fa-home',
+      path: '/home'
     },
     {
       id: 'matches',
