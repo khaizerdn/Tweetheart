@@ -164,7 +164,11 @@
   }
   
   .cardInfo {
-    padding: var(--padding-020) var(--padding-020) calc(var(--padding-020) + 35px) var(--padding-020); /* Maintain button overlap padding */
+    padding: var(--padding-020) var(--padding-020) calc(var(--padding-020) + 40px) var(--padding-020); /* Maintain button overlap padding */
+  }
+  
+  .cardInfo > * {
+    transform: translateY(-35px);
   }
   
   .navButton {
@@ -193,7 +197,11 @@
   }
   
   .cardInfo {
-    padding: var(--padding-016) var(--padding-016) calc(var(--padding-016) + 35px) var(--padding-016); /* Maintain button overlap padding with smaller base padding */
+    padding: var(--padding-016) var(--padding-016) calc(var(--padding-016) + 40px) var(--padding-016); /* Maintain button overlap padding with smaller base padding */
+  }
+  
+  .cardInfo > * {
+    transform: translateY(-35px);
   }
   
   .navButton {

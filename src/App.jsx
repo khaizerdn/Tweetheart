@@ -6,7 +6,6 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import layoutStyles from './utils/styles/layout.module.css';
 
 import Menu from './features/Menu/features';
-import MobileMenu from './components/MobileMenu';
 import BlankPage from './components/BlankPage';
 import Content from './features/Content/Home';
 import Profile from './features/Content/Profile';
@@ -130,7 +129,6 @@ function App() {
                       </Routes>
                     </div>
                   </div>
-                  <MobileMenu />
                 </div>
               </ProtectedRoute>
             }

@@ -1,6 +1,6 @@
 .tinder {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -400,7 +400,7 @@
 @media screen and (max-width: 685px) {
   .tinder {
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     padding: 0;
     margin: 0;
     position: fixed;
@@ -411,7 +411,7 @@
 
   .cardContainer {
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -422,15 +422,14 @@
 
   .cards {
     width: 100%;
-    height: calc(100vh - 100px); /* Full height minus space for mobile menu, buttons will overlap */
-    max-width: 100%;
+    height: 100%; /* Full height minus space for mobile menu, buttons will overlap */
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     z-index: 1;
-    margin-bottom: -35px; /* Maintain button overlap on mobile */
+    margin-bottom: -70px; /* Increased negative margin for more button overlap on mobile */
   }
 
   .swipeCard {
@@ -444,8 +443,8 @@
   .buttons {
     width: 100%;
     max-width: 100%;
-    margin-top: 0; /* No top margin since buttons overlap with card */
-    margin-bottom: var(--padding-016);
+    margin-top: -10px; /* Move buttons up by 20px to match card info adjustment */
+    margin-bottom: 80px; /* Increased bottom margin to account for MobileMenu height (60px) + extra spacing */
     padding: 0 var(--padding-016);
     justify-content: center;
     gap: var(--padding-020);

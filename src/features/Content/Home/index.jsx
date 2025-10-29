@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Card from '../../../components/Card';
+import MobileMenu from '../../../components/MobileMenu';
 import requestAccessToken from '../../../api/requestAccessToken';
 // Remove likesAPI import since we'll use direct fetch calls
 import styles from './styles.module.css';
@@ -524,7 +525,7 @@ const Content = () => {
             </div>
           )}
         </div>
-
+        <MobileMenu />
         {/* Action buttons positioned below the card */}
         <div className={styles.buttons}>
           {allCardsSwiped ? (
