@@ -7,6 +7,10 @@
   padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
 }
 
+.profileHeader {
+  display: flex !important;
+}
+
 .containerAccess {
   --container-gap: 0;
   display: flex;
@@ -573,7 +577,7 @@
   .profilePage {
     width: 100vw;
     min-height: 100vh;
-    padding: 0;
+    padding: var(--padding-016);
     margin: 0;
     background: var(--color-primary-3);
     padding-bottom: calc(var(--padding-016) + 60px); /* Keep mobile menu padding when container shortcut is hidden */
@@ -582,7 +586,7 @@
   .containerAccess {
     width: 100vw;
     min-height: 100vh;
-    padding: 0;
+    padding: 0 var(--padding-008);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

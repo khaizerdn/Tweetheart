@@ -516,7 +516,7 @@ function Profile() {
   // Show edit form for own profile
   return (
     <div className={styles.profilePage}>
-      <Header title="Edit Profile" />
+      <Header title="Edit Profile" className={styles.profileHeader} />
       <div className={styles.containerAccess}>
         {/* Left Container - Preview Card */}
         <div className={styles.leftContainer}>
