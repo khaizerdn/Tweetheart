@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
 import Header from '../../../components/Header';
+import MobileMenu from '../../../components/MobileMenu';
 import styles from './styles.module.css';
 import { fetchChats } from './server';
 
@@ -153,7 +154,7 @@ const Chats = () => {
   if (loading) {
     return (
       <div className={styles.chats}>
-        <Header title="Chats" />
+        <Header title="Chats" className={styles.chatsHeader} />
         <div className={styles.container}>
           <div className={styles.loadingState}>
             <i className="fa fa-spinner fa-spin"></i>
@@ -161,6 +162,7 @@ const Chats = () => {
             <p>Finding your conversations</p>
           </div>
         </div>
+        <MobileMenu />
       </div>
     );
   }
@@ -169,7 +171,7 @@ const Chats = () => {
   if (error) {
     return (
       <div className={styles.chats}>
-        <Header title="Chats" />
+        <Header title="Chats" className={styles.chatsHeader} />
         <div className={styles.container}>
           <div className={styles.errorState}>
             <i className="fa fa-exclamation-triangle"></i>
@@ -183,6 +185,7 @@ const Chats = () => {
             </button>
           </div>
         </div>
+        <MobileMenu />
       </div>
     );
   }
@@ -234,6 +237,7 @@ const Chats = () => {
            </div>
         )}
       </div>
+      <MobileMenu />
     </div>
   );
 };

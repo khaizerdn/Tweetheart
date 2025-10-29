@@ -20,6 +20,10 @@
 
 @media screen and (max-width: 685px) {
   .header {
-    display: none;
+    padding: var(--padding-012) var(--padding-016);
+  }
+  
+  .header h1 {
+    font-size: var(--font-size-020);
   }
 }

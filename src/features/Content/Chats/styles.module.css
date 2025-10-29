@@ -4,6 +4,11 @@
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
   padding: var(--padding-016);
+  padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
+}
+
+.chatsHeader {
+  display: flex !important;
 }
 
 .container {
@@ -279,7 +284,7 @@
 /* Tablets and mobile - squares in 2 columns, no user info */
 @media (max-width: 768px) {
   .chats {
-    padding: var(--padding-016);
+    padding: 0;
   }
   
   .container {
