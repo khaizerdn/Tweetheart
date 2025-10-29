@@ -169,7 +169,7 @@ const Chats = () => {
             <h3>Oops! Something went wrong</h3>
             <p>{error}</p>
             <button 
-              onClick={fetchMatchesData} 
+              onClick={fetchChatsData} 
               className={styles.retryButton}
             >
               Try Again
@@ -198,7 +198,7 @@ const Chats = () => {
                <Card
                  key={chat.id}
                  className={styles.chatCard}
-                 photos={chat.other_user.photos}
+                 photos={chat.other_user.photos ? chat.other_user.photos.map(photo => photo.url || photo) : []}
                  currentPhotoIndex={0}
                  showNavigation={false}
                  showIndicators={false}
