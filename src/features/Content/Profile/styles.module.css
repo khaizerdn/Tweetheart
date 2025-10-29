@@ -117,7 +117,7 @@
   color: var(--background-color-secondary-default);
   margin: 0;
   padding: 0 var(--padding-016);
-  width: 360px;
+  width: 320px;
 }
 
 .formContent {
@@ -129,7 +129,7 @@
 .inputFieldsSection {
   display: flex;
   flex-direction: column;
-  width: 360px;
+  width: 320px;
   padding: var(--padding-016);
   gap: var(--gap-016);
   min-height: fit-content;
@@ -140,7 +140,7 @@
 .photoSection {
   display: flex;
   flex-direction: column;
-  width: 360px;
+  width: 320px;
   gap: var(--gap-016);
   flex-shrink: 0;
   padding: var(--padding-016);
@@ -150,7 +150,7 @@
 .actionsContainer {
   display: flex;
   flex-direction: column;
-  width: 360px;
+  width: 320px;
   flex-shrink: 0;
   order: 3;
 }
@@ -325,19 +325,19 @@
   }
 
   .inputFieldsSection {
-    width: 360px;
+    width: 320px;
     padding: var(--padding-008);
     order: 1;
   }
 
   .photoSection {
-    width: 360px;
+    width: 320px;
     padding: var(--padding-008);
     order: 2;
   }
 
   .actionsContainer {
-    width: 360px;
+    width: 320px;
     order: 3;
   }
 
@@ -379,19 +379,19 @@
   }
 
   .inputFieldsSection {
-    width: 360px;
+    width: 320px;
     padding: var(--padding-012);
     order: 1;
   }
 
   .photoSection {
-    width: 360px;
+    width: 320px;
     padding: var(--padding-012);
     order: 2;
   }
 
   .actionsContainer {
-    width: 360px;
+    width: 320px;
     order: 3;
   }
 
@@ -425,19 +425,19 @@
   }
 
   .inputFieldsSection {
-    width: 360px;
+    width: 320px;
     padding: var(--padding-016);
     order: 1;
   }
 
   .photoSection {
-    width: 360px;
+    width: 320px;
     padding: var(--padding-016);
     order: 2;
   }
 
   .actionsContainer {
-    width: 360px;
+    width: 320px;
     order: 3;
   }
 
@@ -584,7 +584,7 @@
   }
 
   .containerAccess {
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
     padding: 0 var(--padding-008);
     display: flex;
