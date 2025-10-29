@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import styles from '../utils/styles/styles.module.css';
 import Button from '../components/button';
-import Search from '../components/search';
 import Logo from '../components/logo';
 import Profile from '../components/profile';
 import requestAccessToken from '../../../api/requestAccessToken';
@@ -99,7 +98,6 @@ function Menu() {
       {/* Highlighted Features Container */}
       <div className={styles.highlightedContainer}>
         <Profile userData={userData} profilePhotoUrl={profilePhotoUrl} currentUserId={currentUserId} />
-        <Search />
       </div>
 
       <hr className={styles.sectionSeparator} />
