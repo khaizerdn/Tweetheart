@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
+import Header from '../../../components/Header';
 import styles from './styles.module.css';
 import { fetchChats } from './server';
 
@@ -152,9 +153,7 @@ const Chats = () => {
   if (loading) {
     return (
       <div className={styles.chats}>
-        <div className={styles.header}>
-          <h1>Chats</h1>
-        </div>
+        <Header title="Chats" />
         <div className={styles.container}>
           <div className={styles.loadingState}>
             <i className="fa fa-spinner fa-spin"></i>
@@ -170,9 +169,7 @@ const Chats = () => {
   if (error) {
     return (
       <div className={styles.chats}>
-        <div className={styles.header}>
-          <h1>Chats</h1>
-        </div>
+        <Header title="Chats" />
         <div className={styles.container}>
           <div className={styles.errorState}>
             <i className="fa fa-exclamation-triangle"></i>
@@ -192,9 +189,7 @@ const Chats = () => {
 
   return (
     <div className={styles.chats}>
-      <div className={styles.header}>
-        <h1>Chats</h1>
-      </div>
+      <Header title="Chats" />
       <div className={styles.container}>
         {chats.length === 0 ? (
           <div className={styles.emptyState}>

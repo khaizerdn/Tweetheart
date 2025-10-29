@@ -4,6 +4,7 @@ import axios from "axios";
 import InputField from "../../../components/InputFields";
 import Button from "../../../components/Buttons/Button";
 import Card from "../../../components/Card";
+import Header from "../../../components/Header";
 import requestAccessToken from "../../../api/requestAccessToken";
 import styles from "./styles.module.css";
 
@@ -530,11 +531,12 @@ function Profile() {
   // If viewing another user's profile, show only the preview card
   if (!isOwnProfile) {
     return (
-      <div className={styles.containerAccess}>
-        {/* Center Container - Preview Card Only */}
-        <div className={styles.centerContainer}>
+      <div className={styles.profilePage}>
+        <Header title="Profile" />
+        <div className={styles.containerAccess}>
+          {/* Center Container - Preview Card Only */}
+          <div className={styles.centerContainer}>
           <div className={styles.previewCard}>
-            <div className={styles.previewLabel}>{displayName}'s Profile</div>
             <Card
               photos={uploadedPhotos}
               currentPhotoIndex={currentPhotoIndex}
@@ -566,17 +568,19 @@ function Profile() {
             </Card>
           </div>
         </div>
+        </div>
       </div>
     );
   }
 
   // If viewing own profile, show edit form
   return (
-    <div className={styles.containerAccess}>
-      {/* Left Container - Preview Card */}
-      <div className={styles.leftContainer}>
+    <div className={styles.profilePage}>
+      <Header title="Profile" />
+      <div className={styles.containerAccess}>
+        {/* Left Container - Preview Card */}
+        <div className={styles.leftContainer}>
         <div className={styles.previewCard}>
-          <div className={styles.previewLabel}>Preview</div>
           <Card
             photos={uploadedPhotos}
             currentPhotoIndex={currentPhotoIndex}
@@ -612,7 +616,6 @@ function Profile() {
       {/* Right Container - Input Fields and Photos */}
       <div className={styles.rightContainer}>
         <div className={styles.formSection}>
-          <h1>Edit Profile</h1>
           <form onSubmit={handleSubmit}>
             <div className={styles.formContent}>
               {/* Input Fields Section */}
@@ -763,6 +766,7 @@ function Profile() {
             </div>
           </form>
         </div>
+      </div>
       </div>
     </div>
   );

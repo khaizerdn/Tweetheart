@@ -1,3 +1,11 @@
+.profilePage {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-primary-3);
+  font-family: var(--font-family-primary);
+  padding: var(--padding-016);
+}
+
 .containerAccess {
   --container-gap: 0;
   display: flex;
@@ -23,12 +31,6 @@
   max-width: 350px;
 }
 
-.previewLabel {
-  font-size: var(--font-size-032);
-  font-weight: var(--font-weight-semi-bold);
-  color: var(--background-color-secondary-default);
-  text-align: left;
-}
 
 /* Custom placeholder for Profile preview */
 .placeholderPhoto {
