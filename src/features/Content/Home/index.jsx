@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Card from '../../../components/Card';
 import Header from '../../../components/Header';
 import MobileMenu from '../../../components/MobileMenu';
+import FilterContainer from '../../../components/FilterContainer';
 import requestAccessToken from '../../../api/requestAccessToken';
 // Remove likesAPI import since we'll use direct fetch calls
 import styles from './styles.module.css';
@@ -37,9 +38,19 @@ const Content = () => {
   const [matchUser, setMatchUser] = useState(null);
   const [showMatchModal, setShowMatchModal] = useState(false);
 
-  // Age filter state
-  const [showAgeFilter, setShowAgeFilter] = useState(false);
-  const [ageRange, setAgeRange] = useState({ min: 18, max: 65 });
+  // Filter state
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    ageRange: { min: 18, max: 65 },
+    distance: 50,
+    interests: [],
+    lifestyle: [],
+    education: 'any',
+    relationshipType: 'any',
+    height: { min: 140, max: 200 },
+    hasPhotos: true,
+    onlineNow: false
+  });
 
   const containerRef = useRef(null);
   const cardRefs = useRef({});
@@ -54,7 +65,7 @@ const Content = () => {
         setError("");
       }
       
-      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10&minAge=${ageRange.min}&maxAge=${ageRange.max}`);
+      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10&minAge=${filters.ageRange.min}&maxAge=${filters.ageRange.max}&distance=${filters.distance}&hasPhotos=${filters.hasPhotos}&onlineNow=${filters.onlineNow}`);
       const { users: usersData, pagination } = response.data;
       
       // Transform the data to match the expected format
@@ -94,7 +105,7 @@ const Content = () => {
         setLoading(false);
       }
     }
-  }, [ageRange]);
+  }, [filters]);
 
   // Load more cards when needed
   const loadMoreCards = async () => {
@@ -130,7 +141,7 @@ const Content = () => {
     if (loaded) {
       fetchUsers(1, false);
     }
-  }, [ageRange, loaded, fetchUsers]);
+  }, [filters, loaded, fetchUsers]);
 
   const getCurrentCard = () => {
     const visibleCards = cards.filter(card => 
@@ -455,10 +466,23 @@ const Content = () => {
         <Header title="Home">
           <button 
             className={styles.filterButton}
-            onClick={() => setShowAgeFilter(!showAgeFilter)}
-            title="Filter by age"
+            onClick={() => setShowFilters(!showFilters)}
+            title="Open filters"
           >
             <i className="fa-solid fa-filter"></i>
+            {(() => {
+              const hasActiveFilters = 
+                filters.interests.length > 0 ||
+                filters.lifestyle.length > 0 ||
+                filters.education !== 'any' ||
+                filters.relationshipType !== 'any' ||
+                filters.hasPhotos !== true ||
+                filters.onlineNow !== false ||
+                filters.distance !== 50 ||
+                filters.ageRange.min !== 18 ||
+                filters.ageRange.max !== 65;
+              return hasActiveFilters && <span className={styles.filterBadge} />;
+            })()}
           </button>
         </Header>
       )}
@@ -493,87 +517,46 @@ const Content = () => {
         </div>
       )}
 
-      {/* Age Filter Modal */}
-      {showAgeFilter && (
-        <div 
-          className={styles.filterBackdrop}
-          onClick={() => setShowAgeFilter(false)}
-        />
-      )}
-      
-      <div className={`${styles.filterContainer} ${showAgeFilter ? styles.filterContainerOpen : ''}`}>
-        <div className={styles.filterHeader}>
-          <h3>Filter by Age</h3>
-          <button 
-            className={styles.closeButton}
-            onClick={() => setShowAgeFilter(false)}
-          >
-            <i className="fa fa-times"></i>
-          </button>
-        </div>
-        
-        <div className={styles.filterOptions}>
-          <div className={styles.ageRangeContainer}>
-            <label className={styles.ageRangeLabel}>
-              Age Range: {ageRange.min} - {ageRange.max}
-            </label>
-            <div className={styles.ageRangeInputs}>
-              <div className={styles.ageInputGroup}>
-                <label>Min Age</label>
-                <input
-                  type="number"
-                  min="18"
-                  max="65"
-                  value={ageRange.min}
-                  onChange={(e) => setAgeRange(prev => ({ 
-                    ...prev, 
-                    min: Math.min(parseInt(e.target.value) || 18, prev.max - 1) 
-                  }))}
-                  className={styles.ageInput}
-                />
-              </div>
-              <div className={styles.ageInputGroup}>
-                <label>Max Age</label>
-                <input
-                  type="number"
-                  min="18"
-                  max="65"
-                  value={ageRange.max}
-                  onChange={(e) => setAgeRange(prev => ({ 
-                    ...prev, 
-                    max: Math.max(parseInt(e.target.value) || 65, prev.min + 1) 
-                  }))}
-                  className={styles.ageInput}
-                />
-              </div>
-            </div>
-            <div className={styles.ageRangeSlider}>
-              <input
-                type="range"
-                min="18"
-                max="65"
-                value={ageRange.min}
-                onChange={(e) => setAgeRange(prev => ({ 
-                  ...prev, 
-                  min: Math.min(parseInt(e.target.value), prev.max - 1) 
-                }))}
-                className={styles.rangeSlider}
-              />
-              <input
-                type="range"
-                min="18"
-                max="65"
-                value={ageRange.max}
-                onChange={(e) => setAgeRange(prev => ({ 
-                  ...prev, 
-                  max: Math.max(parseInt(e.target.value), prev.min + 1) 
-                }))}
-                className={styles.rangeSlider}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Filter Container */}
+      <FilterContainer
+        isOpen={showFilters}
+        onClose={() => setShowFilters(false)}
+        filters={filters}
+        onFiltersChange={setFilters}
+        onApplyFilters={(newFilters) => {
+          setFilters(newFilters);
+          setShowFilters(false);
+          // Reset cards and fetch with new filters
+          setRemovedCards(new Set());
+          setSwipingCards(new Set());
+          setCurrentPhotoIndex({});
+          setSwipedCount(0);
+          setCurrentPage(1);
+          setHasMore(true);
+          fetchUsers(1, false);
+        }}
+        onResetFilters={() => {
+          const defaultFilters = {
+            ageRange: { min: 18, max: 65 },
+            distance: 50,
+            interests: [],
+            lifestyle: [],
+            education: 'any',
+            relationshipType: 'any',
+            height: { min: 140, max: 200 },
+            hasPhotos: true,
+            onlineNow: false
+          };
+          setFilters(defaultFilters);
+          setRemovedCards(new Set());
+          setSwipingCards(new Set());
+          setCurrentPhotoIndex({});
+          setSwipedCount(0);
+          setCurrentPage(1);
+          setHasMore(true);
+          fetchUsers(1, false);
+        }}
+      />
       
       <div className={styles.cardContainer}>
         <div className={styles.cards}>
