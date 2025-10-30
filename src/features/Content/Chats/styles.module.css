@@ -9,6 +9,8 @@
 
 .chatsHeader {
   display: flex !important;
+  padding: 0 var(--padding-016);
+  padding-bottom: var(--padding-016);
 }
 
 .container {
@@ -283,9 +285,6 @@
 
 /* Tablets and mobile - squares in 2 columns, no user info */
 @media (max-width: 768px) {
-  .chats {
-    padding: 0;
-  }
   
   .container {
     padding: 0 var(--padding-008);
@@ -570,6 +569,7 @@
 
 /* Responsive Design for Chat Room */
 @media (max-width: 768px) {
+
   .message {
     max-width: 85%;
   }

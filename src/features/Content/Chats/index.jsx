@@ -192,7 +192,7 @@ const Chats = () => {
 
   return (
     <div className={styles.chats}>
-      <Header title="Chats" />
+      <Header title="Chats" className={styles.chatsHeader} />
       <div className={styles.container}>
         {chats.length === 0 ? (
           <div className={styles.emptyState}>
