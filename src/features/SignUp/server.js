@@ -1,5 +1,5 @@
 import express from "express";
-import mysql from "mysql";
+import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import multer from "multer";
@@ -59,20 +59,22 @@ const pool = mysql.createPool({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "tweetheart",
+  connectionLimit: 10,
 });
 
 /**
- * Execute SQL queries safely with Promise support
- * @param {string} query - SQL statement
- * @param {Array} values - Optional parameterized values
+ * Helper to execute SQL queries safely
  */
-const dbQuery = (query, values = []) => {
-  return new Promise((resolve, reject) => {
-    pool.query(query, values, (error, results) => {
-      if (error) reject(error);
-      else resolve(results);
-    });
-  });
+const queryDB = async (query, values = []) => {
+  const connection = await pool.getConnection();
+  try {
+    const [rows] = await connection.execute(query, values);
+    return rows;
+  } catch (err) {
+    throw err;
+  } finally {
+    connection.release();
+  }
 };
 
 // =====================================================
@@ -101,7 +103,7 @@ router.post("/signup", async (req, res) => {
       FROM users 
       WHERE email = ? AND is_verified = 0
     `;
-    const existingUser = await dbQuery(checkUserQuery, [email]);
+    const existingUser = await queryDB(checkUserQuery, [email]);
 
     if (existingUser.length > 0) {
       const existingId = existingUser[0].id;
@@ -122,7 +124,7 @@ router.post("/signup", async (req, res) => {
         WHERE id = ? AND is_verified = 0
       `;
 
-      await dbQuery(updateUserQuery, [
+      await queryDB(updateUserQuery, [
         firstName,
         lastName,
         email,
@@ -150,7 +152,7 @@ router.post("/signup", async (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
     `;
 
-    await dbQuery(insertUserQuery, [
+    await queryDB(insertUserQuery, [
       userId,
       firstName,
       lastName,
@@ -176,17 +178,57 @@ router.post("/signup", async (req, res) => {
 });
 
 // ========================================================
+// ✅ ERROR HANDLING MIDDLEWARE FOR MULTER
+// ========================================================
+const handleMulterError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ 
+        message: "File too large. Please choose files smaller than 10MB each.",
+        error: "FILE_TOO_LARGE"
+      });
+    }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ 
+        message: "Too many files. Maximum 6 photos allowed.",
+        error: "TOO_MANY_FILES"
+      });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({ 
+        message: "Unexpected file field. Please use the correct upload form.",
+        error: "UNEXPECTED_FILE"
+      });
+    }
+  }
+  next(err);
+};
+
+// ========================================================
 // ✅ UPLOAD MULTIPLE PHOTOS (for signup)
 // ========================================================
-router.post("/api/signup/photos/upload-multiple", upload.array("photos", 6), async (req, res) => {
+router.post("/api/signup/photos/upload-multiple", upload.array("photos", 6), handleMulterError, async (req, res) => {
   try {
+    console.log("📸 Photo upload request received");
+    console.log("Files received:", req.files ? req.files.length : 0);
+    console.log("User ID:", req.body.userId);
+
     if (!req.files || req.files.length === 0) {
+      console.log("❌ No files provided");
       return res.status(400).json({ message: "No files provided" });
     }
 
     const userId = req.body.userId;
     if (!userId) {
+      console.log("❌ User ID is required");
       return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Verify user exists
+    const userCheck = await queryDB("SELECT id FROM users WHERE id = ?", [userId]);
+    if (userCheck.length === 0) {
+      console.log("❌ User not found:", userId);
+      return res.status(404).json({ message: "User not found" });
     }
 
     const photos = [];
@@ -194,38 +236,49 @@ router.post("/api/signup/photos/upload-multiple", upload.array("photos", 6), asy
     // Upload all photos to S3
     for (let i = 0; i < req.files.length; i++) {
       const file = req.files[i];
+      console.log(`Processing photo ${i + 1}/${req.files.length}:`, file.originalname);
+      
       const fileExtension = file.originalname.split(".").pop();
       const uniqueFileName = `photos/${userId}/${uuidv4()}.${fileExtension}`;
 
-      // Resize image
-      const resizedImageBuffer = await sharp(file.buffer)
-        .resize(800, 800, { fit: "cover" })
-        .jpeg({ quality: 85 })
-        .toBuffer();
+      try {
+        // Resize image
+        const resizedImageBuffer = await sharp(file.buffer)
+          .resize(800, 800, { fit: "cover" })
+          .jpeg({ quality: 85 })
+          .toBuffer();
 
-      // Upload to S3
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: bucketName,
-          Key: uniqueFileName,
-          Body: resizedImageBuffer,
-          ContentType: "image/jpeg",
-        })
-      );
+        // Upload to S3
+        await s3.send(
+          new PutObjectCommand({
+            Bucket: bucketName,
+            Key: uniqueFileName,
+            Body: resizedImageBuffer,
+            ContentType: "image/jpeg",
+          })
+        );
 
-      photos.push({
-        key: uniqueFileName,
-        order: i + 1,
-        uploadedAt: new Date().toISOString()
-      });
+        photos.push({
+          key: uniqueFileName,
+          order: i + 1,
+          uploadedAt: new Date().toISOString()
+        });
+
+        console.log(`✅ Photo ${i + 1} uploaded successfully:`, uniqueFileName);
+      } catch (photoError) {
+        console.error(`❌ Error processing photo ${i + 1}:`, photoError);
+        throw new Error(`Failed to process photo ${i + 1}: ${photoError.message}`);
+      }
     }
 
     // Update database with photos JSON
-    await dbQuery("UPDATE users SET photos = ? WHERE id = ?", [
+    console.log("Updating database with photos:", photos.length);
+    await queryDB("UPDATE users SET photos = ? WHERE id = ?", [
       JSON.stringify(photos),
       userId
     ]);
 
+    console.log("✅ All photos uploaded and database updated successfully");
     res.json({ 
       success: true,
       message: `${photos.length} photos uploaded successfully`,
@@ -233,7 +286,16 @@ router.post("/api/signup/photos/upload-multiple", upload.array("photos", 6), asy
     });
   } catch (error) {
     console.error("❌ Error uploading multiple photos:", error);
-    res.status(500).json({ message: "Server error while uploading photos" });
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      userId: req.body.userId,
+      fileCount: req.files ? req.files.length : 0
+    });
+    res.status(500).json({ 
+      message: "Server error while uploading photos",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 

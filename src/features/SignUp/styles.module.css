@@ -145,6 +145,18 @@
   order: 2;
 }
 
+.photoUploadInfo {
+  text-align: center;
+  margin-bottom: var(--gap-008);
+}
+
+.photoUploadInfo p {
+  font-size: var(--font-size-012);
+  color: var(--font-color-muted);
+  margin: 0;
+  font-style: italic;
+}
+
 .actionsContainer {
   display: flex;
   flex-direction: column;

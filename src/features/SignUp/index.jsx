@@ -82,13 +82,29 @@ function SignUp() {
   const handlePhotoUpload = (index, event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
+      // Check file size (10MB limit to match server)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        setError(`File "${file.name}" is too large. Please choose a file smaller than 10MB.`);
+        // Clear the input so user can try again
+        event.target.value = '';
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         const newPhotos = [...photos];
         newPhotos[index] = { file, preview: reader.result };
         setPhotos(newPhotos);
+        // Clear any previous error when successful upload
+        if (error && error.includes('too large')) {
+          setError('');
+        }
       };
       reader.readAsDataURL(file);
+    } else if (file) {
+      setError('Please select a valid image file.');
+      event.target.value = '';
     }
   };
 
@@ -157,6 +173,15 @@ function SignUp() {
           
         } catch (photoErr) {
           console.error("⚠️ Photo upload failed (account created):", photoErr);
+          
+          // Show specific error message based on error type
+          if (photoErr.response?.data?.error === "FILE_TOO_LARGE") {
+            setError("One or more photos are too large. Please choose files smaller than 10MB each.");
+          } else if (photoErr.response?.data?.error === "TOO_MANY_FILES") {
+            setError("Too many photos selected. Maximum 6 photos allowed.");
+          } else {
+            setError("Photo upload failed. You can add photos later in your profile.");
+          }
           // Don't block navigation - photos can be added later
         }
       }
@@ -378,6 +403,9 @@ function SignUp() {
 
               {/* Photo Upload Section */}
               <div className={styles.photoSection}>
+                <div className={styles.photoUploadInfo}>
+                  <p>Upload 2-6 photos (max 10MB each)</p>
+                </div>
                 <div className={styles.photoGrid}>
                   {photos.map((photo, index) => (
                     <div key={index} className={styles.photoCard}>
