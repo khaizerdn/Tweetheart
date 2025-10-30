@@ -243,29 +243,3 @@
   animation: slideInFromTop 0.2s ease-out;
 }
 
-/* Test controls (temporary) */
-.testControls {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-008);
-  margin: var(--margin-008) 0;
-}
-
-.testButton {
-  background: var(--color-secondary-16);
-  color: var(--font-color-secondary-selected);
-  border: 1px solid var(--color-secondary-19);
-  border-radius: var(--border-radius-008);
-  padding: var(--padding-008) var(--padding-012);
-  cursor: pointer;
-}
-
-.testButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.testResult {
-  font-size: var(--font-size-012);
-  color: var(--font-color-muted);
-}
