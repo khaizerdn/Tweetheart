@@ -69,20 +69,3 @@
     display: none;
   }
 }
-
-@media screen and (min-width: 1006px) and (max-width: 1245px) {
-  .logoContainer {
-    justify-content: center;
-    align-items: center;
-    gap: 0;
-    margin-bottom: 0;
-  }
-  
-  .logoButton {
-    justify-content: center;
-  }
-  
-  .logoText {
-    display: none;
-  }
-}

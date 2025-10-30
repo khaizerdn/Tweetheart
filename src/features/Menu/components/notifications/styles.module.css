@@ -35,7 +35,7 @@
 
 .headerTitle {
   font-size: var(--font-size-016);
-  color: var(--font-color-selected);
+  color: var(--font-color-default);
 }
 
 .headerClose {
@@ -96,7 +96,7 @@
 
 .metaText {
   font-size: var(--font-size-014);
-  color: var(--font-color-muted);
+  color: var(--font-color-default);
 }
 
 /* Header removed for minimal UI */
