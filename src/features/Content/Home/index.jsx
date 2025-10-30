@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Card from '../../../components/Card';
-import Header from '../../../components/Header';
 import MobileMenu from '../../../components/MobileMenu';
 import FilterContainer from './components/FilterContainer';
 import requestAccessToken from '../../../api/requestAccessToken';
-// Remove likesAPI import since we'll use direct fetch calls
 import styles from './styles.module.css';
 import CardInfo from '../../../components/Card/CardInfo.jsx';
-import Button from '../../../components/Buttons/Button';
 import Loading from './features/Loading';
 import Error from './features/Error';
 import LocationRequired from './features/LocationRequired';
@@ -16,17 +13,15 @@ import MatchModal from './components/MatchModal';
 const Content = ({ locationGranted, setLocationGranted }) => {
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
-  // Track users already liked to exclude from feed
+
+  // Track users to exclude from feed
   const [likedUserIds, setLikedUserIds] = useState([]);
-  // Track users already passed to exclude from feed
   const [passedUserIds, setPassedUserIds] = useState([]);
 
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
-  const [isLoved, setIsLoved] = useState(false);
-  const [isNoped, setIsNoped] = useState(false);
   const [removedCards, setRemovedCards] = useState(new Set());
   const [isMoving, setIsMoving] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -42,8 +37,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   const [swipedCount, setSwipedCount] = useState(0);
   const [swipingCards, setSwipingCards] = useState(new Set());
   
-  // Likes and matches state
-  const [matches, setMatches] = useState([]);
+  // Match modal state
   const [isMatch, setIsMatch] = useState(false);
   const [matchUser, setMatchUser] = useState(null);
   const [showMatchModal, setShowMatchModal] = useState(false);
@@ -164,28 +158,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
       await fetchUsers(currentPage + 1, true);
     }
   };
-
-  // Load already matched users once on mount
-  useEffect(() => {
-    const loadExistingMatches = async () => {
-      try {
-        const res = await fetch('http://localhost:8081/api/likes/matches', {
-          method: 'GET',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const ids = (data.matches || []).map(m => m.id).filter(Boolean);
-          setMatchedUserIds(ids);
-        }
-      } catch (e) {
-        console.warn('Failed to load existing matches for feed filtering');
-      }
-    };
-    loadExistingMatches();
-  }, []);
-
 
   // Mobile detection
   useEffect(() => {
@@ -371,9 +343,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
       cardElement.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotate}deg)`;
     }
 
-    // Update status indicators
-    setIsLoved(deltaX > 0);
-    setIsNoped(deltaX < 0);
   };
 
   const handleEnd = (e, cardId) => {
@@ -385,8 +354,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     
     setIsDragging(false);
     setIsMoving(false);
-    setIsLoved(false);
-    setIsNoped(false);
     
     const cardElement = cardRefs.current[cardId];
     if (!cardElement) return;
@@ -510,7 +477,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
             setMatchUser(matchedUser);
             setIsMatch(true);
             setShowMatchModal(true);
-            setMatches(prev => [...prev, matchedUser]);
             // Remove matched user from Home feed immediately
             setCards(prev => prev.filter(card => card.id !== cardId));
             setRemovedCards(prev => new Set([...prev, cardId]));
@@ -538,7 +504,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     setSwipedCount(0);
     setCurrentPage(1);
     setHasMore(true);
-    setMatches([]);
     setIsMatch(false);
     setMatchUser(null);
     setShowMatchModal(false);
