@@ -553,7 +553,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   if (loading) {
     return (
       <div className={styles.home}>
-        {!isMobile && <Header title="Home" />}
         <div className={styles.container}>
           <div className={styles.cardContainer}>
             <div className={styles.cards}>
@@ -573,7 +572,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   if (error) {
     return (
       <div className={styles.home}>
-        {!isMobile && <Header title="Home" />}
         <div className={styles.container}>
           <div className={styles.cardContainer}>
             <div className={styles.cards}>
@@ -598,7 +596,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   if (!locationGranted) {
     return (
       <div className={styles.home}>
-        {!isMobile && <Header title="Home" />}
         <div className={styles.locationRequiredContainer}>
           <div className={styles.emptyState}>
             <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
@@ -630,7 +627,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
 
   return (
     <div className={styles.home} ref={containerRef}>
-      {!isMobile && <Header title="Home" />}
       
       {/* Filter button - always visible */}
       <button 

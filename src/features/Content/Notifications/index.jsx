@@ -167,6 +167,8 @@ const Notifications = () => {
 
   return (
     <div className={styles.notifications}>
+
+      <div className={styles.container}>
       <Header 
         title="Notifications" 
         className={styles.notificationsHeader}
@@ -177,8 +179,6 @@ const Notifications = () => {
           </button>
         }
       />
-
-      <div className={styles.container}>
         {/* Filters */}
         <div className={styles.filterTabs}>
           {['all','match','message'].map(key => (

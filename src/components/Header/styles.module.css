@@ -1,7 +1,6 @@
 .header {
   text-align: left;
   background: var(--color-primary-3);
-  padding: 0 var(--padding-016) var(--padding-016) var(--padding-016);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -16,14 +15,4 @@
 
 .header > *:not(h1) {
   margin-left: var(--margin-012);
-}
-
-@media screen and (max-width: 685px) {
-  .header {
-    padding: var(--padding-012) var(--padding-016);
-  }
-  
-  .header h1 {
-    font-size: var(--font-size-020);
-  }
 }
