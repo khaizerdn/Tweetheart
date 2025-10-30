@@ -235,9 +235,36 @@ router.put("/user-profile", async (req, res) => {
 });
 
 // ========================================================
+// ✅ ERROR HANDLING MIDDLEWARE FOR MULTER
+// ========================================================
+const handleMulterError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ 
+        message: "File too large. Please choose files smaller than 10MB each.",
+        error: "FILE_TOO_LARGE"
+      });
+    }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ 
+        message: "Too many files. Maximum 6 photos allowed.",
+        error: "TOO_MANY_FILES"
+      });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({ 
+        message: "Unexpected file field. Please use the correct upload form.",
+        error: "UNEXPECTED_FILE"
+      });
+    }
+  }
+  next(err);
+};
+
+// ========================================================
 // ✅ UPLOAD SINGLE PHOTO (for dating app profiles)
 // ========================================================
-router.post("/api/photos/upload", upload.single("photo"), async (req, res) => {
+router.post("/api/photos/upload", upload.single("photo"), handleMulterError, async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file provided" });
@@ -330,7 +357,7 @@ router.post("/api/photos/upload", upload.single("photo"), async (req, res) => {
 // ========================================================
 // ✅ UPLOAD MULTIPLE PHOTOS (for profile updates)
 // ========================================================
-router.post("/api/profile/photos/upload-multiple", upload.array("photos", 6), async (req, res) => {
+router.post("/api/profile/photos/upload-multiple", upload.array("photos", 6), handleMulterError, async (req, res) => {
   try {
     const userId = req.cookies?.userId;
     if (!userId) {
