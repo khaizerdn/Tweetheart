@@ -464,15 +464,11 @@ const Content = ({ locationGranted }) => {
     return (
       <div className={styles.home}>
         {!isMobile && <Header title="Home" />}
-        <div className={styles.container}>
-          <div className={styles.cardContainer}>
-            <div className={styles.cards}>
-              <div className={styles.emptyState}>
-                <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
-                <h3>Location Access Required</h3>
-                <p>To help you find matches nearby, we need access to your location. This allows us to show you people in your area and improve your experience.</p>
-              </div>
-            </div>
+        <div className={styles.locationRequiredContainer}>
+          <div className={styles.emptyState}>
+            <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
+            <h3>Location Access Required</h3>
+            <p>To help you find matches nearby, we need access to your location. This allows us to show you people in your area and improve your experience.</p>
           </div>
         </div>
       </div>

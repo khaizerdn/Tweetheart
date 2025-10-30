@@ -1,10 +1,12 @@
 .home {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
   padding: var(--padding-016);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -515,6 +517,12 @@
     font-size: var(--font-size-018);
   }
 
+  .locationRequiredContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
+
   .emptyState {
     height: 100%;
     padding: var(--padding-024);
@@ -640,5 +648,11 @@
   }
 }
 
-
-/* Fixed dimensions - no responsive scaling for desktop */
+.locationRequiredContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
