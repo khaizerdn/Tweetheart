@@ -14,6 +14,8 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
+  // Track users already matched to exclude from feed
+  const [matchedUserIds, setMatchedUserIds] = useState([]);
 
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -87,10 +89,14 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         distance: user.distance !== undefined && user.distance !== null ? user.distance : null
       }));
       
+      // Filter out users that are already matched (from server)
+      const matchedSet = new Set(matchedUserIds);
+      const filteredTransformed = transformedCards.filter(user => !matchedSet.has(user.id));
+      
       if (append) {
-        setCards(prevCards => [...prevCards, ...transformedCards]);
+        setCards(prevCards => [...prevCards, ...filteredTransformed]);
       } else {
-        setCards(transformedCards);
+        setCards(filteredTransformed);
         setLoaded(true);
       }
       
@@ -113,7 +119,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         setLoading(false);
       }
     }
-  }, [filters]);
+  }, [filters, matchedUserIds]);
 
   // Load more cards when needed
   const loadMoreCards = async () => {
@@ -121,6 +127,27 @@ const Content = ({ locationGranted, setLocationGranted }) => {
       await fetchUsers(currentPage + 1, true);
     }
   };
+
+  // Load already matched users once on mount
+  useEffect(() => {
+    const loadExistingMatches = async () => {
+      try {
+        const res = await fetch('http://localhost:8081/api/likes/matches', {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const ids = (data.matches || []).map(m => m.id).filter(Boolean);
+          setMatchedUserIds(ids);
+        }
+      } catch (e) {
+        console.warn('Failed to load existing matches for feed filtering');
+      }
+    };
+    loadExistingMatches();
+  }, []);
 
 
   // Mobile detection
@@ -422,6 +449,10 @@ const Content = ({ locationGranted, setLocationGranted }) => {
             setIsMatch(true);
             setShowMatchModal(true);
             setMatches(prev => [...prev, matchedUser]);
+            // Remove matched user from Home feed immediately
+            setCards(prev => prev.filter(card => card.id !== cardId));
+            setRemovedCards(prev => new Set([...prev, cardId]));
+            setMatchedUserIds(prev => (prev.includes(cardId) ? prev : [...prev, cardId]));
           }
         }
       }
