@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from './styles.module.css';
-import { fetchChatMessages, sendChatMessage, markMessagesAsRead } from './server';
+import PreparationChatView from './components/PreparationChatView';
+import matchesStyles from '../Matches/styles.module.css';
+import { fetchChats, fetchChatMessages, sendChatMessage, markMessagesAsRead } from './server';
+import { fetchMatchById, unmatchUser } from '../Matches/server';
+import MenuButton from '../../Menu/components/button';
 
 const ChatRoom = () => {
   const { chatId } = useParams();
@@ -15,6 +19,7 @@ const ChatRoom = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [chatExists, setChatExists] = useState(false);
   const [otherUserId, setOtherUserId] = useState(null);
+  const [otherUserProfile, setOtherUserProfile] = useState(null);
   const [isPreparationChat, setIsPreparationChat] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -189,6 +194,43 @@ const ChatRoom = () => {
     }
   }, [chatId]);
 
+  // Fetch other user profile info for right panel
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        if (isPreparationChat && otherUserId) {
+          const data = await fetchMatchById(otherUserId);
+          const match = data.match || data;
+          const photos = match?.photos ? (Array.isArray(match.photos) ? match.photos : []) : [];
+          setOtherUserProfile({
+            id: match?.id,
+            firstName: (match?.name || `${match?.first_name || ''} ${match?.last_name || ''}`).trim().split(' ')[0],
+            photo: photos[0] && (photos[0].url || photos[0])
+          });
+          return;
+        }
+
+        if (!isPreparationChat && chatId && chatId.startsWith('chat_')) {
+          const chatsData = await fetchChats();
+          const chat = (chatsData.chats || []).find(c => c.id === chatId);
+          if (chat && chat.other_user) {
+            const photos = chat.other_user.photos ? chat.other_user.photos.map(p => p.url || p) : [];
+            setOtherUserId(chat.other_user.id);
+            setOtherUserProfile({
+              id: chat.other_user.id,
+              firstName: (chat.other_user.name || '').split(' ')[0],
+              photo: photos[0] || null
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load other user profile:', e);
+      }
+    };
+
+    loadProfile();
+  }, [isPreparationChat, otherUserId, chatId]);
+
   // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
@@ -197,7 +239,7 @@ const ChatRoom = () => {
 
   // Handle sending a message
   const handleSendMessage = async (e) => {
-    e.preventDefault();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     
     if (!newMessage.trim() || !socket || !isConnected) return;
 
@@ -256,6 +298,10 @@ const ChatRoom = () => {
       // Restore the message to input
       setNewMessage(messageText);
     }
+  };
+
+  const handleSendClick = () => {
+    handleSendMessage();
   };
 
   // Handle key press in input
@@ -331,73 +377,63 @@ const ChatRoom = () => {
     );
   }
 
-  return (
-    <div className={styles.chatRoom}>
-      <div className={styles.chatHeader}>
-        <button 
-          className={styles.backButton}
-          onClick={handleBackClick}
-        >
-          <i className="fa fa-arrow-left"></i>
-        </button>
-        <h2>{isPreparationChat ? 'New Chat' : 'Chat'}</h2>
-        <div className={styles.connectionStatus}>
-          {isConnected ? (
-            <i className="fa fa-circle" style={{ color: '#4CAF50' }}></i>
-          ) : (
-            <i className="fa fa-circle" style={{ color: '#f44336' }}></i>
-          )}
-        </div>
-      </div>
-      
-      <div className={styles.chatContainer}>
-        <div className={styles.messagesContainer}>
-          {messages.length === 0 ? (
-            <div className={styles.emptyMessages}>
-              <i className="fa fa-comments"></i>
-              <p>{isPreparationChat ? 'Send your first message to start the conversation!' : (chatExists ? 'No messages yet. Start the conversation!' : 'Send your first message to start the conversation!')}</p>
-            </div>
-          ) : (
-            messages.map((message) => (
-              <div
-                key={message.id}
-                className={`${styles.message} ${message.is_own ? styles.ownMessage : styles.otherMessage}`}
-              >
-                <div className={styles.messageContent}>
-                  <p>{message.content}</p>
-                  <span className={styles.messageTime}>
-                    {formatMessageTime(message.created_at)}
-                  </span>
-                </div>
-              </div>
-            ))
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-        
-        <form className={styles.messageInput} onSubmit={handleSendMessage}>
-          <div className={styles.inputContainer}>
-            <input
-              ref={inputRef}
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type a message..."
-              className={styles.textInput}
-              disabled={!isConnected}
-            />
-            <button
-              type="submit"
-              className={styles.sendButton}
-              disabled={!newMessage.trim() || !isConnected}
-            >
-              <i className="fa fa-paper-plane"></i>
-            </button>
+  const rightPanel = (
+    <aside className={matchesStyles.userInfoPanel}>
+      <div className={matchesStyles.userInfoPhotoWrap}>
+        {otherUserProfile?.photo ? (
+          <img src={otherUserProfile.photo} alt="User Photo" className={matchesStyles.userPhoto} />
+        ) : (
+          <div className={matchesStyles.userPhotoPlaceholder}>
+            <i className="fa fa-user" />
           </div>
-        </form>
+        )}
       </div>
-    </div>
+      <div className={matchesStyles.userInfoName}>
+        {otherUserProfile?.firstName || (isPreparationChat ? 'New Chat' : 'Chat')}
+      </div>
+      {otherUserId && (
+        <div className={matchesStyles.userActionButtonsCol}>
+          <MenuButton
+            to={"/profile/" + otherUserId}
+            iconClass="fa fa-user"
+            label="View Profile"
+            onClick={() => navigate(`/profile/${otherUserId}`)}
+          />
+          <MenuButton
+            to="#unmatch"
+            iconClass="fa fa-ban"
+            label="Unmatch"
+            onClick={async () => {
+              try {
+                await unmatchUser(otherUserId);
+                navigate('/chats');
+              } catch (e) {
+                console.error('Unmatch failed:', e);
+              }
+            }}
+          />
+        </div>
+      )}
+    </aside>
+  );
+
+  return (
+    <PreparationChatView
+      title={otherUserProfile?.firstName || (isPreparationChat ? 'New Chat' : 'Chat')}
+      userPhotoUrl={otherUserProfile?.photo || null}
+      onBack={handleBackClick}
+      isConnected={isConnected}
+      messages={messages}
+      messagesEndRef={messagesEndRef}
+      renderMessageTime={formatMessageTime}
+      newMessage={newMessage}
+      onChangeMessage={(e) => setNewMessage(e.target.value)}
+      onKeyPress={handleKeyPress}
+      onSend={handleSendClick}
+      inputRef={inputRef}
+      rightPanel={rightPanel}
+      emptyText={isPreparationChat ? 'Send your first message to start the conversation!' : (chatExists ? 'No messages yet. Start the conversation!' : 'Send your first message to start the conversation!')}
+    />
   );
 };
 
