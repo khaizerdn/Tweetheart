@@ -24,12 +24,6 @@ function SignUp() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const inputRefs = useRef({});
   
-  // Location state
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [locationError, setLocationError] = useState("");
-  const [isLocationLoading, setIsLocationLoading] = useState(false);
-
   // Calculate age from birth date
   const calculateAge = (birthDateString) => {
     if (!birthDateString) return null;
@@ -86,51 +80,6 @@ function SignUp() {
     }
   }, [uploadedPhotos.length, currentPhotoIndex]);
 
-  // Capture user location on component mount
-  useEffect(() => {
-    const getLocation = () => {
-      if (!navigator.geolocation) {
-        setLocationError("Geolocation is not supported by your browser");
-        return;
-      }
-
-      setIsLocationLoading(true);
-      
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          setLocationError("");
-          setIsLocationLoading(false);
-        },
-        (error) => {
-          setIsLocationLoading(false);
-          switch(error.code) {
-            case error.PERMISSION_DENIED:
-              setLocationError("Location access denied. Please enable location to create an account.");
-              break;
-            case error.POSITION_UNAVAILABLE:
-              setLocationError("Location information is unavailable.");
-              break;
-            case error.TIMEOUT:
-              setLocationError("Location request timed out.");
-              break;
-            default:
-              setLocationError("An unknown error occurred while getting location.");
-              break;
-          }
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      );
-    };
-
-    getLocation();
-  }, []);
-
   const handlePhotoUpload = (index, event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -186,21 +135,11 @@ function SignUp() {
       return;
     }
 
-    // Validate location is captured
-    if (!latitude || !longitude) {
-      setError("Location access is required to create an account. Please enable location services.");
-      return;
-    }
-
-    // Navigate to verification page
-    navigate("/verification");
-    
-    const [year, month, day] = birthDate ? birthDate.split("-") : ["", "", ""];
     try {
       // Step 1: Create user account
       const res = await axios.post(
         `${API_URL}/signup`,
-        { firstName, lastName, email, password, gender, month, day, year, bio, latitude, longitude },
+        { firstName, lastName, email, password, gender, month: birthDate ? birthDate.split("-")[1] : "", day: birthDate ? birthDate.split("-")[2] : "", year: birthDate ? birthDate.split("-")[0] : "", bio },
         { withCredentials: true }
       );
       
@@ -455,39 +394,6 @@ function SignUp() {
                     selected: 'var(--background-color-primary-selected-1)',
                   }}
                 />
-              </div>
-
-              {/* Location Status Section */}
-              <div className={styles.locationSection}>
-                <div className={styles.locationStatus}>
-                  <div className={styles.locationHeader}>
-                    <i className={`fa-solid ${latitude && longitude ? 'fa-location-dot' : 'fa-location-crosshairs'}`}></i>
-                    <span>Location Services</span>
-                  </div>
-                  {isLocationLoading && (
-                    <div className={styles.locationLoading}>
-                      <i className="fa fa-spinner fa-spin"></i>
-                      <span>Getting your location...</span>
-                    </div>
-                  )}
-                  {!isLocationLoading && latitude && longitude && (
-                    <div className={styles.locationSuccess}>
-                      <i className="fa-solid fa-check-circle"></i>
-                      <span>Location captured successfully</span>
-                    </div>
-                  )}
-                  {!isLocationLoading && locationError && (
-                    <div className={styles.locationError}>
-                      <i className="fa-solid fa-exclamation-circle"></i>
-                      <span>{locationError}</span>
-                    </div>
-                  )}
-                  {!isLocationLoading && !latitude && !longitude && !locationError && (
-                    <div className={styles.locationNeutral}>
-                      <span>Waiting for location access...</span>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* Photo Upload Section */}

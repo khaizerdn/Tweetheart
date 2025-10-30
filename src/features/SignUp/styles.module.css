@@ -451,20 +451,14 @@
     order: 1;
   }
 
-  .locationSection {
+  .photoSection {
     width: 320px;
     padding: var(--padding-008);
     order: 2;
   }
 
-  .photoSection {
-    width: 320px;
-    padding: var(--padding-008);
-    order: 3;
-  }
-
   .actionsContainer {
-    order: 4;
+    order: 3;
     width: 320px;
   }
 
@@ -522,21 +516,15 @@
     order: 1;
   }
 
-  .locationSection {
+  .photoSection {
     width: 320px;
     padding: var(--padding-012);
     order: 2;
   }
 
-  .photoSection {
-    width: 320px;
-    padding: var(--padding-012);
-    order: 3;
-  }
-
   .actionsContainer {
     width: 320px;
-    order: 4;
+    order: 3;
   }
 
   .buttonSection {
@@ -588,21 +576,15 @@
     order: 1;
   }
 
-  .locationSection {
+  .photoSection {
     width: 320px;
     padding: var(--padding-016);
     order: 2;
   }
 
-  .photoSection {
-    width: 320px;
-    padding: var(--padding-016);
-    order: 3;
-  }
-
   .actionsContainer {
     width: 320px;
-    order: 4;
+    order: 3;
   }
 
   .buttonSection {
@@ -647,18 +629,13 @@
     flex: 0 0 auto;
   }
 
-  .locationSection {
+  .photoSection {
     order: 2;
     flex: 0 0 auto;
   }
 
-  .photoSection {
-    order: 3;
-    flex: 0 0 auto;
-  }
-
   .actionsContainer {
-    order: 4;
+    order: 3;
     flex: 0 0 auto;
   }
 }
@@ -679,18 +656,13 @@
     flex: 0 0 auto;
   }
 
-  .locationSection {
+  .photoSection {
     order: 2;
     flex: 0 0 auto;
   }
 
-  .photoSection {
-    order: 3;
-    flex: 0 0 auto;
-  }
-
   .actionsContainer {
-    order: 4;
+    order: 3;
     flex: 0 0 auto;
   }
 }
@@ -706,18 +678,13 @@
     flex: 0 0 auto;
   }
 
-  .locationSection {
+  .photoSection {
     order: 2;
     flex: 0 0 auto;
   }
 
-  .photoSection {
-    order: 3;
-    flex: 0 0 auto;
-  }
-
   .actionsContainer {
-    order: 4;
+    order: 3;
     flex: 0 0 auto;
   }
 }
@@ -738,18 +705,13 @@
     flex: 0 0 auto;
   }
 
-  .locationSection {
+  .photoSection {
     order: 2;
     flex: 0 0 auto;
   }
 
-  .photoSection {
-    order: 3;
-    flex: 0 0 auto;
-  }
-
   .actionsContainer {
-    order: 4;
+    order: 3;
     flex: 0 0 auto;
   }
 }
