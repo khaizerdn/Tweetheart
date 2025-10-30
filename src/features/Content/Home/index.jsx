@@ -469,8 +469,8 @@ const Content = ({ locationGranted }) => {
             <div className={styles.cards}>
               <div className={styles.emptyState}>
                 <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
-                <h3>Location Required to Swipe</h3>
-                <p>To start swiping and see matches, you need to allow location access. Please enable location in your settings!</p>
+                <h3>Location Access Required</h3>
+                <p>To help you find matches nearby, we need access to your location. This allows us to show you people in your area and improve your experience.</p>
               </div>
             </div>
           </div>
