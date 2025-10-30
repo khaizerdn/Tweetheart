@@ -595,8 +595,8 @@
   display: flex;
   align-items: center;
   padding: var(--padding-016);
-  background: var(--color-primary-2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--background-color-2);
+  border-bottom: 1px solid var(--background-color-primary-default-1);
   box-shadow: var(--shadow-2);
 }
 
@@ -611,9 +611,8 @@
   border-radius: var(--border-radius-008);
   transition: background-color 0.2s ease;
 }
-
 .backButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.1);
 }
 
 .chatHeader h2 {
@@ -622,12 +621,13 @@
   font-size: var(--font-size-024);
   margin: 0;
   font-weight: var(--font-weight-semi-bold);
+  letter-spacing: -0.01em;
 }
-
 .connectionStatus {
   display: flex;
   align-items: center;
   font-size: var(--font-size-012);
+  gap: var(--gap-004);
 }
 
 .chatContainer {
@@ -645,44 +645,37 @@
   flex-direction: column;
   gap: var(--gap-012);
 }
-
 .message {
   max-width: 70%;
   word-wrap: break-word;
 }
-
 .ownMessage {
   align-self: flex-end;
 }
-
 .otherMessage {
   align-self: flex-start;
 }
-
 .messageContent {
   background: var(--color-primary-2);
   padding: var(--padding-012) var(--padding-016);
   border-radius: var(--border-radius-016);
   box-shadow: var(--shadow-1);
   position: relative;
+  color: var(--color-white);
 }
-
 .ownMessage .messageContent {
-  background: var(--accent-color);
+  background: var(--accent-color, #F06292);
   color: var(--color-white);
 }
-
 .otherMessage .messageContent {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.1);
   color: var(--color-white);
 }
-
 .messageContent p {
   margin: 0 0 var(--margin-004) 0;
   font-size: var(--font-size-016);
   line-height: var(--line-height-default);
 }
-
 .messageTime {
   font-size: var(--font-size-012);
   opacity: 0.7;
@@ -696,37 +689,34 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.7);
   text-align: center;
 }
-
 .emptyMessages i {
   font-size: var(--font-size-064);
   margin-bottom: var(--padding-024);
-  color: var(--accent-color);
+  color: var(--accent-color, #F06292);
 }
-
 .emptyMessages p {
   font-size: var(--font-size-018);
   margin: 0;
+  color: var(--font-color-primary-default-1);
 }
 
 .messageInput {
   padding: var(--padding-016);
-  background: var(--color-primary-2);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--background-color-2);
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
-
 .inputContainer {
   display: flex;
   gap: var(--gap-012);
   align-items: center;
 }
-
 .textInput {
   flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--background-color-primary-default-3);
   border-radius: var(--border-radius-016);
   padding: var(--padding-012) var(--padding-016);
   color: var(--color-white);
@@ -735,22 +725,15 @@
   outline: none;
   transition: border-color 0.2s ease;
 }
-
-.textInput:focus {
-  border-color: var(--accent-color);
-}
-
 .textInput::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255,255,255,0.5);
 }
-
 .textInput:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 .sendButton {
-  background: var(--accent-color);
+  background: var(--accent-color, #F06292);
   border: none;
   border-radius: var(--border-radius-016);
   padding: var(--padding-012) var(--padding-016);
@@ -764,54 +747,34 @@
   min-width: 48px;
   height: 48px;
 }
-
 .sendButton:hover:not(:disabled) {
   background: var(--accent-color-dark, #d32f2f);
   transform: translateY(-1px);
   box-shadow: var(--shadow-2);
 }
-
 .sendButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
 }
 
-/* Override header hiding in mobile for Matches component */
-.matchesHeader {
-  display: flex !important;
-}
-
-/* Mobile responsiveness for chat room */
 @media (max-width: 768px) {
-  .chatRoom {
-    height: 100vh;
-  }
-  
   .chatHeader {
     padding: var(--padding-012);
   }
-  
   .chatHeader h2 {
     font-size: var(--font-size-020);
   }
-  
   .messagesContainer {
-    padding: var(--padding-012);
+    padding: var(--padding-008);
   }
-  
   .messageInput {
     padding: var(--padding-012);
   }
-  
-  .textInput {
-    font-size: var(--font-size-014);
-  }
-  
   .sendButton {
-    min-width: 44px;
-    height: 44px;
+    min-width: 40px;
+    height: 40px;
+    font-size: var(--font-size-014);
   }
 }
 
