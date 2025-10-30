@@ -7,6 +7,12 @@
   position: relative;
 }
 
+.matchesHeader {
+  display: flex !important;
+  padding: 0 var(--padding-016);
+  padding-bottom: var(--padding-016);
+}
+
 .container {
   max-width: 1200px;
   margin: 0;
