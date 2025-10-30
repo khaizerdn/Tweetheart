@@ -8,6 +8,7 @@ import Header from "../../../components/Header";
 import MobileMenu from "../../../components/MobileMenu";
 import requestAccessToken from "../../../api/requestAccessToken";
 import styles from "./styles.module.css";
+import CardInfo from "../../../components/Card/CardInfo.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -557,22 +558,19 @@ function Profile() {
               </div>
             }
           >
-            <div className={styles.nameAge}>
-              <h3>
-                {displayName}
-                {age && `, ${age}`}
-              </h3>
-              <div className={styles.category}>
-                <i className="fa fa-venus-mars"></i>
-                <span>{displayGender}</span>
-              </div>
-            </div>
-            
-            {bio && (
-              <div className={styles.bioPreview}>
-                {bio}
-              </div>
-            )}
+            <CardInfo 
+              name={displayName}
+              age={age}
+              gender={gender}
+              distance={0}
+              bio={bio}
+              classNames={{
+                nameAge: styles.nameAge,
+                category: styles.category,
+                distance: styles.distance,
+                bioPreview: styles.bioPreview,
+              }}
+            />
           </Card>
         </div>
       </div>

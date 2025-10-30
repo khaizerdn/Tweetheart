@@ -6,6 +6,7 @@ import FilterContainer from '../../../components/FilterContainer';
 import requestAccessToken from '../../../api/requestAccessToken';
 // Remove likesAPI import since we'll use direct fetch calls
 import styles from './styles.module.css';
+import CardInfo from '../../../components/Card/CardInfo.jsx';
 
 const Content = () => {
   const [cards, setCards] = useState([]);
@@ -606,34 +607,19 @@ const Content = () => {
                       </>
                     )}
                   >
-                    <div className={styles.nameAge}>
-                      <h3>{card.name}, {card.age}</h3>
-                      <div className={styles.category}>
-                        <i className="fa fa-venus-mars"></i>
-                        <span>
-                          {card.gender === 'male' ? 'Male' :
-                           card.gender === 'female' ? 'Female' :
-                           card.gender === 'prefer_not_to_say' ? 'Prefer not to say' :
-                           'Not specified'}
-                        </span>
-                      </div>
-                      <div className={styles.distance}>
-                        <i className="fa fa-map-marker-alt"></i>
-                        <span>
-                          {card.distance === 0 || card.distance === '0'
-                            ? "Nearby" 
-                            : card.distance !== null && card.distance !== undefined
-                              ? `${card.distance} kilometers away`
-                              : 'Distance unavailable'}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    {card.bio && (
-                      <div className={styles.bioPreview}>
-                        {card.bio}
-                      </div>
-                    )}
+                    <CardInfo 
+                      name={card.name}
+                      age={card.age}
+                      gender={card.gender}
+                      distance={card.distance}
+                      bio={card.bio}
+                      classNames={{
+                        nameAge: styles.nameAge,
+                        category: styles.category,
+                        distance: styles.distance,
+                        bioPreview: styles.bioPreview,
+                      }}
+                    />
                   </Card>
                 );
               })}
