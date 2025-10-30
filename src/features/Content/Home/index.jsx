@@ -8,10 +8,12 @@ import requestAccessToken from '../../../api/requestAccessToken';
 import styles from './styles.module.css';
 import CardInfo from '../../../components/Card/CardInfo.jsx';
 import Button from '../../../components/Buttons/Button';
-import { useNavigate } from 'react-router-dom';
+import Loading from './features/Loading';
+import Error from './features/Error';
+import LocationRequired from './features/LocationRequired';
+import MatchModal from './components/MatchModal';
 
 const Content = ({ locationGranted, setLocationGranted }) => {
-  const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
   // Track users already liked to exclude from feed
@@ -576,77 +578,23 @@ const Content = ({ locationGranted, setLocationGranted }) => {
 
   // Show loading state
   if (loading) {
-    return (
-      <div className={styles.home}>
-        <div className={styles.container}>
-          <div className={styles.cardContainer}>
-            <div className={styles.cards}>
-              <div className={styles.emptyState}>
-                <i className="fa fa-spinner fa-spin"></i>
-                <h3>Loading users...</h3>
-                <p>Finding people near you</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   // Show error state
   if (error) {
-    return (
-      <div className={styles.home}>
-        <div className={styles.container}>
-          <div className={styles.cardContainer}>
-            <div className={styles.cards}>
-              <div className={styles.emptyState}>
-                <i className="fa fa-exclamation-triangle"></i>
-                <h3>Oops! Something went wrong</h3>
-                <p>{error}</p>
-                <button 
-                  onClick={() => window.location.reload()} 
-                  className={styles.button}
-                >
-                  Try Again
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Error error={error} />;
   }
 
   if (!locationGranted) {
     return (
-      <div className={styles.home}>
-        <div className={styles.locationRequiredContainer}>
-          <div className={styles.emptyState}>
-            <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
-            <h3>Location Access Required</h3>
-            <p className={styles.locationInfo}>To help you find matches nearby, we need access to your location. This allows us to show you people in your area and improve your experience.</p>
-            {/* Error display */}
-            {error && <div className={styles.error}>{error}</div>}
-            <Button
-              type="secondary"
-              position="center"
-              onClick={getLocationAndSave}
-              loading={isRequesting}
-              disabled={isRequesting}
-            >
-              Allow Location
-            </Button>
-            {/* Too Many Attempts warning below the button, in a smaller red style */}
-            {showTooManyAttempts && (
-              <div className={styles.tooManyAttemptsWarning}>
-                You have attempted to allow location too many times. Please go to your browser settings and manually allow this site to access your location.
-              </div>
-            )}
-          </div>
-        </div>
-        {isMobile && <MobileMenu />}
-      </div>
+      <LocationRequired
+        isMobile={isMobile}
+        error={locError}
+        isRequesting={isRequesting}
+        showTooManyAttempts={showTooManyAttempts}
+        onGetLocation={getLocationAndSave}
+      />
     );
   }
 
@@ -678,39 +626,8 @@ const Content = ({ locationGranted, setLocationGranted }) => {
       <div className={styles.container}>
         {/* Match Modal */}
         {showMatchModal && matchUser && (
-        <div className={styles.matchModal}>
-          <div className={styles.matchModalContent}>
-            <div className={styles.matchAnimation}>
-              <div className={styles.matchHearts}>
-                <i className="fa fa-heart"></i>
-                <i className="fa fa-heart"></i>
-              </div>
-            </div>
-            <h2>It's a Match!</h2>
-            <p>You and {matchUser.name} liked each other!</p>
-            <div className={styles.matchActions}>
-              <Button type="primary" position="center" onClick={closeMatchModal}>
-                Keep Swiping
-              </Button>
-              <Button
-                type="secondary"
-                position="center"
-                onClick={() => {
-                  if (!matchUser?.id) {
-                    closeMatchModal();
-                    return;
-                  }
-                  const targetMatchId = matchUser.id;
-                  closeMatchModal();
-                  navigate('/matches', { state: { openPreparationForMatchId: targetMatchId } });
-                }}
-              >
-                Send Message
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+          <MatchModal matchUser={matchUser} onClose={closeMatchModal} />
+        )}
 
       {/* Filter Container */}
       <FilterContainer
