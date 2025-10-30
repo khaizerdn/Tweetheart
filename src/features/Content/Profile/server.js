@@ -71,6 +71,27 @@ const queryDB = async (query, values = []) => {
   }
 };
 
+/**
+ * Calculate distance between two coordinates using Haversine formula
+ * Returns distance in kilometers
+ */
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c; // Distance in km
+  return Math.round(distance);
+};
+
+const deg2rad = (deg) => {
+  return deg * (Math.PI / 180);
+};
+
 // =============================
 // ✅ GET USER PROFILE DATA
 // =============================
@@ -574,7 +595,19 @@ router.get("/api/users/feed", async (req, res) => {
       ageParams = [maxAge];
     }
 
+    // Get current user's location for distance calculation
+    const currentUserQuery = `SELECT latitude, longitude FROM users WHERE id = ?`;
+    const currentUser = await queryDB(currentUserQuery, [currentUserId]);
+    
+    if (currentUser.length === 0) {
+      return res.status(404).json({ message: "Current user not found" });
+    }
+    
+    const currentUserLat = parseFloat(currentUser[0].latitude);
+    const currentUserLon = parseFloat(currentUser[0].longitude);
+
     // Get users except the current user with pagination and age filtering
+    // Note: Removed location requirement to allow users without location to be shown
     const sql = `
       SELECT 
         id,
@@ -583,7 +616,9 @@ router.get("/api/users/feed", async (req, res) => {
         gender, 
         birthdate, 
         bio,
-        photos
+        photos,
+        latitude,
+        longitude
       FROM users 
       WHERE id != ? ${ageFilter}
       ORDER BY created_at DESC
@@ -592,7 +627,16 @@ router.get("/api/users/feed", async (req, res) => {
     const users = await queryDB(sql, [currentUserId, ...ageParams, limit, offset]);
 
     if (!users.length) {
-      return res.json({ users: [] });
+      return res.json({ 
+        users: [],
+        pagination: {
+          currentPage: page,
+          totalPages: 0,
+          totalUsers: 0,
+          hasMore: false,
+          limit
+        }
+      });
     }
 
     // Process each user and their photos
@@ -647,18 +691,34 @@ router.get("/api/users/feed", async (req, res) => {
         else if (user.gender === "Female") frontendGender = "female";
         else if (user.gender === "Other") frontendGender = "prefer_not_to_say";
 
+        // Calculate distance if both users have location data
+        let distance = null;
+        const userLat = parseFloat(user.latitude);
+        const userLon = parseFloat(user.longitude);
+        
+        if (!isNaN(currentUserLat) && !isNaN(currentUserLon) && !isNaN(userLat) && !isNaN(userLon)) {
+          distance = calculateDistance(
+            currentUserLat, 
+            currentUserLon, 
+            userLat, 
+            userLon
+          );
+        }
+
         return {
           id: user.id,
           name: user.first_name || "Unknown",
           age: age,
           bio: user.bio || "",
           gender: frontendGender,
-          photos: photos
+          photos: photos,
+          distance: distance
         };
       })
     );
 
     // Get total count for pagination metadata with age filtering
+    // Note: Count without location requirement to match the main query
     const countSql = `SELECT COUNT(*) as total FROM users WHERE id != ? ${ageFilter}`;
     const countResult = await queryDB(countSql, [currentUserId, ...ageParams]);
     const totalUsers = countResult[0].total;

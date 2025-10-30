@@ -75,7 +75,8 @@ const Content = () => {
         bio: user.bio,
         category: "Basics & Lifestyle",
         tags: ["Looking for connections"],
-        photos: user.photos || []
+        photos: user.photos || [],
+        distance: user.distance !== undefined && user.distance !== null ? user.distance : null
       }));
       
       if (append) {
@@ -611,6 +612,16 @@ const Content = () => {
                       <div className={styles.category}>
                         <i className="fa fa-venus-mars"></i>
                         <span>Looking for connections</span>
+                      </div>
+                      <div className={styles.distance}>
+                        <i className="fa fa-map-marker-alt"></i>
+                        <span>
+                          {card.distance === 0 || card.distance === '0'
+                            ? "Nearby" 
+                            : card.distance !== null && card.distance !== undefined
+                              ? `${card.distance} kilometers away`
+                              : 'Distance unavailable'}
+                        </span>
                       </div>
                     </div>
                     

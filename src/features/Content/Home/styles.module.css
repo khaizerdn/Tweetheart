@@ -145,6 +145,23 @@
   font-size: var(--font-size-012);
 }
 
+.distance {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.9);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+  margin-top: var(--margin-004);
+}
+
+.distance i {
+  font-size: var(--font-size-012);
+}
 
 .bioPreview {
   font-size: var(--font-size-014);

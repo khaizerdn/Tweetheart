@@ -81,12 +81,22 @@ const queryDB = async (query, values = []) => {
 // ✅ CREATE ACCOUNT ROUTE
 // =====================================================
 router.post("/signup", async (req, res) => {
-  const { firstName, lastName, email, password, gender, month, day, year, bio } = req.body;
+  const { firstName, lastName, email, password, gender, month, day, year, bio, latitude, longitude } = req.body;
 
   try {
     // Validate required fields
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ message: "All fields are required." });
+    }
+
+    // Validate location data
+    if (!latitude || !longitude) {
+      return res.status(400).json({ message: "Location access is required to create an account." });
+    }
+
+    // Validate latitude and longitude values
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      return res.status(400).json({ message: "Invalid location coordinates." });
     }
 
     // Hash password and verification code
@@ -118,6 +128,8 @@ router.post("/signup", async (req, res) => {
           birthdate = ?, 
           gender = ?, 
           bio = ?,
+          latitude = ?,
+          longitude = ?,
           verification_code = ?, 
           expiration_time = ?, 
           created_at = NOW()
@@ -132,6 +144,8 @@ router.post("/signup", async (req, res) => {
         birthdate,
         gender,
         bio || null,
+        latitude,
+        longitude,
         hashedVerificationCode,
         expirationTime,
         existingId,
@@ -148,8 +162,8 @@ router.post("/signup", async (req, res) => {
     // Create new user
     const insertUserQuery = `
       INSERT INTO users 
-        (id, first_name, last_name, email, password, birthdate, gender, bio, is_verified, verification_code, expiration_time, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
+        (id, first_name, last_name, email, password, birthdate, gender, bio, latitude, longitude, is_verified, verification_code, expiration_time, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
     `;
 
     await queryDB(insertUserQuery, [
@@ -161,6 +175,8 @@ router.post("/signup", async (req, res) => {
       birthdate,
       gender,
       bio || null,
+      latitude,
+      longitude,
       hashedVerificationCode,
       expirationTime,
     ]);
