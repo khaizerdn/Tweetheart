@@ -1,6 +1,7 @@
 // src/pages/Menu/Menu.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import styles from '../utils/styles/styles.module.css';
 import Button from '../components/button';
@@ -11,9 +12,12 @@ import requestAccessToken from '../../../api/requestAccessToken';
 
 function Menu() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [userData, setUserData] = useState(null);
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [hasNewNotifications, setHasNewNotifications] = useState(false);
+  const [socket, setSocket] = useState(null);
 
   const logout = async () => {
     try {
@@ -46,6 +50,14 @@ function Menu() {
     }
     fetchUserData();
   }, []);
+
+  // Hide the dot when visiting the notifications page and persist state
+  useEffect(() => {
+    if (location.pathname === '/notifications') {
+      setHasNewNotifications(false);
+      try { localStorage.setItem('hasNewNotifications', '0'); } catch {}
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     // Get current user ID from cookies
@@ -88,6 +100,29 @@ function Menu() {
     fetchProfilePhoto();
   }, []);
 
+  // Initialize notification dot from persistent flag (no per-item unread)
+  useEffect(() => {
+    try {
+      const flag = localStorage.getItem('hasNewNotifications');
+      setHasNewNotifications(flag === '1');
+    } catch {}
+  }, []);
+
+  // Socket listener to show dot on new notifications
+  useEffect(() => {
+    if (!currentUserId) return;
+    const s = io('http://localhost:8081', { withCredentials: true });
+    s.on('connect', () => {
+      s.emit('join_user_room', { userId: currentUserId });
+    });
+    s.on('new_notification', () => {
+      setHasNewNotifications(true);
+      try { localStorage.setItem('hasNewNotifications', '1'); } catch {}
+    });
+    setSocket(s);
+    return () => { s.close(); };
+  }, [currentUserId]);
+
 
   return (
     <div className={styles.menuContainer}>
@@ -118,7 +153,7 @@ function Menu() {
         className={styles.scrollableContainer}
       >
         <Button to="/" iconClass="fa-solid fa-house" label="Home" />
-        <Button to="/notifications" iconClass="fa-solid fa-bell" label="Notifications" />
+        <Button to="/notifications" iconClass="fa-solid fa-bell" label="Notifications" showDot={hasNewNotifications} />
         <Button to="/matches" iconClass="fa-solid fa-heart" label="Matches" />
         <Button to="/chats" iconClass="fa-solid fa-comments" label="Chats" />
       </OverlayScrollbarsComponent>

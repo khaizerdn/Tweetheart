@@ -10,6 +10,7 @@ const Button = ({
   extraClassName = '',
   onClick = null,
   relative = false,
+  showDot = false,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -65,6 +66,7 @@ const Button = ({
         </div>
       </div>
       <div className={styles.buttonText}>{label}</div>
+      {showDot && <span className={styles.badgeDot} aria-hidden></span>}
     </div>
   );
 };
@@ -76,6 +78,7 @@ Button.propTypes = {
   extraClassName: PropTypes.string,
   onClick: PropTypes.func,
   relative: PropTypes.bool,
+  showDot: PropTypes.bool,
 };
 
 export default Button;

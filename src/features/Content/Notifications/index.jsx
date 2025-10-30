@@ -32,18 +32,18 @@ const Notifications = () => {
 
   useEffect(() => {
     fetchNotifications();
+    // Clear the menu dot on entering the page
+    try {
+      if (window && window.history && window.location) {
+        // Communicate via a simple storage flag; Menu reads unread from API anyway
+        sessionStorage.setItem('seenNotificationsPage', '1');
+      }
+    } catch {}
   }, []);
 
   const markAllRead = async () => {
-    try {
-      // Optimistic UI: mark locally
-      setItems(prev => prev.map(n => ({ ...n, is_read: 1 })));
-      // Best-effort: call per item unread
-      const unread = items.filter(n => !n.is_read);
-      await Promise.all(unread.map(n => fetch(`http://localhost:8081/api/notifications/${n.id}/read`, {
-        method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }
-      })));
-    } catch {}
+    // No-op for per-item read; keep button to clear dot semantics if needed
+    try { localStorage.setItem('hasNewNotifications', '0'); } catch {}
   };
 
   const dismissOne = async (id) => {
@@ -153,7 +153,7 @@ const Notifications = () => {
                   {n.message && <p className={styles.notificationMessage}>{n.message}</p>}
                   {n.user && <div className={styles.notificationUser}>{n.user}</div>}
                 </div>
-                {!n.is_read && <span className={styles.unreadIndicator} />}
+                 {/* Unread indicator removed - simplified model */}
                 <button 
                   aria-label="Dismiss"
                   title="Dismiss"

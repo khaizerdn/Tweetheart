@@ -10,6 +10,7 @@
   margin-bottom: var(--margin-002);
   padding: 0 var(--padding-004);
   gap: var(--gap-008);
+  position: relative;
 }
 
 .buttonDefault:hover {
@@ -78,6 +79,16 @@
 
 .selected .buttonLogo {
   color: var(--background-color-secondary-default);
+}
+
+/* Small dot badge shown on the right for unread/new */
+.badgeDot {
+  position: absolute;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--border-radius-999);
+  background: var(--background-color-secondary-default);
 }
 
 /* Responsive Styles */
