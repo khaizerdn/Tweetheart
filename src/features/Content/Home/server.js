@@ -108,6 +108,64 @@ router.post("/api/likes", async (req, res) => {
           [liked_id, currentUserId]
         );
 
+        // Get user names for notifications
+        const [currentUser] = await queryDB(
+          "SELECT first_name, last_name FROM users WHERE id = ?",
+          [currentUserId]
+        );
+        const [likedUser] = await queryDB(
+          "SELECT first_name, last_name FROM users WHERE id = ?",
+          [liked_id]
+        );
+
+        // Create notifications for both users
+        const currentUserName = `${currentUser.first_name} ${currentUser.last_name}`;
+        const likedUserName = `${likedUser.first_name} ${likedUser.last_name}`;
+
+        // Notification for current user
+        await queryDB(
+          `INSERT INTO notifications (user_id, type, title, message, data) 
+           VALUES (?, 'match', 'New Match!', 'You and ${likedUserName} liked each other!', ?)`,
+          [currentUserId, JSON.stringify({ matchUserId: liked_id, matchUserName: likedUserName })]
+        );
+
+        // Notification for liked user
+        await queryDB(
+          `INSERT INTO notifications (user_id, type, title, message, data) 
+           VALUES (?, 'match', 'New Match!', 'You and ${currentUserName} liked each other!', ?)`,
+          [liked_id, JSON.stringify({ matchUserId: currentUserId, matchUserName: currentUserName })]
+        );
+
+        // Emit real-time notifications via Socket.IO
+        const io = req.app.get('io');
+        if (io) {
+          // Send notification to current user
+          io.to(`user_${currentUserId}`).emit('new_notification', {
+            id: Date.now() + 1, // Simple ID generation for real-time
+            user_id: currentUserId,
+            type: 'match',
+            title: 'New Match!',
+            message: `You and ${likedUserName} liked each other!`,
+            data: JSON.stringify({ matchUserId: liked_id, matchUserName: likedUserName }),
+            is_read: 0,
+            is_dismissed: 0,
+            created_at: new Date().toISOString()
+          });
+
+          // Send notification to liked user
+          io.to(`user_${liked_id}`).emit('new_notification', {
+            id: Date.now() + 2, // Simple ID generation for real-time
+            user_id: liked_id,
+            type: 'match',
+            title: 'New Match!',
+            message: `You and ${currentUserName} liked each other!`,
+            data: JSON.stringify({ matchUserId: currentUserId, matchUserName: currentUserName }),
+            is_read: 0,
+            is_dismissed: 0,
+            created_at: new Date().toISOString()
+          });
+        }
+
         return res.json({
           success: true,
           message: "Like recorded",

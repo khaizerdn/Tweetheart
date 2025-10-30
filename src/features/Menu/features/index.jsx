@@ -6,6 +6,7 @@ import styles from '../utils/styles/styles.module.css';
 import Button from '../components/button';
 import Logo from '../components/logo';
 import Profile from '../components/profile';
+import NotificationsContainer from '../components/notifications';
 import requestAccessToken from '../../../api/requestAccessToken';
 
 function Menu() {
@@ -120,6 +121,9 @@ function Menu() {
         <Button to="/notifications" iconClass="fa-solid fa-bell" label="Notifications" />
         <Button to="/matches" iconClass="fa-solid fa-heart" label="Matches" />
         <Button to="/chats" iconClass="fa-solid fa-comments" label="Chats" />
+        
+        {/* Notifications Container */}
+        <NotificationsContainer />
       </OverlayScrollbarsComponent>
 
         <hr className={styles.sectionSeparator} />
