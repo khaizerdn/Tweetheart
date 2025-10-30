@@ -256,33 +256,40 @@
 }
 
 .filterButton {
-  background: var(--background-color-secondary-default);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: var(--background-color-primary-default-1);
+  border: 1px solid var(--background-color-primary-default-1);
+  border-radius: var(--border-radius-999);
+  color: var(--font-color-muted);
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--color-white);
-  position: relative;
-}
-
-.filterButton i {
-  font-size: 16px;
-  color: var(--color-white);
+  outline: none;
+  box-shadow: var(--shadow-3);
 }
 
 .filterButton:hover {
-  background: var(--background-color-secondary-hover);
-  transform: scale(1.05);
+  background: var(--background-color-primary-hover-1);
+  color: var(--font-color-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-4);
 }
 
 .filterButton:active {
-  background: var(--background-color-secondary-active);
-  transform: scale(0.95);
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.filterButton i {
+  font-size: var(--font-size-020);
+  color: var(--background-color-secondary-default);
 }
 
 .filterContainer {

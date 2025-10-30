@@ -519,15 +519,16 @@ const Matches = () => {
 
   return (
     <div className={styles.matches}>
-      <Header title="Matches" className={styles.matchesHeader}>
-        <button 
-          className={styles.filterButton}
-          onClick={() => setShowFilter(!showFilter)}
-          title="Filter matches"
-        >
-          <i className="fa-solid fa-filter"></i>
-        </button>
-      </Header>
+      <Header title="Matches" className={styles.matchesHeader} />
+      
+      {/* Filter button - always visible */}
+      <button 
+        className={styles.filterButton}
+        onClick={() => setShowFilter(!showFilter)}
+        title="Filter matches"
+      >
+        <i className="fa-solid fa-filter"></i>
+      </button>
       
       {showFilter && (
         <div 
