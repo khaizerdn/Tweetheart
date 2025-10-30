@@ -8,7 +8,7 @@ import requestAccessToken from '../../../api/requestAccessToken';
 import styles from './styles.module.css';
 import CardInfo from '../../../components/Card/CardInfo.jsx';
 
-const Content = ({ locationGranted }) => {
+const Content = ({ locationGranted, setLocationGranted }) => {
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -51,6 +51,9 @@ const Content = ({ locationGranted }) => {
     relationshipType: 'any',
     additionalOptions: []
   });
+
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [locError, setLocError] = useState("");
 
   const containerRef = useRef(null);
   const cardRefs = useRef({});
@@ -142,6 +145,61 @@ const Content = ({ locationGranted }) => {
       fetchUsers(1, false);
     }
   }, [filters, loaded, fetchUsers]);
+
+  const getLocationAndSave = async () => {
+    setIsRequesting(true);
+    setLocError("");
+    try {
+      if (!navigator.geolocation) {
+        throw new Error("Geolocation is not supported by your browser.");
+      }
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/update-location`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ latitude, longitude })
+            });
+            if (response.status === 200) {
+              setLocationGranted(true);
+            } else {
+              const data = await response.json();
+              throw new Error(data.message || "Failed to save location. Please try again.");
+            }
+          } catch (err) {
+            setLocError(err.message || "Failed to save location. Please try again.");
+            setIsRequesting(false);
+          }
+        },
+        (err) => {
+          let errorMessage = "Failed to get location. ";
+          switch (err.code) {
+            case err.PERMISSION_DENIED:
+              errorMessage += "Please enable location access in your browser settings.";
+              break;
+            case err.POSITION_UNAVAILABLE:
+              errorMessage += "Location information is unavailable.";
+              break;
+            case err.TIMEOUT:
+              errorMessage += "Location request timed out.";
+              break;
+            default:
+              errorMessage += "An unknown error occurred.";
+              break;
+          }
+          setLocError(errorMessage);
+          setIsRequesting(false);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } catch (err) {
+      setLocError(err.message || "An error occurred. Please try again.");
+      setIsRequesting(false);
+    }
+  };
 
   const getCurrentCard = () => {
     const visibleCards = cards.filter(card => 
@@ -469,6 +527,15 @@ const Content = ({ locationGranted }) => {
             <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
             <h3>Location Access Required</h3>
             <p>To help you find matches nearby, we need access to your location. This allows us to show you people in your area and improve your experience.</p>
+            {/* location error message here */}
+            {error && <div className={styles.error}>{error}</div>}
+            <button
+              className={styles.button}
+              onClick={getLocationAndSave}
+              disabled={isRequesting}
+            >
+              {isRequesting ? "Getting Location..." : "Allow Location"}
+            </button>
           </div>
         </div>
       </div>

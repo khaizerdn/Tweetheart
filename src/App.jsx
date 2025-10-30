@@ -26,7 +26,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showLocationModal, setShowLocationModal] = useState(false);
   const [locationChecked, setLocationChecked] = useState(false);
   const [locationGranted, setLocationGranted] = useState(false);
 
@@ -39,8 +38,10 @@ function App() {
         // Check if user has location saved
         try {
           const locationRes = await axios.get(`${API_URL}/location-status`, { withCredentials: true });
-          if (!locationRes.data.hasLocation) {
-            setShowLocationModal(true);
+          if (locationRes.data.hasLocation) {
+            setLocationGranted(true);
+          } else {
+            setLocationGranted(false);
           }
         } catch (locationErr) {
           console.error("Error checking location status:", locationErr);
@@ -64,7 +65,7 @@ function App() {
       try {
         const locationRes = await axios.get(`${API_URL}/location-status`, { withCredentials: true });
         if (!locationRes.data.hasLocation) {
-          setShowLocationModal(true);
+          setLocationGranted(false); // Ensure it's false if not saved
         }
         setLocationChecked(true);
       } catch (locationErr) {
@@ -74,11 +75,6 @@ function App() {
     }, 100); // Small delay to ensure cookies are set
   };
   
-  const handleLocationGranted = (granted = true) => {
-    setShowLocationModal(false);
-    setLocationGranted(granted);
-  };
-
   const ProtectedRoute = ({ children }) => {
     return isLoggedIn ? children : <Navigate to="/" />;
   };
@@ -105,9 +101,6 @@ function App() {
             path="*"
             element={
               <ProtectedRoute>
-                {showLocationModal && (
-                  <LocationPermission onLocationGranted={() => handleLocationGranted(true)} onSkip={() => handleLocationGranted(false)} />
-                )}
                 <div className="container">
                   <div className="container-titleBar">
                     <div className="titleBar"></div>
@@ -127,7 +120,7 @@ function App() {
                           <OverlayScrollbarsComponent
                             options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, }, overflow: { x: 'hidden', y: 'hidden' } }}
                             className="content">
-                            <Content locationGranted={locationGranted} />
+                            <Content locationGranted={locationGranted} setLocationGranted={setLocationGranted} />
                           </OverlayScrollbarsComponent>
                         } />
                         <Route path="/notifications" element={
