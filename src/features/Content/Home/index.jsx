@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Card from '../../../components/Card';
 import Header from '../../../components/Header';
 import MobileMenu from '../../../components/MobileMenu';
-import FilterContainer from '../../../components/FilterContainer';
+import FilterContainer from './components/FilterContainer';
 import requestAccessToken from '../../../api/requestAccessToken';
 // Remove likesAPI import since we'll use direct fetch calls
 import styles from './styles.module.css';
