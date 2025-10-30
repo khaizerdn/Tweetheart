@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../../../components/Buttons/Button';
-import styles from '../../styles.module.css';
+import styles from './styles.module.css';
 
 const MatchModal = ({ matchUser, onClose }) => {
   const navigate = useNavigate();
