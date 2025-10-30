@@ -163,13 +163,23 @@
   z-index: 3;
 }
 
-/* Unmatch Button Container */
-.unmatchButtonContainer {
+/* Action Buttons Container */
+.actionButtonsContainer {
   position: absolute;
   bottom: var(--padding-012);
+  left: var(--padding-012);
   right: var(--padding-012);
   z-index: 4;
   pointer-events: auto;
+  display: flex;
+  gap: var(--gap-008);
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.unmatchButtonWrapper,
+.viewProfileButtonWrapper {
+  flex-shrink: 0;
 }
 
 /* Allow child elements to be interactive but prevent text selection */

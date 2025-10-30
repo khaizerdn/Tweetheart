@@ -296,6 +296,12 @@ const Matches = () => {
     setShowUnmatchModal(true);
   };
 
+  // Handle view profile button click
+  const handleViewProfileClick = (matchId, event) => {
+    event.stopPropagation(); // Prevent card click
+    navigate(`/profile/${matchId}`);
+  };
+
   // Handle unmatch confirmation
   const handleUnmatchConfirm = async () => {
     if (!unmatchTarget || isUnmatching) return;
@@ -597,6 +603,15 @@ const Matches = () => {
                  showNavigation={false}
                  showIndicators={false}
                  onClick={() => handleCardClick(match.id)}
+                 viewProfileButton={
+                   <button
+                     className={styles.viewProfileButton}
+                     onClick={(e) => handleViewProfileClick(match.id, e)}
+                     title="View Profile"
+                   >
+                     View Profile
+                   </button>
+                 }
                  unmatchButton={
                    <button
                      className={styles.unmatchButton}

@@ -472,6 +472,37 @@
   font-size: 0.7rem;
 }
 
+/* View Profile Button */
+.viewProfileButton {
+  background: var(--background-color-primary-default-1);
+  border: none;
+  border-radius: var(--border-radius-016);
+  padding: var(--padding-008) var(--padding-012);
+  color: var(--font-color-default);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-014);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-1);
+  backdrop-filter: blur(4px);
+  min-width: 100px;
+  height: 32px;
+}
+
+.viewProfileButton:hover {
+  background: var(--background-color-primary-hover-1);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+
+.viewProfileButton:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-1);
+}
+
 /* Unmatch Button */
 .unmatchButton {
   background: var(--background-color-primary-default-1);

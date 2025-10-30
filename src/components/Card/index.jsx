@@ -17,6 +17,7 @@ const Card = React.forwardRef(({
   placeholder,
   overlays,
   unmatchButton,
+  viewProfileButton,
   ...props
 }, ref) => {
   const [loadedPhotos, setLoadedPhotos] = useState(new Set());
@@ -167,10 +168,19 @@ const Card = React.forwardRef(({
         </div>
       )}
       
-      {/* Unmatch button - positioned in bottom right */}
-      {unmatchButton && (
-        <div className={styles.unmatchButtonContainer}>
-          {unmatchButton}
+      {/* Action buttons container - positioned in bottom */}
+      {(unmatchButton || viewProfileButton) && (
+        <div className={styles.actionButtonsContainer}>
+          {viewProfileButton && (
+            <div className={styles.viewProfileButtonWrapper}>
+              {viewProfileButton}
+            </div>
+          )}
+          {unmatchButton && (
+            <div className={styles.unmatchButtonWrapper}>
+              {unmatchButton}
+            </div>
+          )}
         </div>
       )}
     </div>
