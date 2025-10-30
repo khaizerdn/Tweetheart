@@ -92,7 +92,26 @@
   transform: scale(1.2);
 }
 
-/* Navigation Buttons */
+/* Clickable Areas for Photo Navigation */
+.leftClickArea,
+.rightClickArea {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.leftClickArea {
+  left: 0;
+}
+
+.rightClickArea {
+  right: 0;
+}
+
+/* Navigation Buttons - Only visible on hover, static */
 .navButton {
   position: absolute;
   top: 50%;
@@ -100,27 +119,23 @@
   width: 40px;
   height: 40px;
   border-radius: var(--border-radius-999);
-  border: none;
   background-color: rgba(255, 255, 255, 0.9);
   color: var(--font-color-default);
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-016);
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
   z-index: 2;
   box-shadow: var(--shadow-2);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
-.navButton:hover {
-  background-color: rgba(255, 255, 255, 1);
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: var(--shadow-3);
-}
-
-.navButton:active {
-  transform: translateY(-50%) scale(0.95);
+.photoContainer:hover .navButton {
+  opacity: 1;
+  visibility: visible;
 }
 
 .prevButton {
@@ -184,6 +199,8 @@
     width: 35px;
     height: 35px;
     font-size: var(--font-size-014);
+    opacity: 1;
+    visibility: visible;
   }
   
   .prevButton {
@@ -217,6 +234,8 @@
     width: 30px;
     height: 30px;
     font-size: var(--font-size-012);
+    opacity: 1;
+    visibility: visible;
   }
   
   .prevButton {

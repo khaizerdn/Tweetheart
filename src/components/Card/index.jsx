@@ -86,6 +86,40 @@ const Card = React.forwardRef(({
               />
             ))}
             
+            {/* Clickable left half for photo changing */}
+            {showNavigation && hasMultiplePhotos && (
+              <div 
+                className={styles.leftClickArea}
+                onClick={onPrevPhoto}
+                aria-label="Previous photo"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onPrevPhoto();
+                  }
+                }}
+              />
+            )}
+            
+            {/* Clickable right half for photo changing */}
+            {showNavigation && hasMultiplePhotos && (
+              <div 
+                className={styles.rightClickArea}
+                onClick={onNextPhoto}
+                aria-label="Next photo"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onNextPhoto();
+                  }
+                }}
+              />
+            )}
+            
             {/* Photo indicators */}
             {showIndicators && hasMultiplePhotos && (
               <div className={styles.photoIndicators}>
@@ -98,25 +132,21 @@ const Card = React.forwardRef(({
               </div>
             )}
             
-            {/* Photo navigation buttons */}
+            {/* Photo navigation buttons - only visible on hover, static */}
             {showNavigation && hasMultiplePhotos && (
               <>
-                <button
+                <div
                   className={`${styles.navButton} ${styles.prevButton}`}
-                  onClick={onPrevPhoto}
-                  type="button"
                   aria-label="Previous photo"
                 >
                   <i className="fa fa-chevron-left"></i>
-                </button>
-                <button
+                </div>
+                <div
                   className={`${styles.navButton} ${styles.nextButton}`}
-                  onClick={onNextPhoto}
-                  type="button"
                   aria-label="Next photo"
                 >
                   <i className="fa fa-chevron-right"></i>
-                </button>
+                </div>
               </>
             )}
           </>
