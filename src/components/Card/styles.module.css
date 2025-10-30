@@ -196,11 +196,7 @@
   }
   
   .navButton {
-    width: 35px;
-    height: 35px;
-    font-size: var(--font-size-014);
-    opacity: 1;
-    visibility: visible;
+    display: none;
   }
   
   .prevButton {
@@ -231,11 +227,7 @@
   }
   
   .navButton {
-    width: 30px;
-    height: 30px;
-    font-size: var(--font-size-012);
-    opacity: 1;
-    visibility: visible;
+    display: none;
   }
   
   .prevButton {
