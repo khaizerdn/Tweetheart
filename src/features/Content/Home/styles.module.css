@@ -274,6 +274,7 @@
   height: 100%;
   text-align: center;
   color: rgba(255, 255, 255, 0.7);
+  width: 500px;
 }
 
 .emptyState i {
@@ -655,4 +656,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.tooManyAttemptsWarning {
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.locationInfo {
+  margin-bottom: 1rem;
 }

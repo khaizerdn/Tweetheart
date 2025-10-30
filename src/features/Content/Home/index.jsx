@@ -7,6 +7,7 @@ import requestAccessToken from '../../../api/requestAccessToken';
 // Remove likesAPI import since we'll use direct fetch calls
 import styles from './styles.module.css';
 import CardInfo from '../../../components/Card/CardInfo.jsx';
+import Button from '../../../components/Buttons/Button';
 
 const Content = ({ locationGranted, setLocationGranted }) => {
   const [cards, setCards] = useState([]);
@@ -54,6 +55,8 @@ const Content = ({ locationGranted, setLocationGranted }) => {
 
   const [isRequesting, setIsRequesting] = useState(false);
   const [locError, setLocError] = useState("");
+  const [locationAttemptCount, setLocationAttemptCount] = useState(0);
+  const [showTooManyAttempts, setShowTooManyAttempts] = useState(false);
 
   const containerRef = useRef(null);
   const cardRefs = useRef({});
@@ -147,8 +150,14 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   }, [filters, loaded, fetchUsers]);
 
   const getLocationAndSave = async () => {
+    if (locationAttemptCount >= 3) {
+      setShowTooManyAttempts(true);
+      return;
+    }
+    setLocationAttemptCount(cnt => cnt + 1);
     setIsRequesting(true);
     setLocError("");
+    setShowTooManyAttempts(false);
     try {
       if (!navigator.geolocation) {
         throw new Error("Geolocation is not supported by your browser.");
@@ -526,16 +535,24 @@ const Content = ({ locationGranted, setLocationGranted }) => {
           <div className={styles.emptyState}>
             <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
             <h3>Location Access Required</h3>
-            <p>To help you find matches nearby, we need access to your location. This allows us to show you people in your area and improve your experience.</p>
-            {/* location error message here */}
+            <p className={styles.locationInfo}>To help you find matches nearby, we need access to your location. This allows us to show you people in your area and improve your experience.</p>
+            {/* Error display */}
             {error && <div className={styles.error}>{error}</div>}
-            <button
-              className={styles.button}
+            <Button
+              type="secondary"
+              position="center"
               onClick={getLocationAndSave}
+              loading={isRequesting}
               disabled={isRequesting}
             >
-              {isRequesting ? "Getting Location..." : "Allow Location"}
-            </button>
+              Allow Location
+            </Button>
+            {/* Too Many Attempts warning below the button, in a smaller red style */}
+            {showTooManyAttempts && (
+              <div className={styles.tooManyAttemptsWarning}>
+                You have attempted to allow location too many times. Please go to your browser settings and manually allow this site to access your location.
+              </div>
+            )}
           </div>
         </div>
       </div>
