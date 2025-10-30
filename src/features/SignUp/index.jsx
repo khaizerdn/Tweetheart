@@ -135,6 +135,8 @@ function SignUp() {
       return;
     }
 
+    navigate("/verification");
+
     try {
       // Step 1: Create user account
       const res = await axios.post(
