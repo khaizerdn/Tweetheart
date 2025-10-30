@@ -7,6 +7,7 @@ import Button from '../components/button';
 import Logo from '../components/logo';
 import Profile from '../components/profile';
 import NotificationsContainer from '../components/notifications';
+import TestNotificationButton from '../components/notifications/TestNotificationButton';
 import requestAccessToken from '../../../api/requestAccessToken';
 
 function Menu() {
@@ -122,6 +123,9 @@ function Menu() {
         <Button to="/matches" iconClass="fa-solid fa-heart" label="Matches" />
         <Button to="/chats" iconClass="fa-solid fa-comments" label="Chats" />
       </OverlayScrollbarsComponent>
+
+      {/* Temporary test button (remove later) */}
+      <TestNotificationButton />
 
       {/* Notifications Container - placed below the scrollable container */}
       <NotificationsContainer />

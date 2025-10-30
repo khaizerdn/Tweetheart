@@ -51,7 +51,7 @@ const NotificationItem = ({ notification, onDismiss }) => {
 };
 
 const NotificationsContainer = () => {
-  const [notifications, setNotifications] = useState([]);
+  const [lastNotification, setLastNotification] = useState(null);
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false); // only visible when a new one arrives
@@ -77,9 +77,10 @@ const NotificationsContainer = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Keep for local state, but do NOT auto-show; only show on new push
+        // Keep the most recent for state, but do NOT auto-show
         const list = (data.notifications || []).slice().reverse();
-        setNotifications(list);
+        const latest = list.length > 0 ? list[list.length - 1] : null;
+        setLastNotification(latest);
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -98,11 +99,8 @@ const NotificationsContainer = () => {
       });
 
       if (response.ok) {
-        setNotifications(prev => {
-          const next = prev.filter(n => n.id !== notificationId);
-          if (next.length === 0) setShowNotifications(false);
-          return next;
-        });
+        setLastNotification(null);
+        setShowNotifications(false);
       }
     } catch (error) {
       console.error('Error dismissing notification:', error);
@@ -154,8 +152,8 @@ const NotificationsContainer = () => {
 
     newSocket.on('new_notification', (notification) => {
       console.log('New notification received:', notification);
-      // Append to keep newest at the bottom and show the tray
-      setNotifications(prev => [...prev, notification]);
+      // Replace with the latest notification and show the tray
+      setLastNotification(notification);
       setShowNotifications(true);
       
       // Show browser notification if permission is granted
@@ -186,18 +184,16 @@ const NotificationsContainer = () => {
     }
   }, []);
 
-  if (!showNotifications || notifications.length === 0) return null;
+  if (!showNotifications || !lastNotification) return null;
 
   return (
     <div className={styles.notificationsContainer}>
       <div className={styles.notificationsList}>
-        {notifications.map(notification => (
-          <NotificationItem
-            key={notification.id}
-            notification={notification}
-            onDismiss={dismissNotification}
-          />
-        ))}
+        <NotificationItem
+          key={lastNotification.id}
+          notification={lastNotification}
+          onDismiss={dismissNotification}
+        />
       </div>
     </div>
   );
