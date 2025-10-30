@@ -6,5 +6,8 @@ Technical Limitations
 - Use request access token in some sensitive areas for security.
 
 Fix
-- Sign up page: There is a delay after clicking the confirm button
 - Bug in confirm password when if it doesn't match and try to change in password input, the error doesn't remove.
+
+
+Questions:
+- When to use access token, is it need to use everytime on every user interaction or just for just like banking or like when it involve money? Does it will cause stress on the server or db if there is a million of users?
