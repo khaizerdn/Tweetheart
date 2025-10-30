@@ -76,7 +76,9 @@ const NotificationsContainer = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setNotifications(data.notifications || []);
+        // Ensure newest notifications appear at the bottom
+        const list = (data.notifications || []).slice().reverse();
+        setNotifications(list);
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -147,7 +149,8 @@ const NotificationsContainer = () => {
 
     newSocket.on('new_notification', (notification) => {
       console.log('New notification received:', notification);
-      setNotifications(prev => [notification, ...prev]);
+      // Append to keep newest at the bottom
+      setNotifications(prev => [...prev, notification]);
       
       // Show browser notification if permission is granted
       if (Notification.permission === 'granted') {

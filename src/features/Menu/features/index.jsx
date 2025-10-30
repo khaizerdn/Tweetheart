@@ -121,12 +121,12 @@ function Menu() {
         <Button to="/notifications" iconClass="fa-solid fa-bell" label="Notifications" />
         <Button to="/matches" iconClass="fa-solid fa-heart" label="Matches" />
         <Button to="/chats" iconClass="fa-solid fa-comments" label="Chats" />
-        
-        {/* Notifications Container */}
-        <NotificationsContainer />
       </OverlayScrollbarsComponent>
 
-        <hr className={styles.sectionSeparator} />
+      {/* Notifications Container - placed below the scrollable container */}
+      <NotificationsContainer />
+
+      <hr className={styles.sectionSeparator} />
       {/* Bottom Container */}
       <div className={styles.bottomContainer}>
         <Button to="/settings" iconClass="fa-solid fa-gear" label="Settings" />
