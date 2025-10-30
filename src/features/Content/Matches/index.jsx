@@ -461,7 +461,7 @@ const Matches = () => {
           >
             <i className="fa fa-arrow-left"></i>
           </button>
-          <h2>New Chat</h2>
+          <h2>{preparationChatData?.match?.name?.split(' ')[0] || 'New Chat'}</h2>
           <div className={styles.connectionStatus}>
             <i className="fa fa-circle" style={{ color: isConnected ? '#4CAF50' : '#f44336' }}></i>
             <span>{isConnected ? 'Connected' : 'Connecting...'}</span>
