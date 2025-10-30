@@ -25,26 +25,20 @@ const NotificationItem = ({ notification, onDismiss }) => {
   return (
     <div className={`${styles.notificationItem} ${!notification.is_read ? styles.unread : ''}`}>
       <div className={styles.notificationContent}>
-        <div className={styles.notificationIcon}>
+        <span className={styles.notificationIcon} aria-hidden>
           <i className={getNotificationIcon(notification.type)}></i>
-        </div>
-        <div className={styles.notificationText}>
-          <div className={styles.notificationTitle}>{notification.title}</div>
-          <div className={styles.notificationMessage}>{notification.message}</div>
-          <div className={styles.notificationTime}>
-            {new Date(notification.created_at).toLocaleTimeString([], { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
-          </div>
-        </div>
+        </span>
+        <span className={styles.notificationText}>
+          {notification.message || notification.title}
+        </span>
       </div>
       <button 
         className={styles.dismissButton}
         onClick={handleDismiss}
         title="Dismiss notification"
+        aria-label="Dismiss notification"
       >
-        <i className="fa-solid fa-times"></i>
+        <i className="fa-solid fa-xmark"></i>
       </button>
     </div>
   );
@@ -55,6 +49,7 @@ const NotificationsContainer = () => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false); // only visible when a new one arrives
+  const [matchedUser, setMatchedUser] = useState(null);
 
   // Get current user ID from cookies
   const getCurrentUserId = () => {
@@ -184,16 +179,112 @@ const NotificationsContainer = () => {
     }
   }, []);
 
+  // When lastNotification changes and it's a match, try to load matched user info
+  useEffect(() => {
+    async function loadMatchedUser() {
+      setMatchedUser(null);
+      if (!lastNotification || lastNotification.type !== 'match') return;
+      try {
+        const raw = lastNotification.data;
+        const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        const matchUserId = data?.matchUserId;
+        if (!matchUserId) return;
+        // Prefer dedicated basic profile endpoint for correct gender + signed photos
+        const resp = await fetch(`http://localhost:8081/api/users/${matchUserId}/basic`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (resp.ok) {
+          const found = await resp.json();
+          // Normalize shape for this component
+          const normalized = {
+            id: found.id,
+            first_name: found.first_name,
+            last_name: found.last_name,
+            gender: found.gender, // already mapped to male/female/prefer_not_to_say
+            birthdate: found.birthdate,
+            photos: found.photos
+          };
+          setMatchedUser(normalized);
+        }
+      } catch (e) {
+        // Soft-fail: keep minimal text-only toast
+      }
+    }
+    loadMatchedUser();
+  }, [lastNotification]);
+
   if (!showNotifications || !lastNotification) return null;
+
+  // Render compact layout with header and details when available
+  const resolveGenderLabel = (gender) => {
+    if (gender === null || gender === undefined) return 'Not specified';
+    const g = String(gender).trim().toLowerCase();
+    // Common variants from DB/front-end
+    if (g === 'male' || g === 'm' || g === 'man') return 'Male';
+    if (g === 'female' || g === 'f' || g === 'woman' || g === 'women') return 'Female';
+    if (g === 'other' || g === 'prefer_not_to_say' || g === 'prefer not to say' || g === 'n/a' || g === 'na') return 'Prefer not to say';
+    // Capitalized DB enums 'Male','Female','Other' will be handled by lowercasing above
+    return 'Not specified';
+  };
+
+  const resolveAvatarUrl = () => {
+    const photos = matchedUser?.photos;
+    if (!photos) return null;
+    try {
+      const arr = Array.isArray(photos) ? photos : JSON.parse(photos);
+      if (!Array.isArray(arr) || arr.length === 0) return null;
+      // handle array of urls
+      if (typeof arr[0] === 'string') {
+        return arr[0];
+      }
+      // handle array of objects
+      const order1 = arr.find(p => Number(p.order) === 1 && (p.url || p.signedUrl));
+      return (order1?.url || order1?.signedUrl) || arr.find(p => p.url || p.signedUrl)?.url || arr.find(p => p.url || p.signedUrl)?.signedUrl || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const avatarUrl = resolveAvatarUrl();
 
   return (
     <div className={styles.notificationsContainer}>
-      <div className={styles.notificationsList}>
-        <NotificationItem
-          key={lastNotification.id}
-          notification={lastNotification}
-          onDismiss={dismissNotification}
-        />
+      <div className={styles.headerRow}>
+        <span className={styles.headerLeft}>
+          <span className={styles.headerIcon} aria-hidden>
+            <i className="fa-solid fa-heart"></i>
+          </span>
+          <span className={styles.headerTitle}>New match!</span>
+        </span>
+        <button 
+          className={styles.headerClose}
+          onClick={() => dismissNotification(lastNotification.id)}
+          aria-label="Dismiss notification"
+          title="Dismiss notification"
+        >
+          <i className="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div className={styles.bodyRow}>
+        <div 
+          className={styles.avatar}
+          aria-hidden
+          style={avatarUrl ? { backgroundImage: `url(${avatarUrl})` } : undefined}
+        ></div>
+        <div className={styles.bodyText}>
+          <div className={styles.nameLine}>
+            {matchedUser?.first_name && matchedUser?.birthdate
+              ? `${matchedUser.first_name}, ${Math.max(0, Math.floor((Date.now() - new Date(matchedUser.birthdate).getTime()) / (365.25*24*60*60*1000)))}`
+              : (lastNotification?.data?.matchUserName || (typeof lastNotification?.data === 'string' ? JSON.parse(lastNotification.data)?.matchUserName : undefined) || 'New match')}
+          </div>
+          <div className={styles.metaLine}>
+            <i className="fa fa-venus-mars"></i>
+            <span className={styles.metaText}>{resolveGenderLabel(matchedUser?.gender)}</span>
+          </div>
+        </div>
       </div>
     </div>
   );

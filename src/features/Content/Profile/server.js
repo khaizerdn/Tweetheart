@@ -570,6 +570,75 @@ router.get("/api/photos", async (req, res) => {
   }
 });
 
+// ========================================================
+// ✅ GET BASIC PROFILE FOR ANY USER (gender mapped, photos signed)
+// ========================================================
+router.get("/api/users/:userId/basic", async (req, res) => {
+  try {
+    const currentUserId = req.cookies?.userId;
+    if (!currentUserId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    const { userId } = req.params;
+    const rows = await queryDB(`
+      SELECT id, first_name, last_name, gender, birthdate, photos
+      FROM users
+      WHERE id = ?
+    `, [userId]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = rows[0];
+
+    // Map gender to frontend values similar to existing logic
+    let frontendGender = user.gender || "";
+    if (user.gender === "Male") frontendGender = "male";
+    else if (user.gender === "Female") frontendGender = "female";
+    else if (user.gender === "Other") frontendGender = "prefer_not_to_say";
+
+    // Generate signed URLs for photos if present
+    let photosWithUrls = [];
+    if (user.photos) {
+      try {
+        const photos = typeof user.photos === 'string' ? JSON.parse(user.photos) : user.photos;
+        photosWithUrls = await Promise.all(
+          photos.map(async (photo) => {
+            if (photo?.url) return photo; // already has url
+            if (!photo?.key) return photo;
+            try {
+              const signedUrl = await getSignedUrl(
+                s3,
+                new GetObjectCommand({ Bucket: bucketName, Key: photo.key }),
+                { expiresIn: 3600 }
+              );
+              return { ...photo, url: signedUrl };
+            } catch {
+              return photo;
+            }
+          })
+        );
+      } catch (e) {
+        photosWithUrls = [];
+      }
+    }
+
+    return res.json({
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      gender: frontendGender,
+      birthdate: user.birthdate,
+      photos: photosWithUrls
+    });
+  } catch (error) {
+    console.error("❌ Error retrieving user basic:", error);
+    res.status(500).json({ message: "Server error while retrieving user info" });
+  }
+});
+
 
 // ========================================================
 // ✅ GET ALL USERS FOR DATING FEED (WITH PAGINATION)
