@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Card from '../../../components/Card';
 import Header from '../../../components/Header';
@@ -28,6 +28,8 @@ const Matches = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const openFromNavigationHandledRef = useRef(false);
 
   // Fetch matches data
   const fetchMatches = async () => {
@@ -155,6 +157,23 @@ const Matches = () => {
   useEffect(() => {
     fetchMatches();
   }, []);
+
+  useEffect(() => {
+    // If navigated here with a request to open a preparation chat for a match,
+    // invoke the same handler used by clicking a card in Matches
+    if (!loading && !openFromNavigationHandledRef.current) {
+      const requestedMatchId = location.state && location.state.openPreparationForMatchId;
+      if (requestedMatchId) {
+        const exists = matches.some(m => m.id === requestedMatchId);
+        if (exists) {
+          openFromNavigationHandledRef.current = true;
+          handleCardClick(requestedMatchId);
+          // Clear the navigation state so it doesn't re-trigger on back/forward
+          navigate('.', { replace: true, state: null });
+        }
+      }
+    }
+  }, [loading, matches, location.state, navigate]);
 
   // Handle card click to start chat
   const handleCardClick = async (matchId) => {

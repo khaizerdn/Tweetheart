@@ -8,8 +8,10 @@ import requestAccessToken from '../../../api/requestAccessToken';
 import styles from './styles.module.css';
 import CardInfo from '../../../components/Card/CardInfo.jsx';
 import Button from '../../../components/Buttons/Button';
+import { useNavigate } from 'react-router-dom';
 
 const Content = ({ locationGranted, setLocationGranted }) => {
+  const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -601,7 +603,19 @@ const Content = ({ locationGranted, setLocationGranted }) => {
               <Button type="primary" position="center" onClick={closeMatchModal}>
                 Keep Swiping
               </Button>
-              <Button type="secondary" position="center" onClick={closeMatchModal}>
+              <Button
+                type="secondary"
+                position="center"
+                onClick={() => {
+                  if (!matchUser?.id) {
+                    closeMatchModal();
+                    return;
+                  }
+                  const targetMatchId = matchUser.id;
+                  closeMatchModal();
+                  navigate('/matches', { state: { openPreparationForMatchId: targetMatchId } });
+                }}
+              >
                 Send Message
               </Button>
             </div>
