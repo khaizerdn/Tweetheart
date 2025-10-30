@@ -497,20 +497,6 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     setMatchUser(null);
   };
 
-  const resetCards = () => {
-    setRemovedCards(new Set());
-    setSwipingCards(new Set());
-    setCurrentPhotoIndex({});
-    setSwipedCount(0);
-    setCurrentPage(1);
-    setHasMore(true);
-    setIsMatch(false);
-    setMatchUser(null);
-    setShowMatchModal(false);
-    // Reload initial cards
-    fetchUsers(1, false);
-  };
-
   const nextPhoto = (cardId, e) => {
     e.stopPropagation();
     const card = cards.find(c => c.id === cardId);
@@ -640,7 +626,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
             <div className={styles.emptyState}>
               <i className="fa fa-heart-broken"></i>
               <h3>No more cards!</h3>
-              <p>You've swiped through all {totalUsers} cards. Click reset to start over.</p>
+              <p>You've swiped through all {totalUsers} cards.</p>
             </div>
           ) : (
             <>
@@ -715,38 +701,28 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         </div>
         <MobileMenu />
         {/* Action buttons positioned below the card */}
-        <div className={styles.buttons}>
-          {allCardsSwiped ? (
+        {!allCardsSwiped && (
+          <div className={styles.buttons}>
             <button 
-              onClick={resetCards}
-              className={`${styles.button} ${styles.resetButton}`}
+              onClick={() => handleButtonClick('undo')}
+              className={`${styles.button} ${styles.undoButton}`}
             >
-              <i className="fa fa-refresh"></i>
-              <span>Reset Cards</span>
+              <i className="fa fa-undo"></i>
             </button>
-          ) : (
-            <>
-              <button 
-                onClick={() => handleButtonClick('undo')}
-                className={`${styles.button} ${styles.undoButton}`}
-              >
-                <i className="fa fa-undo"></i>
-              </button>
-              <button 
-                onClick={() => handleButtonClick('nope')}
-                className={`${styles.button} ${styles.nopeButton}`}
-              >
-                <i className="fa fa-times"></i>
-              </button>
-              <button 
-                onClick={() => handleButtonClick('like')}
-                className={`${styles.button} ${styles.likeButton}`}
-              >
-                <i className="fa fa-heart"></i>
-              </button>
-            </>
-          )}
-        </div>
+            <button 
+              onClick={() => handleButtonClick('nope')}
+              className={`${styles.button} ${styles.nopeButton}`}
+            >
+              <i className="fa fa-times"></i>
+            </button>
+            <button 
+              onClick={() => handleButtonClick('like')}
+              className={`${styles.button} ${styles.likeButton}`}
+            >
+              <i className="fa fa-heart"></i>
+            </button>
+          </div>
+        )}
       </div>
       </div>
     </div>
