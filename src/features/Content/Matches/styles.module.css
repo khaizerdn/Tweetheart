@@ -31,10 +31,11 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .matchCard:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-1px) scale(1.01);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
 
