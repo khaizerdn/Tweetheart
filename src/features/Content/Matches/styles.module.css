@@ -229,7 +229,7 @@
   }
   
   .container {
-    padding: 0 var(--padding-008);
+    padding: 0 var(--padding-016);
   }
   
   .header h1 {
@@ -246,11 +246,12 @@
     width: 100% !important;
     height: auto !important;
     aspect-ratio: 1/1;
+    border-radius: var(--border-radius-016);
+    overflow: hidden;
   }
   
-  /* Hide user information on tablets and mobile */
+  /* Hide extra details on tablets and mobile, keep name & age visible */
   .matchCard .cardInfo,
-  .matchCard .nameAge,
   .matchCard .category,
   .matchCard .bioPreview {
     display: none !important;
