@@ -14,8 +14,10 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
-  // Track users already matched to exclude from feed
-  const [matchedUserIds, setMatchedUserIds] = useState([]);
+  // Track users already liked to exclude from feed
+  const [likedUserIds, setLikedUserIds] = useState([]);
+  // Track users already passed to exclude from feed
+  const [passedUserIds, setPassedUserIds] = useState([]);
 
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -65,6 +67,39 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   const containerRef = useRef(null);
   const cardRefs = useRef({});
 
+  // Fetch liked users (not matches) on mount
+  useEffect(() => {
+    const loadLikedAndPassedUsers = async () => {
+      try {
+        // Fetch liked users
+        const likedRes = await fetch('http://localhost:8081/api/likes/liked', {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (likedRes.ok) {
+          const likedData = await likedRes.json();
+          const likeIds = (likedData.likedUsers || []).map(u => u.id).filter(Boolean);
+          setLikedUserIds(likeIds);
+        }
+        // Fetch passed users
+        const passRes = await fetch('http://localhost:8081/api/likes/passed', {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (passRes.ok) {
+          const passData = await passRes.json();
+          const passIds = (passData.passedUsers || []).map(u => u.id).filter(Boolean);
+          setPassedUserIds(passIds);
+        }
+      } catch (e) {
+        console.warn('Failed to load liked/passed users for feed filtering');
+      }
+    };
+    loadLikedAndPassedUsers();
+  }, []);
+
   // Fetch users data with pagination
   const fetchUsers = useCallback(async (page = 1, append = false) => {
     try {
@@ -89,9 +124,9 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         distance: user.distance !== undefined && user.distance !== null ? user.distance : null
       }));
       
-      // Filter out users that are already matched (from server)
-      const matchedSet = new Set(matchedUserIds);
-      const filteredTransformed = transformedCards.filter(user => !matchedSet.has(user.id));
+      // Filter out users that are already liked or passed
+      const excludeSet = new Set([...likedUserIds, ...passedUserIds]);
+      const filteredTransformed = transformedCards.filter(user => !excludeSet.has(user.id));
       
       if (append) {
         setCards(prevCards => [...prevCards, ...filteredTransformed]);
@@ -119,7 +154,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         setLoading(false);
       }
     }
-  }, [filters, matchedUserIds]);
+  }, [filters, likedUserIds, passedUserIds]);
 
   // Load more cards when needed
   const loadMoreCards = async () => {
@@ -452,7 +487,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
             // Remove matched user from Home feed immediately
             setCards(prev => prev.filter(card => card.id !== cardId));
             setRemovedCards(prev => new Set([...prev, cardId]));
-            setMatchedUserIds(prev => (prev.includes(cardId) ? prev : [...prev, cardId]));
+            setLikedUserIds(prev => (prev.includes(cardId) ? prev : [...prev, cardId]));
           }
         }
       }

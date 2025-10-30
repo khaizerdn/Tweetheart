@@ -375,6 +375,36 @@ router.delete("/api/likes/unmatch/:matchId", async (req, res) => {
 });
 
 // =============================
+// ✅ GET PASSED USERS
+// =============================
+router.get("/api/likes/passed", async (req, res) => {
+  try {
+    const currentUserId = req.cookies?.userId;
+    if (!currentUserId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+    const passedUsers = await queryDB(`
+      SELECT 
+        u.id,
+        u.first_name,
+        u.last_name,
+        u.bio,
+        u.photos,
+        ul.like_type,
+        ul.created_at
+      FROM users u
+      INNER JOIN users_likes ul ON u.id = ul.liked_id
+      WHERE ul.liker_id = ? AND ul.like_type = 'pass'
+      ORDER BY ul.created_at DESC
+    `, [currentUserId]);
+    res.json({ passedUsers });
+  } catch (error) {
+    console.error("Error fetching passed users:", error);
+    res.status(500).json({ message: "Server error while fetching passed users" });
+  }
+});
+
+// =============================
 // ✅ TEST ENDPOINT
 // =============================
 router.get("/api/likes/test", async (req, res) => {
