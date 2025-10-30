@@ -555,6 +555,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
             )}
           </div>
         </div>
+        {isMobile && <MobileMenu />}
       </div>
     );
   }
