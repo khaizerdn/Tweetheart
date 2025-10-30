@@ -3,7 +3,6 @@
   min-height: 100vh;
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
-  padding: var(--padding-016);
   padding-top: 0;
   position: relative;
 }
@@ -20,7 +19,7 @@
 .container {
   max-width: 1200px;
   margin: 0;
-  padding: 0;
+  padding: var(--padding-016);
 }
 
 
