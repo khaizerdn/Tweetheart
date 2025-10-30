@@ -539,7 +539,9 @@ const Matches = () => {
         onClick={() => setShowFilter(!showFilter)}
         title="Filter matches"
       >
-        <i className="fa-solid fa-filter"></i>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <path d="M3 5a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6L15 12v6a1 1 0 0 1-1.447.894l-4-2A1 1 0 0 1 9 16v-4L3.2 5.6A1 1 0 0 1 3 5z"/>
+        </svg>
       </button>
       
       {showFilter && (
