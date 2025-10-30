@@ -245,6 +245,17 @@ router.put("/user-profile", async (req, res) => {
 
     const result = await queryDB(sql, values);
 
+    // After a successful profile update, remove all passes from other users to this user
+    try {
+      await queryDB(
+        "DELETE FROM users_likes WHERE liked_id = ? AND like_type = 'pass'",
+        [userId]
+      );
+    } catch (cleanupError) {
+      // Log but don't fail the profile update response
+      console.error("Error cleaning up passes after profile update:", cleanupError);
+    }
+
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully"
