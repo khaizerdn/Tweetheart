@@ -598,18 +598,12 @@ const Content = ({ locationGranted, setLocationGranted }) => {
             <h2>It's a Match!</h2>
             <p>You and {matchUser.name} liked each other!</p>
             <div className={styles.matchActions}>
-              <button 
-                onClick={closeMatchModal}
-                className={`${styles.button} ${styles.matchButton}`}
-              >
+              <Button type="primary" position="center" onClick={closeMatchModal}>
                 Keep Swiping
-              </button>
-              <button 
-                onClick={closeMatchModal}
-                className={`${styles.button} ${styles.messageButton}`}
-              >
+              </Button>
+              <Button type="secondary" position="center" onClick={closeMatchModal}>
                 Send Message
-              </button>
+              </Button>
             </div>
           </div>
         </div>

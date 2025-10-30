@@ -339,13 +339,14 @@
 }
 
 .matchModalContent {
-  background: var(--color-white);
+  background: var(--background-color-1);
+  border: 1px solid var(--background-color-primary-default-1);
   border-radius: var(--border-radius-024);
   padding: var(--padding-048);
   text-align: center;
-  max-width: 400px;
+  max-width: 420px;
   width: 90%;
-  box-shadow: var(--shadow-4);
+  box-shadow: var(--shadow-3);
   animation: slideUp 0.3s ease-out;
 }
 
@@ -358,20 +359,20 @@
   justify-content: center;
   gap: var(--gap-016);
   font-size: var(--font-size-048);
-  color: var(--font-color-status-danger);
+  color: var(--background-color-secondary-default);
   animation: heartBeat 1s ease-in-out infinite;
 }
 
 .matchModalContent h2 {
   font-size: var(--font-size-032);
-  color: var(--color-primary-1);
+  color: var(--color-white);
   margin-bottom: var(--padding-016);
   font-weight: var(--font-weight-bold);
 }
 
 .matchModalContent p {
   font-size: var(--font-size-018);
-  color: var(--font-color-primary);
+  color: var(--font-color-muted);
   margin-bottom: var(--padding-032);
   line-height: var(--line-height-default);
 }
@@ -383,18 +384,26 @@
 }
 
 .matchButton {
-  background: var(--font-color-status-inform);
-  color: var(--color-white);
+  background: var(--background-color-2);
+  color: var(--font-color-hover);
   padding: var(--padding-012) var(--padding-024);
   border-radius: var(--border-radius-016);
   font-size: var(--font-size-016);
   font-weight: var(--font-weight-medium);
   width: auto;
   height: auto;
+  border: 1px solid var(--background-color-primary-default-1);
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.matchButton:hover {
+  background: var(--background-color-primary-hover-1);
+  color: var(--font-color-hover);
+  box-shadow: var(--shadow-2);
 }
 
 .messageButton {
-  background: var(--font-color-status-success);
+  background: var(--background-color-secondary-default);
   color: var(--color-white);
   padding: var(--padding-012) var(--padding-024);
   border-radius: var(--border-radius-016);
@@ -402,6 +411,13 @@
   font-weight: var(--font-weight-medium);
   width: auto;
   height: auto;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.messageButton:hover {
+  background: var(--background-color-secondary-hover);
+  box-shadow: var(--shadow-2);
 }
 
 /* Animations */
@@ -551,8 +567,13 @@
   }
 
   .matchActions {
-    flex-direction: column;
+    flex-direction: row;
     gap: var(--gap-012);
+  }
+
+  .matchActions :global(.button) {
+    width: auto;
+    height: auto;
   }
 
   .matchButton,
