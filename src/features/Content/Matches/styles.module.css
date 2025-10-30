@@ -907,3 +907,28 @@
   .userInfoPanel { display: none !important; }
 }
 
+.chatHeaderUserPhoto {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-1);
+  background: var(--background-color-3);
+  border: 2px solid var(--background-color-3);
+  margin-right: var(--margin-012);
+}
+.chatHeaderUserPhotoPlaceholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--background-color-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--font-color-muted);
+  font-size: var(--font-size-024);
+  box-shadow: var(--shadow-1);
+  border: 2px solid var(--background-color-3);
+  margin-right: var(--margin-012);
+}
+

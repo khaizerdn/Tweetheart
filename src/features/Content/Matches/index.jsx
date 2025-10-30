@@ -502,6 +502,17 @@ const Matches = () => {
             >
               <i className="fa fa-arrow-left"></i>
             </button>
+            {match?.photos?.length > 0 ? (
+              <img
+                src={match.photos[0]}
+                alt="User"
+                className={styles.chatHeaderUserPhoto}
+              />
+            ) : (
+              <div className={styles.chatHeaderUserPhotoPlaceholder}>
+                <i className="fa fa-user" />
+              </div>
+            )}
             <h2>{match?.name?.split(' ')[0] || 'New Chat'}</h2>
             <div className={styles.connectionStatus}>
               <i className="fa fa-circle" style={{ color: isConnected ? '#4CAF50' : '#f44336' }}></i>
