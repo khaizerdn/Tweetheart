@@ -242,10 +242,10 @@
   --font-color-selected: var(--color-primary-26);
 
   /* Font Colors Secondary */
-  --font-color-secondary-disabled: var(--color-secondary-7);
-  --font-color-secondary-muted: var(--color-secondary-11);
-  --font-color-secondary-default: var(--color-secondary-19);
-  --font-color-secondary-hover: var(--color-secondary-23);
+  --font-color-secondary-disabled: var(--color-secondary-21);
+  --font-color-secondary-muted: var(--color-secondary-22);
+  --font-color-secondary-default: var(--color-secondary-23);
+  --font-color-secondary-hover: var(--color-secondary-24);
   --font-color-secondary-active: var(--color-secondary-25);
   --font-color-secondary-selected: var(--color-secondary-26);
 

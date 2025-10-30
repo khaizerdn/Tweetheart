@@ -57,27 +57,28 @@ const ModalAlertDialog = ({
         }
 
         .modal-container {
-          background: var(--background-color-3);
+          background: var(--background-color-1);
           color: var(--text-default);
-          border-radius: var(--border-radius);
+          border: 1px solid var(--background-color-primary-default-1);
+          border-radius: var(--border-radius-016);
           padding: 20px;
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          width: 90%;
+          gap: var(--gap-016);
+          width: 100%;
           max-width: 360px;
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
           animation: fadeIn 0.25s ease;
         }
 
         .modal-title {
-          font-size: var(--font-size-016);
+          font-size: var(--font-size-018);
           color: var(--text-default);  
         }
 
         .modal-message {
           font-size: var(--font-size-016);
-          color: var(--text-muted);
+          color: var(--color-primary-default);
         }
 
         .modal-buttons {
@@ -109,23 +110,23 @@ const ModalAlertDialog = ({
         }
 
         .confirm-btn {
-          background: var(--container-color-light-4);
-          color: var(--color-primary-dark);
+          background: var(--background-color-secondary-default);
+          color: var(--font-color-secondary-default);
         }
 
         .confirm-btn:hover {
-          background: var(--container-color-light-5);
-          color: var(--color-max-dark);
+          background: var(--background-color-secondary-hover);
+          color: var(--font-color-secondary-hover);
         }
 
         .cancel-btn {
-          background: var(--background-color-5);
-          color: var(--text-default);
+          background: var(--background-color-2);
+          color: var(--font-color-primary-default);
         }
 
         .cancel-btn:hover {
-          background: var(--background-color-6);
-          color: var(--color-max-light);
+          background: var(--background-color-3);
+          color: var(--font-color-primary-hover);
         }
 
         @keyframes fadeIn {
