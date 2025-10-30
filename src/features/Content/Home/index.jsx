@@ -8,7 +8,7 @@ import requestAccessToken from '../../../api/requestAccessToken';
 import styles from './styles.module.css';
 import CardInfo from '../../../components/Card/CardInfo.jsx';
 
-const Content = () => {
+const Content = ({ locationGranted }) => {
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -452,6 +452,25 @@ const Content = () => {
                 >
                   Try Again
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!locationGranted) {
+    return (
+      <div className={styles.home}>
+        {!isMobile && <Header title="Home" />}
+        <div className={styles.container}>
+          <div className={styles.cardContainer}>
+            <div className={styles.cards}>
+              <div className={styles.emptyState}>
+                <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
+                <h3>Location Required to Swipe</h3>
+                <p>To start swiping and see matches, you need to allow location access. Please enable location in your settings!</p>
               </div>
             </div>
           </div>

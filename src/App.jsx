@@ -28,6 +28,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [locationChecked, setLocationChecked] = useState(false);
+  const [locationGranted, setLocationGranted] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -73,8 +74,9 @@ function App() {
     }, 100); // Small delay to ensure cookies are set
   };
   
-  const handleLocationGranted = () => {
+  const handleLocationGranted = (granted = true) => {
     setShowLocationModal(false);
+    setLocationGranted(granted);
   };
 
   const ProtectedRoute = ({ children }) => {
@@ -104,7 +106,7 @@ function App() {
             element={
               <ProtectedRoute>
                 {showLocationModal && (
-                  <LocationPermission onLocationGranted={handleLocationGranted} />
+                  <LocationPermission onLocationGranted={() => handleLocationGranted(true)} onSkip={() => handleLocationGranted(false)} />
                 )}
                 <div className="container">
                   <div className="container-titleBar">
@@ -123,10 +125,9 @@ function App() {
                       <Routes>
                         <Route path="/" element={
                           <OverlayScrollbarsComponent
-                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
-                            overflow: { x: 'hidden', y: 'hidden' } }}
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, }, overflow: { x: 'hidden', y: 'hidden' } }}
                             className="content">
-                            <Content />
+                            <Content locationGranted={locationGranted} />
                           </OverlayScrollbarsComponent>
                         } />
                         <Route path="/notifications" element={

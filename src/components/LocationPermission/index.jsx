@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-function LocationPermission({ onLocationGranted }) {
+function LocationPermission({ onLocationGranted, onSkip }) {
   const [isRequesting, setIsRequesting] = useState(false);
   const [error, setError] = useState("");
 
@@ -74,8 +74,8 @@ function LocationPermission({ onLocationGranted }) {
   };
 
   const handleSkip = () => {
-    // Allow user to skip for now, but they'll need it later for matches
-    onLocationGranted();
+    if (onSkip) onSkip();
+    else onLocationGranted(false);
   };
 
   return (
