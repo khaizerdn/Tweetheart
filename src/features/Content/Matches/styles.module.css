@@ -4,11 +4,15 @@
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
   padding: var(--padding-016);
+  padding-top: 0;
   position: relative;
 }
 
 .matchesHeader {
   display: flex !important;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   padding: 0 var(--padding-016);
   padding-bottom: var(--padding-016);
 }

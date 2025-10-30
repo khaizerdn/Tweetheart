@@ -541,6 +541,7 @@ function Profile() {
   // Show edit form for own profile
   return (
     <div className={styles.profilePage}>
+                  <Header title="Edit Profile" className={styles.profileHeader} />
       <div className={styles.containerAccess}>
         {/* Left Container - Preview Card */}
         <div className={styles.leftContainer}>
@@ -579,7 +580,6 @@ function Profile() {
         <div className={styles.formSection}>
           <form onSubmit={handleSubmit}>
             <div className={styles.formContent}>
-            <Header title="Edit Profile" className={styles.profileHeader} />
               {/* Input Fields Section */}
               <div className={styles.inputFieldsSection}>
                 <InputField

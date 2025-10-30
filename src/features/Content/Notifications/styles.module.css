@@ -4,16 +4,21 @@
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
   padding: var(--padding-016);
+  padding-top: 0;
   padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
 }
 
 .notificationsHeader {
   display: flex !important;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  text-align: center;
+  position: relative;
 }
 
 .markAllReadButton {
+  position: absolute;
+  right: 0;
   background: var(--background-color-primary-default-1);
   color: var(--font-color-primary);
   border: 1px solid var(--border-color-primary);
