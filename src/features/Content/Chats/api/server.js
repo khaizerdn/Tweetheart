@@ -112,7 +112,8 @@ router.get('/api/chats', async (req, res) => {
         u.bio,
         TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) as age,
         m.content as last_message,
-        m.created_at as last_message_time
+        m.created_at as last_message_time,
+        COALESCE(COUNT(CASE WHEN msg.sender_id != ? AND msg.is_read = 0 THEN 1 END), 0) as unread_count
       FROM chats c
       LEFT JOIN users u ON (
         CASE 
@@ -122,13 +123,15 @@ router.get('/api/chats', async (req, res) => {
       )
       LEFT JOIN messages m ON c.id = m.chat_id
       LEFT JOIN messages m2 ON c.id = m2.chat_id AND m.created_at < m2.created_at
+      LEFT JOIN messages msg ON c.id = msg.chat_id
       WHERE (c.user1_id = ? OR c.user2_id = ?) 
         AND c.is_active = 1
         AND m2.id IS NULL
+      GROUP BY c.id, c.user1_id, c.user2_id, c.created_at, c.updated_at, other_user_id, u.first_name, u.last_name, u.photos, u.gender, u.bio, u.birthdate, m.content, m.created_at
       ORDER BY COALESCE(m.created_at, c.updated_at) DESC
     `;
 
-    const chats = await queryDB(chatsQuery, [userId, userId, userId, userId]);
+    const chats = await queryDB(chatsQuery, [userId, userId, userId, userId, userId]);
 
     // Transform the data to match expected format
     const transformedChats = await Promise.all(chats.map(async (chat) => {
@@ -146,6 +149,7 @@ router.get('/api/chats', async (req, res) => {
         },
         last_message: chat.last_message,
         last_message_time: chat.last_message_time,
+        unread_count: chat.unread_count,
         created_at: chat.created_at,
         updated_at: chat.updated_at
       };
@@ -350,6 +354,7 @@ router.post('/api/chats/:chatId/messages', [
               },
               last_message: message,
               last_message_time: new Date().toISOString(),
+              unread_count: 0, // Sender sees 0 unread messages
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
               is_preparation: false
@@ -367,6 +372,7 @@ router.post('/api/chats/:chatId/messages', [
               },
               last_message: message,
               last_message_time: new Date().toISOString(),
+              unread_count: 1, // Receiver sees 1 unread message
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
               is_preparation: false
@@ -389,12 +395,6 @@ router.post('/api/chats/:chatId/messages', [
         }
       } else {
         // This is an existing chat, emit chat_activated event
-        const chatActivationData = {
-          id: actualChatId,
-          last_message: message,
-          is_preparation: false
-        };
-        
         // Get both users in the chat
         const chatUsersQuery = `
           SELECT user1_id, user2_id FROM chats WHERE id = ?
@@ -403,8 +403,29 @@ router.post('/api/chats/:chatId/messages', [
         
         if (chatUsers.length > 0) {
           const { user1_id, user2_id } = chatUsers[0];
-          io.to(`user_${user1_id}`).emit('chat_activated', chatActivationData);
-          io.to(`user_${user2_id}`).emit('chat_activated', chatActivationData);
+          
+          const chatActivationDataForSender = {
+            id: actualChatId,
+            last_message: message,
+            unread_count: 0, // Sender sees 0 unread messages
+            is_preparation: false
+          };
+          
+          const chatActivationDataForReceiver = {
+            id: actualChatId,
+            last_message: message,
+            unread_count: 1, // Receiver sees 1 unread message
+            is_preparation: false
+          };
+          
+          // Sender gets 0 unread, receiver gets 1 unread
+          if (userId === user1_id) {
+            io.to(`user_${user1_id}`).emit('chat_activated', chatActivationDataForSender);
+            io.to(`user_${user2_id}`).emit('chat_activated', chatActivationDataForReceiver);
+          } else {
+            io.to(`user_${user2_id}`).emit('chat_activated', chatActivationDataForSender);
+            io.to(`user_${user1_id}`).emit('chat_activated', chatActivationDataForReceiver);
+          }
         }
       }
     }

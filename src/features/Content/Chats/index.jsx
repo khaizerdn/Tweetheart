@@ -119,10 +119,10 @@ const Chats = () => {
 
     newSocket.on('chat_activated', (chatData) => {
       console.log('Chat activated:', chatData);
-      // Update the chat in the list with new message
+      // Update the chat in the list with new message and unread count
       setChats(prev => prev.map(chat => 
         chat.id === chatData.id 
-          ? { ...chat, last_message: chatData.last_message }
+          ? { ...chat, last_message: chatData.last_message, unread_count: chatData.unread_count !== undefined ? chatData.unread_count : chat.unread_count }
           : chat
       ));
     });
@@ -211,6 +211,11 @@ const Chats = () => {
                  showNavigation={false}
                  showIndicators={false}
                  onClick={() => handleCardClick(chat.id)}
+                 overlays={
+                   chat.unread_count > 0 ? (
+                     <div className={styles.unreadIndicator}></div>
+                   ) : null
+                 }
                >
                  <div className={styles.nameAge}>
                    <h3>{chat.other_user.name}, {chat.other_user.age}</h3>
@@ -219,13 +224,6 @@ const Chats = () => {
                      <span>{chat.other_user.gender === 'Male' ? 'Male' : chat.other_user.gender === 'Female' ? 'Female' : 'Other'}</span>
                    </div>
                  </div>
-                 
-                 {chat.last_message && (
-                   <div className={styles.lastMessage}>
-                     <i className="fa fa-comment"></i>
-                     <span>{chat.last_message}</span>
-                   </div>
-                 )}
                  
                  {chat.other_user.bio && (
                    <div className={styles.bioPreview}>
