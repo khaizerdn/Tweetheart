@@ -70,18 +70,19 @@ function Login({ setIsLoggedIn }) {
     <div className={styles.containerAccess}>
       {/* Left Container - For future content */}
       <div className={styles.leftContainer}>
-        {/* Add your content here */}
+        <div className={styles.leftHero}>
+          <img
+            src={logo}
+            alt="Tweetheart logo"
+            className={styles.leftLogo}
+          />
+        </div>
       </div>
 
       {/* Right Container - Input Fields */}
       <div className={styles.rightContainer}>
         <div className={styles.loginSection}>
           <div className={styles.logoContainer}>
-            <img 
-              src={logo} 
-              alt="Logo" 
-              className={styles.logo}
-            />
             <h1>Tweetheart</h1>
           </div>
           <form onSubmit={handleSubmit}>

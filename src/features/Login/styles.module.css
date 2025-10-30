@@ -14,8 +14,20 @@
   flex: 1;
   display: flex;
   justify-content: right;
-  align-items: center;
+  align-items: rigiht;
   padding: var(--padding-016);
+}
+
+.leftHero {
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  align-items: right;
+}
+
+.leftLogo {
+  width: clamp(240px, 60%, 520px);
+  height: auto;
 }
 
 .rightContainer {
@@ -39,6 +51,7 @@
   padding-top: var(--padding-048);
   padding-bottom: var(--padding-048);
   min-height: fit-content;
+  margin-left: 5rem; 
 }
 
 @media (max-width: 768px) {
@@ -50,7 +63,8 @@
 
   .rightContainer {
     justify-content: center;
-    min-height: auto;
+    align-items: center;
+    min-height: 100vh;
     padding: var(--padding-016) var(--padding-016) var(--padding-032) var(--padding-016);
   }
   
@@ -68,8 +82,8 @@
 .logoContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  align-items: left;
 }
 
 .logo {
