@@ -428,6 +428,7 @@
     background: var(--color-primary-3);
   }
 
+
   .container {
     width: 100vw;
     height: 100vh;
@@ -560,26 +561,30 @@
 
 /* Filter Button Styles */
 .filterButton {
-  position: relative;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   background: var(--background-color-primary-default-1);
   border: 1px solid var(--background-color-primary-default-1);
-  border-radius: var(--border-radius-008);
+  border-radius: var(--border-radius-999);
   color: var(--font-color-muted);
   cursor: pointer;
   transition: all 0.2s ease;
   outline: none;
+  box-shadow: var(--shadow-3);
 }
 
 .filterButton:hover {
   background: var(--background-color-primary-hover-1);
   color: var(--font-color-hover);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-4);
 }
 
 .filterButton:active {
@@ -588,7 +593,7 @@
 }
 
 .filterButton i {
-  font-size: var(--font-size-016);
+  font-size: var(--font-size-020);
   color: var(--background-color-secondary-default);
 }
 
@@ -618,5 +623,6 @@
     opacity: 1;
   }
 }
+
 
 /* Fixed dimensions - no responsive scaling for desktop */

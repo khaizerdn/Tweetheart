@@ -461,29 +461,28 @@ const Content = () => {
 
   return (
     <div className={styles.home} ref={containerRef}>
-      {!isMobile && (
-        <Header title="Home">
-          <button 
-            className={styles.filterButton}
-            onClick={() => setShowFilters(!showFilters)}
-            title="Open filters"
-          >
-            <i className="fa-solid fa-filter"></i>
-            {(() => {
-              const hasActiveFilters = 
-                filters.interests.length > 0 ||
-                filters.lifestyle.length > 0 ||
-                filters.education !== 'any' ||
-                filters.relationshipType !== 'any' ||
-                filters.additionalOptions?.length > 0 ||
-                filters.distance !== 50 ||
-                filters.minAge !== 18 ||
-                filters.maxAge !== 65;
-              return hasActiveFilters && <span className={styles.filterBadge} />;
-            })()}
-          </button>
-        </Header>
-      )}
+      {!isMobile && <Header title="Home" />}
+      
+      {/* Filter button - always visible */}
+      <button 
+        className={styles.filterButton}
+        onClick={() => setShowFilters(!showFilters)}
+        title="Open filters"
+      >
+        <i className="fa-solid fa-filter"></i>
+        {(() => {
+          const hasActiveFilters = 
+            filters.interests.length > 0 ||
+            filters.lifestyle.length > 0 ||
+            filters.education !== 'any' ||
+            filters.relationshipType !== 'any' ||
+            filters.additionalOptions?.length > 0 ||
+            filters.distance !== 50 ||
+            filters.minAge !== 18 ||
+            filters.maxAge !== 65;
+          return hasActiveFilters && <span className={styles.filterBadge} />;
+        })()}
+      </button>
       <div className={styles.container}>
         {/* Match Modal */}
         {showMatchModal && matchUser && (
