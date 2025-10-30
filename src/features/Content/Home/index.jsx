@@ -73,8 +73,7 @@ const Content = () => {
         name: user.name,
         age: user.age,
         bio: user.bio,
-        category: "Basics & Lifestyle",
-        tags: ["Looking for connections"],
+        gender: user.gender || "",
         photos: user.photos || [],
         distance: user.distance !== undefined && user.distance !== null ? user.distance : null
       }));
@@ -611,7 +610,12 @@ const Content = () => {
                       <h3>{card.name}, {card.age}</h3>
                       <div className={styles.category}>
                         <i className="fa fa-venus-mars"></i>
-                        <span>Looking for connections</span>
+                        <span>
+                          {card.gender === 'male' ? 'Male' :
+                           card.gender === 'female' ? 'Female' :
+                           card.gender === 'prefer_not_to_say' ? 'Prefer not to say' :
+                           'Not specified'}
+                        </span>
                       </div>
                       <div className={styles.distance}>
                         <i className="fa fa-map-marker-alt"></i>
