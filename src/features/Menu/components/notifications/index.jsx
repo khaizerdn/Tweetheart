@@ -54,6 +54,7 @@ const NotificationsContainer = () => {
   const [notifications, setNotifications] = useState([]);
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false); // only visible when a new one arrives
 
   // Get current user ID from cookies
   const getCurrentUserId = () => {
@@ -76,7 +77,7 @@ const NotificationsContainer = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Ensure newest notifications appear at the bottom
+        // Keep for local state, but do NOT auto-show; only show on new push
         const list = (data.notifications || []).slice().reverse();
         setNotifications(list);
       }
@@ -97,7 +98,11 @@ const NotificationsContainer = () => {
       });
 
       if (response.ok) {
-        setNotifications(prev => prev.filter(n => n.id !== notificationId));
+        setNotifications(prev => {
+          const next = prev.filter(n => n.id !== notificationId);
+          if (next.length === 0) setShowNotifications(false);
+          return next;
+        });
       }
     } catch (error) {
       console.error('Error dismissing notification:', error);
@@ -149,8 +154,9 @@ const NotificationsContainer = () => {
 
     newSocket.on('new_notification', (notification) => {
       console.log('New notification received:', notification);
-      // Append to keep newest at the bottom
+      // Append to keep newest at the bottom and show the tray
       setNotifications(prev => [...prev, notification]);
+      setShowNotifications(true);
       
       // Show browser notification if permission is granted
       if (Notification.permission === 'granted') {
@@ -168,7 +174,7 @@ const NotificationsContainer = () => {
     };
   }, []);
 
-  // Fetch notifications on component mount
+  // Fetch notifications on component mount (do not auto-show)
   useEffect(() => {
     fetchNotifications();
   }, []);
@@ -180,40 +186,18 @@ const NotificationsContainer = () => {
     }
   }, []);
 
+  if (!showNotifications || notifications.length === 0) return null;
+
   return (
     <div className={styles.notificationsContainer}>
-      <div className={styles.notificationsHeader}>
-        <h3 className={styles.notificationsTitle}>
-          <i className="fa-solid fa-bell"></i>
-          Notifications
-          {!isConnected && <span className={styles.connectionStatus}> (Offline)</span>}
-        </h3>
-        {notifications.length > 0 && (
-          <button 
-            className={styles.clearAllButton}
-            onClick={() => notifications.forEach(n => dismissNotification(n.id))}
-            title="Clear all notifications"
-          >
-            Clear All
-          </button>
-        )}
-      </div>
-      
       <div className={styles.notificationsList}>
-        {notifications.length === 0 ? (
-          <div className={styles.emptyState}>
-            <i className="fa-solid fa-bell-slash"></i>
-            <p>No notifications yet</p>
-          </div>
-        ) : (
-          notifications.map(notification => (
-            <NotificationItem
-              key={notification.id}
-              notification={notification}
-              onDismiss={dismissNotification}
-            />
-          ))
-        )}
+        {notifications.map(notification => (
+          <NotificationItem
+            key={notification.id}
+            notification={notification}
+            onDismiss={dismissNotification}
+          />
+        ))}
       </div>
     </div>
   );
