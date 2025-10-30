@@ -319,5 +319,72 @@ router.post("/logout", async (req, res) => {
   res.json({ message: "Logged out successfully" });
 });
 
+// =============================
+// ✅ CHECK USER LOCATION STATUS
+// =============================
+router.get("/location-status", async (req, res) => {
+  const userId = req.cookies.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
+  try {
+    const users = await queryDB(
+      "SELECT latitude, longitude FROM users WHERE id = ?",
+      [userId]
+    );
+
+    if (!users.length) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = users[0];
+    const hasLocation = user.latitude !== null && user.longitude !== null;
+
+    res.status(200).json({
+      hasLocation,
+      location: hasLocation ? {
+        latitude: user.latitude,
+        longitude: user.longitude
+      } : null
+    });
+  } catch (err) {
+    console.error("Error checking location:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// =============================
+// ✅ UPDATE USER LOCATION
+// =============================
+router.post("/update-location", async (req, res) => {
+  const userId = req.cookies.userId;
+  const { latitude, longitude } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
+  if (!latitude || !longitude) {
+    return res.status(400).json({ message: "Latitude and longitude are required" });
+  }
+
+  try {
+    // Update user location in database
+    await queryDB(
+      "UPDATE users SET latitude = ?, longitude = ? WHERE id = ?",
+      [latitude, longitude, userId]
+    );
+
+    res.status(200).json({
+      message: "Location updated successfully"
+    });
+  } catch (err) {
+    console.error("Error updating location:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;
 export { router as loginRouter };

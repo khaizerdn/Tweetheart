@@ -19,20 +19,36 @@ import Login from './features/Login';
 import ForgotPassword from '../src/features/ForgotPassword';
 import SignUp from './features/SignUp';
 import EmailVerification from './features/EmailVerification';
+import LocationPermission from './components/LocationPermission';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [locationChecked, setLocationChecked] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const res = await axios.post(`${API_URL}/refresh`, {}, { withCredentials: true });
         setIsLoggedIn(true);
+        
+        // Check if user has location saved
+        try {
+          const locationRes = await axios.get(`${API_URL}/location-status`, { withCredentials: true });
+          if (!locationRes.data.hasLocation) {
+            setShowLocationModal(true);
+          }
+        } catch (locationErr) {
+          console.error("Error checking location status:", locationErr);
+        }
+        
+        setLocationChecked(true);
       } catch (err) {
         setIsLoggedIn(false);
+        setLocationChecked(true);
       } finally {
         setLoading(false);
       }
@@ -42,13 +58,30 @@ function App() {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
+    // Check location status after login
+    setTimeout(async () => {
+      try {
+        const locationRes = await axios.get(`${API_URL}/location-status`, { withCredentials: true });
+        if (!locationRes.data.hasLocation) {
+          setShowLocationModal(true);
+        }
+        setLocationChecked(true);
+      } catch (locationErr) {
+        console.error("Error checking location status:", locationErr);
+        setLocationChecked(true);
+      }
+    }, 100); // Small delay to ensure cookies are set
+  };
+  
+  const handleLocationGranted = () => {
+    setShowLocationModal(false);
   };
 
   const ProtectedRoute = ({ children }) => {
     return isLoggedIn ? children : <Navigate to="/" />;
   };
 
-  if (loading) {
+  if (loading || (isLoggedIn && !locationChecked)) {
     return <div>Loading session...</div>;
   }
 
@@ -70,6 +103,9 @@ function App() {
             path="*"
             element={
               <ProtectedRoute>
+                {showLocationModal && (
+                  <LocationPermission onLocationGranted={handleLocationGranted} />
+                )}
                 <div className="container">
                   <div className="container-titleBar">
                     <div className="titleBar"></div>

@@ -10,4 +10,5 @@ Fix
 
 
 Questions:
-- When to use access token, is it need to use everytime on every user interaction or just for just like banking or like when it involve money? Does it will cause stress on the server or db if there is a million of users?
+- When to use access token, is it need to use everytime on every api or user interaction or just like banking or like when it involve money? Does it will cause stress on the server or db if there is a million of users?
+- How can I optimize saving the users location? Kapag sinave natin ang users location after 24 hrs pero paano natin malalaman na naka 24 hrs na siya without using db because that's the same sending request to dband it will clog. Im thinking of using local storage but is it okay lang ba yun since low ang security kapag local storage/
