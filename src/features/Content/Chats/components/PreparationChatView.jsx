@@ -18,7 +18,7 @@ const PreparationChatView = ({
   emptyText
 }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', height: '100vh', width: '100%' }}>
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         <div className={matchesStyles.chatHeader}>
           <button 
