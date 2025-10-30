@@ -133,6 +133,9 @@ function SignUp() {
       setError("Please upload at least 2 photos");
       return;
     }
+
+    // Navigate to verification page
+    navigate("/verification");
     
     const [year, month, day] = birthDate ? birthDate.split("-") : ["", "", ""];
     try {
@@ -144,6 +147,7 @@ function SignUp() {
       );
       
       sessionStorage.setItem("email", email);
+
       
       // Step 2: Upload photos to S3 if account creation was successful
       if (res.data.success && res.data.userId) {
@@ -185,9 +189,6 @@ function SignUp() {
           // Don't block navigation - photos can be added later
         }
       }
-      
-      // Navigate to verification page
-      navigate("/verification");
       
     } catch (err) {
       console.error("API error:", {
