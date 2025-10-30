@@ -9,6 +9,47 @@
   overflow: hidden;
 }
 
+/* Glare Effect Overlay */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  opacity: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 0;
+  animation: glare 1.5s ease-in-out;
+}
+
+@keyframes glare {
+  0% {
+    top: -50%;
+    left: -50%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 150%;
+    left: 150%;
+    opacity: 0;
+  }
+}
+
 /* Photo Container */
 .photoContainer {
   position: relative;
