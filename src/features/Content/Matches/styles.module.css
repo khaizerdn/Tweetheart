@@ -778,3 +778,132 @@
   }
 }
 
+.userInfoPanel {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--background-color-2);
+  border-left: 1px solid var(--background-color-primary-default-1);
+  box-shadow: var(--shadow-2);
+  z-index: 3;
+  padding: var(--padding-024);
+}
+.userInfoPhotoWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: var(--margin-016);
+}
+.userPhoto {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-2);
+  background: var(--background-color-3);
+  border: 3px solid var(--background-color-3);
+}
+.userPhotoPlaceholder {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: var(--background-color-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--font-color-muted);
+  font-size: var(--font-size-040);
+  box-shadow: var(--shadow-2);
+  border: 3px solid var(--background-color-3);
+}
+.userInfoName {
+  text-align: center;
+  font-size: var(--font-size-020);
+  font-weight: var(--font-weight-bold);
+  color: var(--font-color-selected);
+  margin-bottom: var(--margin-004);
+}
+.userInfoHandle {
+  text-align: center;
+  font-size: var(--font-size-012);
+  color: var(--font-color-muted);
+  margin-bottom: var(--margin-016);
+  word-break: break-all;
+}
+.userIconButtonsRow {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--gap-016);
+  margin-bottom: var(--margin-024);
+}
+.userIconButton {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-color-primary-default-2);
+  color: var(--font-color-default);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: var(--font-size-024);
+  box-shadow: var(--shadow-1);
+  transition: background 0.1s, color 0.1s;
+}
+.userIconButton:hover {
+  background: var(--accent-color, #F06292);
+  color: var(--color-white);
+}
+.userActionButton {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  width: 100%;
+  background: var(--background-color-3);
+  color: var(--font-color-default);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-008);
+  padding: var(--padding-012) 0;
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  margin-top: var(--margin-008);
+  box-shadow: var(--shadow-1);
+  outline: none;
+  justify-content: center;
+}
+.userActionButton i {
+  margin-right: var(--margin-004);
+  font-size: var(--font-size-018);
+}
+.userActionButton:hover {
+  background: var(--background-color-2);
+  color: var(--font-color-hover);
+  box-shadow: var(--shadow-2);
+}
+.userInfoPanel .userActionButtonsCol {
+  width: 100%;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.userActionButton {
+  background: none !important;
+}
+.unmatchButton {
+  background: var(--font-color-status-danger) !important;
+  color: var(--color-white);
+  margin-top: 0;
+}
+@media (max-width: 767px) {
+  .userInfoPanel { display: none !important; }
+}
+

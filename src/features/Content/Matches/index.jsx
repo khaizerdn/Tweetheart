@@ -7,6 +7,7 @@ import MobileMenu from '../../../components/MobileMenu';
 import ModalAlertDialog from '../../../components/Modals/ModalAlertDialog';
 import { unmatchUser } from './server';
 import styles from './styles.module.css';
+import MenuButton from '../../Menu/components/button';
 
 const Matches = () => {
   const [matches, setMatches] = useState([]);
@@ -451,74 +452,114 @@ const Matches = () => {
 
   // Show preparation chat in full screen
   if (showPreparationChat && preparationChatData) {
-    return (
-      <div className={styles.chatRoom}>
-        <div className={styles.chatHeader}>
-          <button 
-            className={styles.backButton}
-            onClick={handleBackClick}
-            title="Back to matches"
-          >
-            <i className="fa fa-arrow-left"></i>
-          </button>
-          <h2>{preparationChatData?.match?.name?.split(' ')[0] || 'New Chat'}</h2>
-          <div className={styles.connectionStatus}>
-            <i className="fa fa-circle" style={{ color: isConnected ? '#4CAF50' : '#f44336' }}></i>
-            <span>{isConnected ? 'Connected' : 'Connecting...'}</span>
-          </div>
+    const match = preparationChatData.match;
+    // Only the first name for display
+    const firstName = match?.name ? match.name.split(' ')[0] : '';
+
+    const userInfoPanel = (
+      <aside className={styles.userInfoPanel}>
+        <div className={styles.userInfoPhotoWrap}>
+          {match?.photos?.length > 0 ? (
+            <img
+              src={match.photos[0]}
+              alt="User Photo"
+              className={styles.userPhoto}
+            />
+          ) : (
+            <div className={styles.userPhotoPlaceholder}>
+              <i className="fa fa-user" />
+            </div>
+          )}
         </div>
-        
-        <div className={styles.chatContainer}>
-          <div className={styles.messagesContainer}>
-            {messages.length === 0 ? (
-              <div className={styles.emptyMessages}>
-                <i className="fa fa-comments"></i>
-                <p>Send your first message to start the conversation!</p>
-              </div>
-            ) : (
-              messages.map((message) => (
-                <div 
-                  key={message.id} 
-                  className={`${styles.message} ${message.is_own ? styles.ownMessage : styles.otherMessage}`}
-                >
-                  <div className={styles.messageContent}>
-                    <p>{message.content}</p>
-                    <span className={styles.messageTime}>
-                      {new Date(message.created_at).toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-            <div ref={messagesEndRef} />
+        <div className={styles.userInfoName}>
+          {firstName}
+        </div>
+        <div className={styles.userActionButtonsCol}>
+          <MenuButton
+            to={"/profile/" + match.id}
+            iconClass="fa fa-user"
+            label="View Profile"
+            onClick={() => navigate(`/profile/${match.id}`)}
+          />
+          <MenuButton
+            to="#unmatch"
+            iconClass="fa fa-ban"
+            label="Unmatch"
+            onClick={() => { setUnmatchTarget(match); setShowUnmatchModal(true); }}
+          />
+        </div>
+      </aside>
+    );
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          <div className={styles.chatHeader}>
+            <button 
+              className={styles.backButton}
+              onClick={handleBackClick}
+              title="Back to matches"
+            >
+              <i className="fa fa-arrow-left"></i>
+            </button>
+            <h2>{match?.name?.split(' ')[0] || 'New Chat'}</h2>
+            <div className={styles.connectionStatus}>
+              <i className="fa fa-circle" style={{ color: isConnected ? '#4CAF50' : '#f44336' }}></i>
+              <span>{isConnected ? 'Connected' : 'Connecting...'}</span>
+            </div>
           </div>
-          
-          <div className={styles.messageInput}>
-            <div className={styles.inputContainer}>
-              <input
-                ref={inputRef}
-                type="text"
-                className={styles.textInput}
-                placeholder="Type your message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={!isConnected}
-              />
-              <button
-                className={styles.sendButton}
-                onClick={handleSendMessage}
-                disabled={!newMessage.trim() || !isConnected}
-                title="Send message"
-              >
-                <i className="fa fa-paper-plane"></i>
-              </button>
+          <div className={styles.chatContainer}>
+            <div className={styles.messagesContainer}>
+              {messages.length === 0 ? (
+                <div className={styles.emptyMessages}>
+                  <i className="fa fa-comments"></i>
+                  <p>Send your first message to start the conversation!</p>
+                </div>
+              ) : (
+                messages.map((message) => (
+                  <div 
+                    key={message.id} 
+                    className={`${styles.message} ${message.is_own ? styles.ownMessage : styles.otherMessage}`}
+                  >
+                    <div className={styles.messageContent}>
+                      <p>{message.content}</p>
+                      <span className={styles.messageTime}>
+                        {new Date(message.created_at).toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+            <div className={styles.messageInput}>
+              <div className={styles.inputContainer}>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  className={styles.textInput}
+                  placeholder="Type your message..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  disabled={!isConnected}
+                />
+                <button
+                  className={styles.sendButton}
+                  onClick={handleSendMessage}
+                  disabled={!isConnected || !newMessage.trim()}
+                  type="button"
+                >
+                  <i className="fa fa-paper-plane" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
+        {userInfoPanel}
       </div>
     );
   }
