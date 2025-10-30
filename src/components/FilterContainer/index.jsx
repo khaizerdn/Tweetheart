@@ -30,11 +30,16 @@ const FilterContainer = ({
     setHasChanges(false);
   }, [filters, isOpen]);
 
-  // Additional options for chips
-  const additionalOptions = [
-    'Online now', 'Has photos', 'Verified profile', 'New profiles', 
-    'Recently active', 'Premium members', 'Nearby only'
+  // Preset chips
+  const ageRangeOptions = [
+    { label: '18-25', min: 18, max: 25 },
+    { label: '26-35', min: 26, max: 35 },
+    { label: '36-45', min: 36, max: 45 },
+    { label: '46-55', min: 46, max: 55 },
+    { label: '56-65', min: 56, max: 65 },
   ];
+
+  const distanceOptions = [5, 10, 25, 50, 100];
 
   const handleFilterChange = (filterType, value) => {
     setLocalFilters(prev => ({
@@ -111,35 +116,9 @@ const FilterContainer = ({
     onClose();
   };
 
-  const interestOptions = [
-    'Travel', 'Fitness', 'Music', 'Art', 'Food', 'Sports', 'Movies', 'Books',
-    'Photography', 'Dancing', 'Cooking', 'Gaming', 'Nature', 'Technology',
-    'Fashion', 'Pets', 'Yoga', 'Wine', 'Coffee', 'Adventure'
-  ];
+  // Removed interests, lifestyle, education, and additional options
 
-  const lifestyleOptions = [
-    'Non-smoker', 'Social drinker', 'Teetotaler', 'Vegan', 'Vegetarian',
-    'Gluten-free', 'Early bird', 'Night owl', 'Homebody', 'Social butterfly',
-    'Fitness enthusiast', 'Couch potato', 'Minimalist', 'Collector'
-  ];
-
-  const educationOptions = [
-    { value: 'any', label: 'Any' },
-    { value: 'high-school', label: 'High School' },
-    { value: 'some-college', label: 'Some College' },
-    { value: 'bachelors', label: 'Bachelor\'s Degree' },
-    { value: 'masters', label: 'Master\'s Degree' },
-    { value: 'phd', label: 'PhD' },
-    { value: 'other', label: 'Other' }
-  ];
-
-  const relationshipOptions = [
-    { value: 'any', label: 'Any' },
-    { value: 'casual', label: 'Casual Dating' },
-    { value: 'serious', label: 'Serious Relationship' },
-    { value: 'marriage', label: 'Marriage' },
-    { value: 'friendship', label: 'Friendship' }
-  ];
+  // Removed relationship type options
 
   const toggleArrayItem = (array, item) => {
     if (array.includes(item)) {
@@ -181,166 +160,46 @@ const FilterContainer = ({
           }}
           className={styles.content}
         >
-          {/* Age Range Filter */}
+          {/* Age Range Filter (Chips) */}
           <div className={styles.filterSection}>
             <h3 className={styles.sectionTitle}>Age Range</h3>
-            <div className={styles.ageInputs}>
-              <InputField
-                type="number"
-                label="Minimum"
-                value={tempValues.minAge}
-                onChange={(e) => handleTempValueChange('minAge', e.target.value)}
-                onBlur={(e) => handleValueBlur('minAge', e.target.value)}
-                min="18"
-                max="65"
-                styles={{
-                  background: 'var(--background-color-2)',
-                  backgroundOption: 'var(--background-color-3)',
-                  disabled: 'var(--background-color-primary-disabled-2)',
-                  muted: 'var(--background-color-primary-muted-2)',
-                  default: 'var(--background-color-primary-default-2)',
-                  hover: 'var(--background-color-primary-hover-2)',
-                  active: 'var(--background-color-primary-active-2)',
-                  selected: 'var(--background-color-primary-selected-2)',
-                }}
-              />
-              <InputField
-                type="number"
-                label="Maximum"
-                value={tempValues.maxAge}
-                onChange={(e) => handleTempValueChange('maxAge', e.target.value)}
-                onBlur={(e) => handleValueBlur('maxAge', e.target.value)}
-                min="18"
-                max="65"
-                styles={{
-                  background: 'var(--background-color-2)',
-                  backgroundOption: 'var(--background-color-3)',
-                  disabled: 'var(--background-color-primary-disabled-2)',
-                  muted: 'var(--background-color-primary-muted-2)',
-                  default: 'var(--background-color-primary-default-2)',
-                  hover: 'var(--background-color-primary-hover-2)',
-                  active: 'var(--background-color-primary-active-2)',
-                  selected: 'var(--background-color-primary-selected-2)',
-                }}
-              />
+            <div className={styles.chipContainer}>
+              {ageRangeOptions.map((range) => {
+                const isSelected = localFilters.minAge === range.min && localFilters.maxAge === range.max;
+                return (
+                  <button
+                    key={range.label}
+                    className={`${styles.chip} ${isSelected ? styles.chipActive : ''}`}
+                    onClick={() => {
+                      handleFilterChange('minAge', range.min);
+                      handleFilterChange('maxAge', range.max);
+                    }}
+                  >
+                    {range.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Distance Filter */}
+          {/* Distance Filter (Chips) */}
           <div className={styles.filterSection}>
             <h3 className={styles.sectionTitle}>Distance</h3>
-            <InputField
-              type="number"
-              label="Kilometers"
-              value={tempValues.distance}
-              onChange={(e) => handleTempValueChange('distance', e.target.value)}
-              onBlur={(e) => handleValueBlur('distance', e.target.value)}
-              min="1"
-              max="100"
-              styles={{
-                background: 'var(--background-color-2)',
-                backgroundOption: 'var(--background-color-3)',
-                disabled: 'var(--background-color-primary-disabled-2)',
-                muted: 'var(--background-color-primary-muted-2)',
-                default: 'var(--background-color-primary-default-2)',
-                hover: 'var(--background-color-primary-hover-2)',
-                active: 'var(--background-color-primary-active-2)',
-                selected: 'var(--background-color-primary-selected-2)',
-              }}
-            />
-          </div>
-
-          {/* Interests Filter */}
-          <div className={styles.filterSection}>
-            <h3 className={styles.sectionTitle}>Interests</h3>
             <div className={styles.chipContainer}>
-              {interestOptions.map(interest => (
+              {distanceOptions.map((km) => (
                 <button
-                  key={interest}
-                  className={`${styles.chip} ${localFilters.interests.includes(interest) ? styles.chipActive : ''}`}
-                  onClick={() => handleFilterChange('interests', toggleArrayItem(localFilters.interests, interest))}
+                  key={km}
+                  className={`${styles.chip} ${localFilters.distance === km ? styles.chipActive : ''}`}
+                  onClick={() => handleFilterChange('distance', km)}
                 >
-                  {interest}
+                  {km} km
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Lifestyle Filter */}
-          <div className={styles.filterSection}>
-            <h3 className={styles.sectionTitle}>Lifestyle</h3>
-            <div className={styles.chipContainer}>
-              {lifestyleOptions.map(lifestyle => (
-                <button
-                  key={lifestyle}
-                  className={`${styles.chip} ${localFilters.lifestyle.includes(lifestyle) ? styles.chipActive : ''}`}
-                  onClick={() => handleFilterChange('lifestyle', toggleArrayItem(localFilters.lifestyle, lifestyle))}
-                >
-                  {lifestyle}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Education Filter */}
-          <div className={styles.filterSection}>
-            <h3 className={styles.sectionTitle}>Education</h3>
-            <InputField
-              type="select"
-              label="Education Level"
-              value={localFilters.education}
-              onChange={(e) => handleFilterChange('education', e.target.value)}
-              options={educationOptions}
-              styles={{
-                background: 'var(--background-color-2)',
-                backgroundOption: 'var(--background-color-3)',
-                disabled: 'var(--background-color-primary-disabled-2)',
-                muted: 'var(--background-color-primary-muted-2)',
-                default: 'var(--background-color-primary-default-2)',
-                hover: 'var(--background-color-primary-hover-2)',
-                active: 'var(--background-color-primary-active-2)',
-                selected: 'var(--background-color-primary-selected-2)',
-              }}
-            />
-          </div>
-
-          {/* Relationship Type Filter */}
-          <div className={styles.filterSection}>
-            <h3 className={styles.sectionTitle}>Looking For</h3>
-            <InputField
-              type="select"
-              label="Relationship Type"
-              value={localFilters.relationshipType}
-              onChange={(e) => handleFilterChange('relationshipType', e.target.value)}
-              options={relationshipOptions}
-              styles={{
-                background: 'var(--background-color-2)',
-                backgroundOption: 'var(--background-color-3)',
-                disabled: 'var(--background-color-primary-disabled-2)',
-                muted: 'var(--background-color-primary-muted-2)',
-                default: 'var(--background-color-primary-default-2)',
-                hover: 'var(--background-color-primary-hover-2)',
-                active: 'var(--background-color-primary-active-2)',
-                selected: 'var(--background-color-primary-selected-2)',
-              }}
-            />
-          </div>
-
-          {/* Additional Options */}
-          <div className={styles.filterSection}>
-            <h3 className={styles.sectionTitle}>Additional Options</h3>
-            <div className={styles.chipContainer}>
-              {additionalOptions.map(option => (
-                <button
-                  key={option}
-                  className={`${styles.chip} ${localFilters.additionalOptions?.includes(option) ? styles.chipActive : ''}`}
-                  onClick={() => handleFilterChange('additionalOptions', toggleArrayItem(localFilters.additionalOptions || [], option))}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Removed Interests, Lifestyle, Education, Additional Options, and Looking For */}
+          
         </OverlayScrollbarsComponent>
 
         {/* Footer Actions */}

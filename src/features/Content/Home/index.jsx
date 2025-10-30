@@ -475,7 +475,7 @@ const Content = () => {
             filters.interests.length > 0 ||
             filters.lifestyle.length > 0 ||
             filters.education !== 'any' ||
-            filters.relationshipType !== 'any' ||
+            /* relationshipType removed from UI */
             filters.additionalOptions?.length > 0 ||
             filters.distance !== 50 ||
             filters.minAge !== 18 ||
