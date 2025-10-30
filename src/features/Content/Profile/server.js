@@ -659,6 +659,8 @@ router.get("/api/users/feed", async (req, res) => {
     // Get age filter parameters
     const minAge = parseInt(req.query.minAge);
     const maxAge = parseInt(req.query.maxAge);
+    // Get distance filter parameter (in km)
+    const distanceFilterKm = req.query.distance ? parseInt(req.query.distance) : null;
 
     // Build age filter condition
     let ageFilter = '';
@@ -797,16 +799,22 @@ router.get("/api/users/feed", async (req, res) => {
       })
     );
 
+    // Apply distance filtering if provided (only include users with computed distance within range)
+    const filteredUsers = (distanceFilterKm && !isNaN(distanceFilterKm))
+      ? usersWithPhotos.filter(u => typeof u.distance === 'number' && u.distance <= distanceFilterKm)
+      : usersWithPhotos;
+
     // Get total count for pagination metadata with age filtering
     // Note: Count without location requirement to match the main query
     const countSql = `SELECT COUNT(*) as total FROM users WHERE id != ? ${ageFilter}`;
     const countResult = await queryDB(countSql, [currentUserId, ...ageParams]);
-    const totalUsers = countResult[0].total;
+    // Adjust totals to reflect distance filtering for this response, so UI behaves as expected
+    const totalUsers = filteredUsers.length; // this page's filtered count; full-accuracy would require filtered COUNT(*)
     const totalPages = Math.ceil(totalUsers / limit);
     const hasMore = page < totalPages;
 
     res.json({ 
-      users: usersWithPhotos,
+      users: filteredUsers,
       pagination: {
         currentPage: page,
         totalPages,

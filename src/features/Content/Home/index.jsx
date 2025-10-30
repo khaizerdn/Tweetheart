@@ -206,6 +206,31 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     fetchUsers(1, false);
   }, [fetchUsers]);
 
+  // If geolocation permission is already granted, auto-fetch and save location without asking
+  useEffect(() => {
+    let isCancelled = false;
+    try {
+      if (navigator?.permissions && navigator.permissions.query) {
+        navigator.permissions
+          .query({ name: 'geolocation' })
+          .then((result) => {
+            if (isCancelled) return;
+            if (result.state === 'granted' && !locationGranted) {
+              getLocationAndSave();
+            }
+          })
+          .catch(() => {
+            // Silently ignore if Permissions API is unavailable or errors out
+          });
+      }
+    } catch (_) {
+      // No-op
+    }
+    return () => {
+      isCancelled = true;
+    };
+  }, [locationGranted]);
+
   // Refetch users when age range changes
   useEffect(() => {
     if (loaded) {
