@@ -13,8 +13,8 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 0 var(--padding-016);
-  padding-bottom: var(--padding-016);
+  margin: 0;
+  padding: var(--padding-016);
 }
 
 .container {
@@ -264,8 +264,8 @@
   justify-content: space-between;
   text-align: left;
   background: var(--color-primary-3);
-  margin-bottom: var(--margin-016);
-  padding: 0 var(--padding-016);
+  margin: 0;
+  padding: var(--padding-016);
 }
 
 .filterButton {
