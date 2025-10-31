@@ -481,6 +481,22 @@ const ChatRoom = () => {
     );
   }
 
+  const handleViewProfile = () => {
+    if (otherUserId) {
+      navigate(`/profile/${otherUserId}`);
+    }
+  };
+
+  const handleUnmatch = async () => {
+    if (!otherUserId) return;
+    try {
+      await unmatchUser(otherUserId);
+      navigate('/chats');
+    } catch (e) {
+      console.error('Unmatch failed:', e);
+    }
+  };
+
   const rightPanel = (
     <aside className={matchesStyles.userInfoPanel}>
       <div className={matchesStyles.userInfoPhotoWrap}>
@@ -501,20 +517,13 @@ const ChatRoom = () => {
             to={"/profile/" + otherUserId}
             iconClass="fa fa-user"
             label="View Profile"
-            onClick={() => navigate(`/profile/${otherUserId}`)}
+            onClick={handleViewProfile}
           />
           <MenuButton
             to="#unmatch"
             iconClass="fa fa-ban"
             label="Unmatch"
-            onClick={async () => {
-              try {
-                await unmatchUser(otherUserId);
-                navigate('/chats');
-              } catch (e) {
-                console.error('Unmatch failed:', e);
-              }
-            }}
+            onClick={handleUnmatch}
           />
         </div>
       )}
@@ -538,6 +547,8 @@ const ChatRoom = () => {
       rightPanel={rightPanel}
       scrollToBottomImmediate={scrollToBottomImmediateRef}
       emptyText={isPreparationChat ? 'Send your first message to start the conversation!' : (chatExists ? 'No messages yet. Start the conversation!' : 'Send your first message to start the conversation!')}
+      onViewProfile={otherUserId ? handleViewProfile : undefined}
+      onUnmatch={otherUserId ? handleUnmatch : undefined}
     />
   );
 };

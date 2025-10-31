@@ -295,8 +295,6 @@
   color: var(--font-color-hover);
 }
 
-.filterButton:active { }
-
 .filterButton svg {
   width: 20px;
   height: 20px;
@@ -572,6 +570,15 @@
   .filterOptions {
     padding: var(--padding-020);
   }
+
+  /* Mobile button styles */
+  .viewProfileButton,
+  .unmatchButton {
+    min-width: 60px;
+    height: 32px;
+    padding: var(--padding-004) var(--padding-010);
+    font-size: var(--font-size-012);
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -586,6 +593,15 @@
   
   .filterOption i {
     font-size: var(--font-size-014);
+  }
+
+  /* Smaller mobile button styles */
+  .viewProfileButton,
+  .unmatchButton {
+    min-width: 50px;
+    height: 28px;
+    padding: var(--padding-004) var(--padding-008);
+    font-size: var(--font-size-010);
   }
 }
 
@@ -927,8 +943,51 @@
   color: var(--color-white);
   margin-top: 0;
 }
+/* Mobile Chat Actions */
+.mobileChatActions {
+  display: none;
+  gap: var(--gap-008);
+  align-items: center;
+}
+
+.mobileActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-008);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: var(--font-size-016);
+  transition: all 0.2s ease;
+}
+
+.mobileActionButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.mobileActionButton:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.unmatchActionButton {
+  color: var(--font-color-status-danger);
+  border-color: var(--font-color-status-danger);
+}
+
+.unmatchActionButton:hover {
+  background: rgba(244, 67, 54, 0.1);
+  border-color: var(--font-color-status-danger);
+}
+
 @media (max-width: 767px) {
   .userInfoPanel { display: none !important; }
+  .mobileChatActions { display: flex; }
+  .connectionStatus { display: none !important; }
 }
 
 .chatHeaderUserPhoto {

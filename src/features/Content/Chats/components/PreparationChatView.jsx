@@ -17,7 +17,9 @@ const PreparationChatView = ({
   inputRef,
   rightPanel,
   emptyText,
-  scrollToBottomImmediate
+  scrollToBottomImmediate,
+  onViewProfile,
+  onUnmatch
 }) => {
   const overlayScrollbarsRef = useRef(null);
   const scrollInstanceRef = useRef(null);
@@ -89,6 +91,29 @@ const PreparationChatView = ({
             <i className="fa fa-circle" style={{ color: isConnected ? '#4CAF50' : '#f44336' }}></i>
             <span>{isConnected ? 'Connected' : 'Connecting...'}</span>
           </div>
+          {/* Mobile action buttons */}
+          {(onViewProfile || onUnmatch) && (
+            <div className={matchesStyles.mobileChatActions}>
+              {onViewProfile && (
+                <button
+                  className={matchesStyles.mobileActionButton}
+                  onClick={onViewProfile}
+                  title="View Profile"
+                >
+                  <i className="fa fa-user"></i>
+                </button>
+              )}
+              {onUnmatch && (
+                <button
+                  className={`${matchesStyles.mobileActionButton} ${matchesStyles.unmatchActionButton}`}
+                  onClick={onUnmatch}
+                  title="Unmatch"
+                >
+                  <i className="fa fa-ban"></i>
+                </button>
+              )}
+            </div>
+          )}
         </div>
         <div className={matchesStyles.chatContainer}>
           <OverlayScrollbarsComponent

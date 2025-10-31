@@ -475,6 +475,15 @@ const Matches = () => {
     const match = preparationChatData.match;
     const firstName = match?.name ? match.name.split(' ')[0] : '';
 
+    const handleViewProfile = () => {
+      navigate(`/profile/${match.id}`);
+    };
+
+    const handleUnmatch = () => {
+      setUnmatchTarget(match);
+      setShowUnmatchModal(true);
+    };
+
     const rightPanel = (
       <aside className={styles.userInfoPanel}>
         <div className={styles.userInfoPhotoWrap}>
@@ -498,13 +507,13 @@ const Matches = () => {
             to={"/profile/" + match.id}
             iconClass="fa fa-user"
             label="View Profile"
-            onClick={() => navigate(`/profile/${match.id}`)}
+            onClick={handleViewProfile}
           />
           <MenuButton
             to="#unmatch"
             iconClass="fa fa-ban"
             label="Unmatch"
-            onClick={() => { setUnmatchTarget(match); setShowUnmatchModal(true); }}
+            onClick={handleUnmatch}
           />
         </div>
       </aside>
@@ -525,6 +534,8 @@ const Matches = () => {
         inputRef={inputRef}
         rightPanel={rightPanel}
         emptyText={'Send your first message to start the conversation!'}
+        onViewProfile={match?.id ? handleViewProfile : undefined}
+        onUnmatch={match?.id ? handleUnmatch : undefined}
       />
     );
   }
