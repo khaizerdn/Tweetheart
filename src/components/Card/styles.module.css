@@ -236,14 +236,20 @@
 @media (max-width: 768px) {
   .card {
     height: 550px;
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photoContainer {
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photo {
+    border-radius: var(--border-radius-016);
   }
   
   .cardInfo {
-    padding: var(--padding-020) var(--padding-020) calc(var(--padding-020) + 40px) var(--padding-020); /* Maintain button overlap padding */
-  }
-  
-  .cardInfo > * {
-    transform: translateY(-35px);
+    display: none !important; /* Hide cardInfo completely on mobile */
+    background: none !important; /* Remove gradient on mobile */
   }
   
   .navButton {
@@ -267,14 +273,20 @@
 @media (max-width: 480px) {
   .card {
     height: 500px;
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photoContainer {
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photo {
+    border-radius: var(--border-radius-016);
   }
   
   .cardInfo {
-    padding: var(--padding-016) var(--padding-016) calc(var(--padding-016) + 40px) var(--padding-016); /* Maintain button overlap padding with smaller base padding */
-  }
-  
-  .cardInfo > * {
-    transform: translateY(-35px);
+    display: none !important; /* Hide cardInfo completely on mobile */
+    background: none !important; /* Remove gradient on mobile */
   }
   
   .navButton {
@@ -306,7 +318,6 @@
     max-width: 100% !important;
     height: 100% !important;
     max-height: 100% !important;
-    border-radius: 0 !important;
     box-shadow: none !important;
   }
 }

@@ -296,8 +296,12 @@
     overflow: hidden;
   }
   
-  /* Hide extra details on tablets and mobile, keep name & age visible */
-  .chatCard .cardInfo,
+  /* Hide extra details on tablets and mobile, remove gradient */
+  .chatCard .cardInfo {
+    display: none !important;
+    background: none !important; /* Remove gradient on mobile */
+  }
+  
   .chatCard .category,
   .chatCard .bioPreview {
     display: none !important;

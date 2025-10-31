@@ -249,8 +249,12 @@
     overflow: hidden;
   }
   
-  /* Hide extra details on tablets and mobile, keep name & age visible */
-  .matchCard .cardInfo,
+  /* Hide extra details on tablets and mobile, remove gradient */
+  .matchCard .cardInfo {
+    display: none !important;
+    background: none !important; /* Remove gradient on mobile */
+  }
+  
   .matchCard .category,
   .matchCard .bioPreview {
     display: none !important;
