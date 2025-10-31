@@ -53,7 +53,12 @@ function LocationPermission({ onLocationGranted, onSkip }) {
               errorMessage += "Location request timed out.";
               break;
             default:
-              errorMessage += "An unknown error occurred.";
+              // Check if it's the HTTPS requirement error
+              if (err.message && err.message.includes('secure origins')) {
+                errorMessage = "Location access requires HTTPS. Please access the site via HTTPS or allow location in your browser settings.";
+              } else {
+                errorMessage += "An unknown error occurred.";
+              }
               break;
           }
           
