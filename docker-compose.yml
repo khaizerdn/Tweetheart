@@ -71,8 +71,8 @@ services:
       dockerfile: Dockerfile
       args:
         # Frontend API URL - empty string uses relative paths (via Nginx proxy)
-        # Set to server IP/domain if not using proxy
-        VITE_API_URL: ${VITE_API_URL:-}
+        # Or set to http://your-server-ip/api to include /api prefix
+        VITE_API_URL: ${VITE_API_URL:-/api}
     container_name: dating-app-frontend
     restart: unless-stopped
     ports:
