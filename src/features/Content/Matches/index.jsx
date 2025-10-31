@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 import MenuButton from '../../Menu/components/button';
 import PreparationChatView from '../Chats/components/PreparationChatView';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const Matches = () => {
   const [matches, setMatches] = useState([]);
@@ -40,7 +40,7 @@ const Matches = () => {
       setLoading(true);
       setError("");
       
-      const response = await fetch(`${API_URL}/api/likes/matches`, {
+      const response = await fetch(`${API_URL}/likes/matches`, {
         method: 'GET',
         credentials: 'include',
         headers: {

@@ -3,7 +3,7 @@ import Header from '../../../components/Header';
 import MobileMenu from '../../../components/MobileMenu';
 import styles from './styles.module.css';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const Notifications = () => {
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const Notifications = () => {
     try {
       setLoading(true);
       setError('');
-      const resp = await fetch(`${API_URL}/api/notifications`, {
+      const resp = await fetch(`${API_URL}/notifications`, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -51,7 +51,7 @@ const Notifications = () => {
   const dismissOne = async (id) => {
     try {
       setItems(prev => prev.filter(n => n.id !== id));
-      await fetch(`${API_URL}/api/notifications/${id}/dismiss`, {
+      await fetch(`${API_URL}/notifications/${id}/dismiss`, {
         method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }
       });
     } catch {}
@@ -95,7 +95,7 @@ const Notifications = () => {
       const load = async () => {
         if (!data?.matchUserId) return;
         try {
-          const resp = await fetch(`${API_URL}/api/users/${data.matchUserId}/basic`, {
+          const resp = await fetch(`${API_URL}/users/${data.matchUserId}/basic`, {
             method: 'GET', credentials: 'include', headers: { 'Content-Type': 'application/json' }
           });
           if (resp.ok) setProfile(await resp.json());

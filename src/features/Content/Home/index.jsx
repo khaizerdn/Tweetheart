@@ -72,7 +72,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     const loadLikedAndPassedUsers = async () => {
       try {
         // Fetch liked users
-        const likedRes = await fetch(`${API_URL}/api/likes/liked`, {
+        const likedRes = await fetch(`${API_URL}/likes/liked`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -83,7 +83,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
           setLikedUserIds(likeIds);
         }
         // Fetch passed users
-        const passRes = await fetch(`${API_URL}/api/likes/passed`, {
+        const passRes = await fetch(`${API_URL}/likes/passed`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -486,7 +486,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   // Handle user action (like/pass)
   const handleUserAction = async (cardId, action) => {
     try {
-      const response = await fetch(`${API_URL}/api/likes`, {
+      const response = await fetch(`${API_URL}/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

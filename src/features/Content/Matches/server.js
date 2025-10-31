@@ -47,7 +47,7 @@ export const fetchMatchById = async (matchId) => {
 // Send a message to a match
 export const sendMessage = async (matchId, message) => {
   try {
-    const response = await fetch(`${API_URL}/api/matches/${matchId}/messages`, {
+    const response = await fetch(`${API_URL}/matches/${matchId}/messages`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -70,7 +70,7 @@ export const sendMessage = async (matchId, message) => {
 // Fetch messages for a specific match
 export const fetchMessages = async (matchId) => {
   try {
-    const response = await fetch(`${API_URL}/api/matches/${matchId}/messages`, {
+    const response = await fetch(`${API_URL}/matches/${matchId}/messages`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -92,7 +92,7 @@ export const fetchMessages = async (matchId) => {
 // Unmatch with a user
 export const unmatchUser = async (matchId) => {
   try {
-    const response = await fetch(`${API_URL}/api/likes/unmatch/${matchId}`, {
+    const response = await fetch(`${API_URL}/likes/unmatch/${matchId}`, {
       method: 'DELETE',
       credentials: 'include',
       headers: {
@@ -114,7 +114,7 @@ export const unmatchUser = async (matchId) => {
 // Report a match
 export const reportMatch = async (matchId, reason) => {
   try {
-    const response = await fetch(`${API_URL}/api/matches/${matchId}/report`, {
+    const response = await fetch(`${API_URL}/matches/${matchId}/report`, {
       method: 'POST',
       credentials: 'include',
       headers: {
