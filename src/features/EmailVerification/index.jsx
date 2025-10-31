@@ -8,7 +8,7 @@ import styles from "./styles.module.css";
 const API_URL = import.meta.env.VITE_API_URL;
 const COUNTDOWN_KEY = 'verification_countdown';
 
-function Verification() {
+function Verification({ setIsLoggedIn }) {
   const navigate = useNavigate();
   const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState("");
@@ -77,10 +77,22 @@ function Verification() {
       const res = await axios.post(`${API_URL}/verify-account`, {
         email,
         verificationCode,
-      });
-      sessionStorage.removeItem("email");
-      clearSessionStorage();
-      navigate("/success");
+      }, { withCredentials: true });
+      
+      // Backend automatically logs in user and sets cookies
+      // Update login state and navigate to home page
+      if (res.data.success) {
+        sessionStorage.removeItem("email");
+        clearSessionStorage();
+        
+        // Set logged in state
+        if (setIsLoggedIn) {
+          setIsLoggedIn(true);
+        }
+        
+        // Navigate to home page
+        navigate("/");
+      }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Incorrect verification code.";
       setError(errorMessage);
