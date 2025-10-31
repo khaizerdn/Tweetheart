@@ -18,7 +18,8 @@ COPY backend/server.js ./
 # This allows relative imports to work properly with ES modules
 COPY src ./src
 
-# Create a proper package.json in /app/src root with valid JSON
+# Create package.json in /app/src for ES module resolution
+# Note: /app/package.json already exists from backend/package.json and has "type": "module"
 RUN echo '{"type":"module"}' > ./src/package.json
 
 # Note: Environment variables are provided by docker-compose.yml
