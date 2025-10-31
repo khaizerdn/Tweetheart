@@ -95,14 +95,21 @@ async function loadRoutesRecursively(dir) {
         try {
           const fileUrl = pathToFileURL(mjsPath).href;
           console.log(`   🔍 Trying .mjs version first: ${fileUrl}`);
-          const routeModule = (await import(fileUrl)).default;
-          if (routeModule) {
+          const module = await import(fileUrl);
+          const routeModule = module.default;
+          
+          // Check if it's an Express router (has use/get/post/etc methods)
+          if (routeModule && typeof routeModule.use === 'function') {
             app.use("/", routeModule);
             console.log(`✅ Loaded route via .mjs: ${fullPath.replace(featuresDir, "")}`);
             continue;
+          } else {
+            console.log(`   ⚠️  Skipping (not an Express router): ${fullPath.replace(featuresDir, "")}`);
+            continue;
           }
         } catch (err) {
-          console.error(`   ❌ .mjs import failed: ${err.message}`);
+          // If import fails, try fallback
+          console.log(`   ⚠️  .mjs import failed, trying fallback: ${err.message}`);
         }
       } else {
         console.log(`   ⚠️  .mjs file not found at: ${mjsPath}`);
@@ -116,16 +123,20 @@ async function loadRoutesRecursively(dir) {
           : './' + relativePath.replace(/\\/g, '/');
         
         console.log(`   🔍 Trying relative import: ${importPath}`);
-        const routeModule = (await import(importPath)).default;
-        if (routeModule) {
+        const module = await import(importPath);
+        const routeModule = module.default;
+        
+        // Check if it's an Express router (has use/get/post/etc methods)
+        if (routeModule && typeof routeModule.use === 'function') {
           app.use("/", routeModule);
           console.log(`✅ Loaded route: ${fullPath.replace(featuresDir, "")}`);
           continue;
+        } else {
+          console.log(`   ⚠️  Skipping (not an Express router): ${fullPath.replace(featuresDir, "")}`);
+          continue;
         }
       } catch (err) {
-        console.error(`❌ Failed to load route at ${fullPath}`);
-        console.error(`   Error: ${err.message}`);
-        console.error(`   Code: ${err.code || 'N/A'}`);
+        console.log(`   ⚠️  Skipping (import failed): ${fullPath.replace(featuresDir, "")} - ${err.message}`);
       }
     }
   }
