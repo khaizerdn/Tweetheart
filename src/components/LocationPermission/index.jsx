@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "./styles.module.css";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 function LocationPermission({ onLocationGranted, onSkip }) {
   const [isRequesting, setIsRequesting] = useState(false);
@@ -53,7 +53,12 @@ function LocationPermission({ onLocationGranted, onSkip }) {
               errorMessage += "Location request timed out.";
               break;
             default:
-              errorMessage += "An unknown error occurred.";
+              // Check if it's the HTTPS requirement error
+              if (err.message && err.message.includes('secure origins')) {
+                errorMessage = "Location access requires HTTPS. Please access the site via HTTPS or allow location in your browser settings.";
+              } else {
+                errorMessage += "An unknown error occurred.";
+              }
               break;
           }
           

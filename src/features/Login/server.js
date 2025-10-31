@@ -203,23 +203,26 @@ router.post("/login", async (req, res) => {
 
     await saveSession(user.id, refreshToken, deviceInfo, deviceFingerprint);
 
+    // Check if request is actually HTTPS (works with proxy)
+    const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+    
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,  // Only secure if actually using HTTPS
       sameSite: "Strict",
       maxAge: ACCESS_TOKEN_LIFETIME * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "Strict",
       maxAge: REFRESH_TOKEN_LIFETIME * 1000,
     });
 
     res.cookie("userId", user.id, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "Strict",
       maxAge: REFRESH_TOKEN_LIFETIME * 1000,
     });
@@ -281,21 +284,24 @@ router.post("/refresh", async (req, res) => {
 
     await saveSession(session.user_id, newRefreshToken, JSON.parse(session.device_info), session.device_fingerprint, oldRefreshToken);
 
+    // Check if request is actually HTTPS (works with proxy)
+    const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,  // Only secure if actually using HTTPS
       sameSite: "Strict",
       maxAge: ACCESS_TOKEN_LIFETIME * 1000,
     });
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "Strict",
       maxAge: REFRESH_TOKEN_LIFETIME * 1000,
     });
     res.cookie("userId", session.user_id, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "Strict",
       maxAge: REFRESH_TOKEN_LIFETIME * 1000,
     });

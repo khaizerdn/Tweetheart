@@ -53,7 +53,7 @@ const queryDB = async (query, values = []) => {
 // =============================
 // ✅ LIKE A USER
 // =============================
-router.post("/api/likes", async (req, res) => {
+router.post("/likes", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
     const { liked_id, like_type } = req.body;
@@ -189,7 +189,7 @@ router.post("/api/likes", async (req, res) => {
 // =============================
 // ✅ GET MATCHES
 // =============================
-router.get("/api/likes/matches", async (req, res) => {
+router.get("/likes/matches", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
 
@@ -285,7 +285,7 @@ router.get("/api/likes/matches", async (req, res) => {
 // =============================
 // ✅ CHECK IF MATCH
 // =============================
-router.get("/api/likes/match/:userId", async (req, res) => {
+router.get("/likes/match/:userId", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
     const { userId } = req.params;
@@ -312,7 +312,7 @@ router.get("/api/likes/match/:userId", async (req, res) => {
 // =============================
 // ✅ GET LIKED USERS
 // =============================
-router.get("/api/likes/liked", async (req, res) => {
+router.get("/likes/liked", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
 
@@ -346,7 +346,7 @@ router.get("/api/likes/liked", async (req, res) => {
 // =============================
 // ✅ GET USERS WHO LIKED ME
 // =============================
-router.get("/api/likes/liked-by", async (req, res) => {
+router.get("/likes/liked-by", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
 
@@ -380,7 +380,7 @@ router.get("/api/likes/liked-by", async (req, res) => {
 // =============================
 // ✅ UNMATCH USER
 // =============================
-router.delete("/api/likes/unmatch/:matchId", async (req, res) => {
+router.delete("/likes/unmatch/:matchId", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
     const { matchId } = req.params;
@@ -435,7 +435,7 @@ router.delete("/api/likes/unmatch/:matchId", async (req, res) => {
 // =============================
 // ✅ GET PASSED USERS
 // =============================
-router.get("/api/likes/passed", async (req, res) => {
+router.get("/likes/passed", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
     if (!currentUserId) {
@@ -465,7 +465,7 @@ router.get("/api/likes/passed", async (req, res) => {
 // =============================
 // ✅ TEST ENDPOINT
 // =============================
-router.get("/api/likes/test", async (req, res) => {
+router.get("/likes/test", async (req, res) => {
   try {
     // Test database connection
     const testQuery = await queryDB("SELECT 1 as test");

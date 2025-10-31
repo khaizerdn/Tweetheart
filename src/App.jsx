@@ -21,7 +21,7 @@ import SignUp from './features/SignUp';
 import EmailVerification from './features/EmailVerification';
 import LocationPermission from './components/LocationPermission';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,6 +45,8 @@ function App() {
           }
         } catch (locationErr) {
           console.error("Error checking location status:", locationErr);
+          // If location status check fails, assume no location (show prompt)
+          setLocationGranted(false);
         }
         
         setLocationChecked(true);
@@ -66,10 +68,14 @@ function App() {
         const locationRes = await axios.get(`${API_URL}/location-status`, { withCredentials: true });
         if (!locationRes.data.hasLocation) {
           setLocationGranted(false); // Ensure it's false if not saved
+        } else {
+          setLocationGranted(true);
         }
         setLocationChecked(true);
       } catch (locationErr) {
         console.error("Error checking location status:", locationErr);
+        // If location status check fails, assume no location (show prompt)
+        setLocationGranted(false);
         setLocationChecked(true);
       }
     }, 100); // Small delay to ensure cookies are set
@@ -86,6 +92,7 @@ function App() {
   return (
     <Router>
       <ScrollRestoration />
+      {/* Location permission modal removed - location is now optional, users can browse without it */}
       <Routes>
         {!isLoggedIn ? (
           <>

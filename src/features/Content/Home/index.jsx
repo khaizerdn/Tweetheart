@@ -10,6 +10,8 @@ import Error from './features/Error';
 import LocationRequired from './features/LocationRequired';
 import MatchModal from './components/MatchModal';
 
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 const Content = ({ locationGranted, setLocationGranted }) => {
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -70,7 +72,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     const loadLikedAndPassedUsers = async () => {
       try {
         // Fetch liked users
-        const likedRes = await fetch('http://localhost:8081/api/likes/liked', {
+        const likedRes = await fetch(`${API_URL}/likes/liked`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -81,7 +83,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
           setLikedUserIds(likeIds);
         }
         // Fetch passed users
-        const passRes = await fetch('http://localhost:8081/api/likes/passed', {
+        const passRes = await fetch(`${API_URL}/likes/passed`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -108,7 +110,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         setError("");
       }
       
-      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10&minAge=${filters.minAge}&maxAge=${filters.maxAge}&distance=${filters.distance}`);
+      const response = await requestAccessToken.get(`/users/feed?page=${page}&limit=10&minAge=${filters.minAge}&maxAge=${filters.maxAge}&distance=${filters.distance}`);
       const { users: usersData, pagination } = response.data;
       
       // Transform the data to match the expected format
@@ -231,7 +233,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         async (position) => {
           try {
             const { latitude, longitude } = position.coords;
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/update-location`, {
+            const response = await fetch(`${API_URL}/update-location`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'include',
@@ -261,7 +263,12 @@ const Content = ({ locationGranted, setLocationGranted }) => {
               errorMessage += "Location request timed out.";
               break;
             default:
-              errorMessage += "An unknown error occurred.";
+              // Check if it's the HTTPS requirement error
+              if (err.message && err.message.includes('secure origins')) {
+                errorMessage = "Location access requires HTTPS. Please access the site via HTTPS or allow location in your browser settings.";
+              } else {
+                errorMessage += "An unknown error occurred.";
+              }
               break;
           }
           setLocError(errorMessage);
@@ -484,7 +491,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   // Handle user action (like/pass)
   const handleUserAction = async (cardId, action) => {
     try {
-      const response = await fetch('http://localhost:8081/api/likes', {
+      const response = await fetch(`${API_URL}/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -589,20 +596,39 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     return <Error error={error} />;
   }
 
-  if (!locationGranted) {
-    return (
-      <LocationRequired
-        isMobile={isMobile}
-        error={locError}
-        isRequesting={isRequesting}
-        showTooManyAttempts={showTooManyAttempts}
-        onGetLocation={getLocationAndSave}
-      />
-    );
-  }
+  // Location is optional - don't block if not granted
+  // Users can still view cards, just without distance filtering
 
   return (
     <div className={styles.home} ref={containerRef}>
+      {/* Optional location banner - only show if location not granted */}
+      {!locationGranted && (
+        <div style={{ 
+          padding: '10px', 
+          marginBottom: '10px', 
+          background: '#fff3cd', 
+          border: '1px solid #ffc107', 
+          borderRadius: '4px',
+          fontSize: '14px',
+          textAlign: 'center'
+        }}>
+          💡 Location is optional. Enable it to see distance and get better matches nearby.
+          <button 
+            onClick={getLocationAndSave}
+            style={{ 
+              marginLeft: '10px', 
+              padding: '4px 12px', 
+              background: '#007bff', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Enable Location
+          </button>
+        </div>
+      )}
       
       {/* Filter button - always visible */}
       <button 

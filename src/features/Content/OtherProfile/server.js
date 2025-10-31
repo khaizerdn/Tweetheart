@@ -118,7 +118,7 @@ router.get("/user-profile/:userId", async (req, res) => {
 // ========================================================
 // ✅ GET ALL PHOTOS FOR SPECIFIC USER BY USER ID (for viewing other profiles)
 // ========================================================
-router.get("/api/photos/:userId", async (req, res) => {
+router.get("/photos/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     

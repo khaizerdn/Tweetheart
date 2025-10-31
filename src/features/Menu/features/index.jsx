@@ -74,7 +74,7 @@ function Menu() {
   useEffect(() => {
     async function fetchProfilePhoto() {
       try {
-        const response = await requestAccessToken.get('/api/photos'); // use the same endpoint as Profile
+        const response = await requestAccessToken.get('/photos'); // use the same endpoint as Profile
         const data = response.data;
 
         if (data.photos && data.photos.length > 0) {
@@ -111,7 +111,8 @@ function Menu() {
   // Socket listener to show dot on new notifications
   useEffect(() => {
     if (!currentUserId) return;
-    const s = io('http://localhost:8081', { withCredentials: true });
+    // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+    const s = io({ withCredentials: true });
     s.on('connect', () => {
       s.emit('join_user_room', { userId: currentUserId });
     });

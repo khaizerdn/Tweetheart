@@ -62,7 +62,8 @@ const ChatRoom = () => {
 
   // Initialize socket connection
   useEffect(() => {
-    const newSocket = io('http://localhost:8081', {
+    // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+    const newSocket = io({
       withCredentials: true,
       transports: ['websocket']
     });

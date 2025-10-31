@@ -10,6 +10,8 @@ import styles from './styles.module.css';
 import MenuButton from '../../Menu/components/button';
 import PreparationChatView from '../Chats/components/PreparationChatView';
 
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [filteredMatches, setFilteredMatches] = useState([]);
@@ -38,7 +40,7 @@ const Matches = () => {
       setLoading(true);
       setError("");
       
-      const response = await fetch('http://localhost:8081/api/likes/matches', {
+      const response = await fetch(`${API_URL}/likes/matches`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -81,7 +83,8 @@ const Matches = () => {
 
   // Initialize socket connection for real-time updates
   useEffect(() => {
-    const newSocket = io('http://localhost:8081', {
+    // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+    const newSocket = io({
       withCredentials: true,
       transports: ['websocket']
     });
@@ -363,7 +366,8 @@ const Matches = () => {
   // Initialize socket connection for preparation chat
   useEffect(() => {
     if (showPreparationChat && preparationChatData) {
-      const newSocket = io('http://localhost:8081', {
+      // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+      const newSocket = io({
         withCredentials: true,
         transports: ['websocket']
       });

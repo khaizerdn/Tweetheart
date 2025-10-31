@@ -296,7 +296,7 @@ const handleMulterError = (err, req, res, next) => {
 // ========================================================
 // ✅ UPLOAD SINGLE PHOTO (for dating app profiles)
 // ========================================================
-router.post("/api/photos/upload", upload.single("photo"), handleMulterError, async (req, res) => {
+router.post("/photos/upload", upload.single("photo"), handleMulterError, async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file provided" });
@@ -389,7 +389,7 @@ router.post("/api/photos/upload", upload.single("photo"), handleMulterError, asy
 // ========================================================
 // ✅ UPLOAD MULTIPLE PHOTOS (for profile updates)
 // ========================================================
-router.post("/api/profile/photos/upload-multiple", upload.array("photos", 6), handleMulterError, async (req, res) => {
+router.post("/profile/photos/upload-multiple", upload.array("photos", 6), handleMulterError, async (req, res) => {
   try {
     const userId = req.cookies?.userId;
     if (!userId) {
@@ -515,7 +515,7 @@ router.post("/api/profile/photos/upload-multiple", upload.array("photos", 6), ha
 // ========================================================
 // ✅ GET ALL PHOTOS FOR CURRENT USER
 // ========================================================
-router.get("/api/photos", async (req, res) => {
+router.get("/photos", async (req, res) => {
   try {
     const userId = req.cookies?.userId;
     
@@ -573,7 +573,7 @@ router.get("/api/photos", async (req, res) => {
 // ========================================================
 // ✅ GET BASIC PROFILE FOR ANY USER (gender mapped, photos signed)
 // ========================================================
-router.get("/api/users/:userId/basic", async (req, res) => {
+router.get("/users/:userId/basic", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
     if (!currentUserId) {
@@ -643,7 +643,7 @@ router.get("/api/users/:userId/basic", async (req, res) => {
 // ========================================================
 // ✅ GET ALL USERS FOR DATING FEED (WITH PAGINATION)
 // ========================================================
-router.get("/api/users/feed", async (req, res) => {
+router.get("/users/feed", async (req, res) => {
   try {
     const currentUserId = req.cookies?.userId;
     
@@ -832,7 +832,7 @@ router.get("/api/users/feed", async (req, res) => {
 // ========================================================
 // ✅ DELETE PHOTO
 // ========================================================
-router.delete("/api/photos/delete", async (req, res) => {
+router.delete("/photos/delete", async (req, res) => {
   try {
     const userId = req.cookies?.userId;
     if (!userId) {

@@ -84,7 +84,7 @@ const generatePhotoUrls = async (photosData) => {
 };
 
 // Get all chats for the current user
-router.get('/api/chats', async (req, res) => {
+router.get('/chats', async (req, res) => {
   try {
     // Get user ID from session/cookie
     const userId = req.cookies?.userId;
@@ -164,7 +164,7 @@ router.get('/api/chats', async (req, res) => {
 
 
 // Get messages for a specific chat
-router.get('/api/chats/:chatId/messages', async (req, res) => {
+router.get('/chats/:chatId/messages', async (req, res) => {
   try {
     const { chatId } = req.params;
     const userId = req.cookies?.userId;
@@ -213,7 +213,7 @@ router.get('/api/chats/:chatId/messages', async (req, res) => {
 });
 
 // Send a message to a chat
-router.post('/api/chats/:chatId/messages', [
+router.post('/chats/:chatId/messages', [
   body('message').notEmpty().withMessage('Message is required')
 ], async (req, res) => {
   try {
@@ -444,7 +444,7 @@ router.post('/api/chats/:chatId/messages', [
 });
 
 // Create a new chat
-router.post('/api/chats', [
+router.post('/chats', [
   body('matchId').notEmpty().withMessage('Match ID is required')
 ], async (req, res) => {
   try {
@@ -504,7 +504,7 @@ router.post('/api/chats', [
 });
 
 // Mark messages as read
-router.put('/api/chats/:chatId/read', async (req, res) => {
+router.put('/chats/:chatId/read', async (req, res) => {
   try {
     const { chatId } = req.params;
     const userId = req.cookies?.userId;
@@ -571,7 +571,7 @@ router.put('/api/chats/:chatId/read', async (req, res) => {
 });
 
 // Delete a chat
-router.delete('/api/chats/:chatId', async (req, res) => {
+router.delete('/chats/:chatId', async (req, res) => {
   try {
     const { chatId } = req.params;
     const userId = req.cookies?.userId;
