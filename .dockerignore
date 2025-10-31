@@ -11,7 +11,8 @@ dist
 .git
 .gitignore
 README.md
-backend
+backend/node_modules
+backend/.env
 assets
 Note.txt
 .cursorignore

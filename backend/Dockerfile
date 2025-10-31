@@ -19,6 +19,9 @@ COPY backend/server.js ./
 # Since we're at /app (backend), we need /app/../src = /src
 COPY src /src
 
+# Create a package.json in /src so Node.js recognizes it as ES modules
+RUN echo '{"type": "module"}' > /src/package.json
+
 # Note: Environment variables are provided by docker-compose.yml
 # No need to copy .env file - all vars come from docker-compose environment section
 
