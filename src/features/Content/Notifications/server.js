@@ -16,7 +16,7 @@ const dbConfig = {
 };
 
 // Get all notifications for a user
-router.get('/api/notifications', async (req, res) => {
+router.get('/notifications', async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     
@@ -44,7 +44,7 @@ router.get('/api/notifications', async (req, res) => {
 });
 
 // Mark notification as read
-router.put('/api/notifications/:id/read', async (req, res) => {
+router.put('/notifications/:id/read', async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     const { id } = req.params;
@@ -68,7 +68,7 @@ router.put('/api/notifications/:id/read', async (req, res) => {
 });
 
 // Dismiss notification (remove from UI)
-router.put('/api/notifications/:id/dismiss', async (req, res) => {
+router.put('/notifications/:id/dismiss', async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     const { id } = req.params;
@@ -92,7 +92,7 @@ router.put('/api/notifications/:id/dismiss', async (req, res) => {
 });
 
 // Create a new notification (internal API for other services)
-router.post('/api/notifications/create', async (req, res) => {
+router.post('/notifications/create', async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     const { userId, type, title, message, data } = req.body;

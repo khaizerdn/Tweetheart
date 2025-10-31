@@ -208,7 +208,7 @@ const handleMulterError = (err, req, res, next) => {
 // ========================================================
 // ✅ UPLOAD MULTIPLE PHOTOS (for signup)
 // ========================================================
-router.post("/api/signup/photos/upload-multiple", upload.array("photos", 6), handleMulterError, async (req, res) => {
+router.post("/signup/photos/upload-multiple", upload.array("photos", 6), handleMulterError, async (req, res) => {
   try {
     console.log("📸 Photo upload request received");
     console.log("Files received:", req.files ? req.files.length : 0);
