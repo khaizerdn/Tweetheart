@@ -55,16 +55,31 @@ import { pathToFileURL } from "url";
 
 const featuresDir = path.join(__dirname, "./src");
 
+console.log("🔍 DEBUG: Starting route loader");
+console.log("🔍 DEBUG: __dirname =", __dirname);
+console.log("🔍 DEBUG: featuresDir =", featuresDir);
+console.log("🔍 DEBUG: Checking if featuresDir exists:", fs.existsSync(featuresDir));
+
 async function loadRoutesRecursively(dir) {
+  console.log(`🔍 DEBUG: loadRoutesRecursively called with dir: ${dir}`);
+  
+  if (!fs.existsSync(dir)) {
+    console.error(`❌ DEBUG: Directory does not exist: ${dir}`);
+    return;
+  }
+  
   const entries = fs.readdirSync(dir, { withFileTypes: true });
+  console.log(`🔍 DEBUG: Found ${entries.length} entries in ${dir}`);
   
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
+    console.log(`🔍 DEBUG: Processing entry: ${entry.name}, isDirectory: ${entry.isDirectory()}, isFile: ${entry.isFile()}`);
 
     if (entry.isDirectory()) {
       // Recurse into subdirectories
       await loadRoutesRecursively(fullPath);
     } else if (entry.isFile() && entry.name === "server.js") {
+      console.log(`🔍 DEBUG: Found server.js at: ${fullPath}`);
       try {
         // Calculate relative path from __dirname to the route file
         // __dirname = /app, fullPath = /app/src/features/Login/server.js
@@ -88,6 +103,17 @@ async function loadRoutesRecursively(dir) {
         console.error(`❌ Failed to load route at ${fullPath}`);
         console.error(`   Error: ${err.message}`);
         console.error(`   Code: ${err.code || 'N/A'}`);
+        console.error(`   Stack trace:`, err.stack);
+        
+        // Verify package.json exists
+        const srcPkgPath = path.join(__dirname, './src/package.json');
+        const dirPkgPath = path.join(path.dirname(fullPath), 'package.json');
+        console.error(`   Checking package.json at /app/src/package.json: ${fs.existsSync(srcPkgPath)}`);
+        if (fs.existsSync(srcPkgPath)) {
+          console.error(`   Contents:`, fs.readFileSync(srcPkgPath, 'utf8'));
+        }
+        console.error(`   Checking package.json at ${dirPkgPath}: ${fs.existsSync(dirPkgPath)}`);
+        
         // Try file:// as fallback
         try {
           const fileUrl = pathToFileURL(fullPath).href;
@@ -99,6 +125,7 @@ async function loadRoutesRecursively(dir) {
           }
         } catch (err2) {
           console.error(`   file:// also failed: ${err2.message}`);
+          console.error(`   file:// error code: ${err2.code || 'N/A'}`);
         }
       }
     }
@@ -200,6 +227,9 @@ app.set('io', io);
 // Load routes and start server
 async function startServer() {
   try {
+    console.log("🚀 DEBUG: About to call loadRoutesRecursively");
+    console.log("🚀 DEBUG: featuresDir path:", featuresDir);
+    console.log("🚀 DEBUG: __dirname:", __dirname);
     await loadRoutesRecursively(featuresDir);
     
     const PORT = process.env.SERVER_PORT || 8081;
