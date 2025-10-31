@@ -11,8 +11,9 @@ COPY backend/package*.json ./
 # Install dependencies
 RUN npm ci --only=production
 
-# Copy backend server
+# Copy backend server (verify it's the new version)
 COPY backend/server.js ./
+RUN head -3 server.js && echo "---" && grep -c "BACKEND SERVER.JS STARTING" server.js || echo "OLD VERSION - NO STARTUP MESSAGE"
 
 # Copy src directory to /app/src (relative to server.js)
 # This allows relative imports to work properly with ES modules
