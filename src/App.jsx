@@ -93,8 +93,8 @@ function App() {
             <Route path="/" element={<Login setIsLoggedIn={handleLogin} />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/verification" element={<EmailVerification />} />
-            <Route path="/reset-password" element={<EmailVerification />} />
+            <Route path="/verification" element={<EmailVerification setIsLoggedIn={handleLogin} />} />
+            <Route path="/reset-password" element={<EmailVerification setIsLoggedIn={handleLogin} />} />
           </>
         ) : (
           <Route
