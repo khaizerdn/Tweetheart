@@ -23,10 +23,9 @@ RUN echo '{"type":"module"}' > ./src/package.json
 
 # Create .mjs copies of all server.js files
 # Node.js recognizes .mjs files as ES modules automatically (no package.json needed)
-RUN find ./src -name "server.js" -type f | while read file; do \
-      cp "$file" "${file%.js}.mjs"; \
-    done && \
-    echo "Created .mjs copies of route files"
+RUN find ./src -name "server.js" -type f -exec sh -c 'cp "$1" "${1%.js}.mjs" && echo "Created: ${1%.js}.mjs"' _ {} \; && \
+    echo "=== Verification: Listing .mjs files ===" && \
+    find ./src -name "server.mjs" -type f | head -5
 
 # Note: Environment variables are provided by docker-compose.yml
 # No need to copy .env file - all vars come from docker-compose environment section

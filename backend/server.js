@@ -1,3 +1,5 @@
+console.log("🚀🚀🚀 BACKEND SERVER.JS STARTING - NEW VERSION WITH .MJS SUPPORT 🚀🚀🚀");
+
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -55,10 +57,12 @@ import { pathToFileURL } from "url";
 
 const featuresDir = path.join(__dirname, "./src");
 
+console.log("=".repeat(60));
 console.log("🔍 DEBUG: Starting route loader");
 console.log("🔍 DEBUG: __dirname =", __dirname);
 console.log("🔍 DEBUG: featuresDir =", featuresDir);
 console.log("🔍 DEBUG: Checking if featuresDir exists:", fs.existsSync(featuresDir));
+console.log("=".repeat(60));
 
 async function loadRoutesRecursively(dir) {
   console.log(`🔍 DEBUG: loadRoutesRecursively called with dir: ${dir}`);
@@ -222,9 +226,11 @@ app.set('io', io);
 // Load routes and start server
 async function startServer() {
   try {
+    console.log("=".repeat(60));
     console.log("🚀 DEBUG: About to call loadRoutesRecursively");
     console.log("🚀 DEBUG: featuresDir path:", featuresDir);
     console.log("🚀 DEBUG: __dirname:", __dirname);
+    console.log("=".repeat(60));
     await loadRoutesRecursively(featuresDir);
     
     const PORT = process.env.SERVER_PORT || 8081;
