@@ -53,7 +53,7 @@ app.get('/health', (req, res) => {
 // ======================
 import { pathToFileURL } from "url";
 
-const featuresDir = path.join(__dirname, "../src");
+const featuresDir = path.join(__dirname, "./src");
 
 async function loadRoutesRecursively(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -66,21 +66,19 @@ async function loadRoutesRecursively(dir) {
       await loadRoutesRecursively(fullPath);
     } else if (entry.isFile() && entry.name === "server.js") {
       try {
-        // Use file:// URL - Node.js will look for package.json in parent directories
-        // Make sure path uses forward slashes and has .js extension
-        const normalizedPath = fullPath.replace(/\\/g, '/');
-        const fileUrl = pathToFileURL(normalizedPath).href;
-        const routeModule = (await import(fileUrl)).default;
+        // Use relative path from server.js location for ES module import
+        // This works better than file:// URLs with package.json resolution
+        const relativePath = path.relative(__dirname, fullPath);
+        // Convert to forward slashes and ensure .js extension for ES modules
+        const normalizedPath = relativePath.replace(/\\/g, '/') + (relativePath.endsWith('.js') ? '' : '');
+        const routeModule = (await import(normalizedPath)).default;
         if (routeModule) {
           app.use("/", routeModule);
           console.log(`✅ Loaded route: ${fullPath.replace(featuresDir, "")}`);
         }
       } catch (err) {
         console.error(`❌ Failed to load route at ${fullPath}:`, err.message);
-        // Log more details for debugging
-        if (err.code === 'ERR_UNSUPPORTED_DIR_IMPORT') {
-          console.error(`   This might be a module resolution issue. Check package.json in parent directories.`);
-        }
+        console.error(`   Relative path attempted: ${path.relative(__dirname, fullPath)}`);
       }
     }
   }

@@ -14,16 +14,12 @@ RUN npm ci --only=production
 # Copy backend server
 COPY backend/server.js ./
 
-# Copy src directory to maintain ../src relative path structure
-# Server.js expects ../src from backend directory
-# Since we're at /app (backend), we need /app/../src = /src
-COPY src /src
+# Copy src directory to /app/src (relative to server.js)
+# This allows relative imports to work properly with ES modules
+COPY src ./src
 
-# Create a proper package.json in /src root with valid JSON
-RUN echo '{"type":"module"}' > /src/package.json
-
-# Create package.json in all subdirectories (Node.js looks up the directory tree)
-RUN find /src -type d -exec sh -c 'echo "{\"type\":\"module\"}" > "$1/package.json"' _ {} \;
+# Create a proper package.json in /app/src root with valid JSON
+RUN echo '{"type":"module"}' > ./src/package.json
 
 # Note: Environment variables are provided by docker-compose.yml
 # No need to copy .env file - all vars come from docker-compose environment section
