@@ -66,13 +66,21 @@ async function loadRoutesRecursively(dir) {
       await loadRoutesRecursively(fullPath);
     } else if (entry.isFile() && entry.name === "server.js") {
       try {
-        const routeModule = (await import(pathToFileURL(fullPath).href)).default;
+        // Use file:// URL - Node.js will look for package.json in parent directories
+        // Make sure path uses forward slashes and has .js extension
+        const normalizedPath = fullPath.replace(/\\/g, '/');
+        const fileUrl = pathToFileURL(normalizedPath).href;
+        const routeModule = (await import(fileUrl)).default;
         if (routeModule) {
           app.use("/", routeModule);
           console.log(`✅ Loaded route: ${fullPath.replace(featuresDir, "")}`);
         }
       } catch (err) {
         console.error(`❌ Failed to load route at ${fullPath}:`, err.message);
+        // Log more details for debugging
+        if (err.code === 'ERR_UNSUPPORTED_DIR_IMPORT') {
+          console.error(`   This might be a module resolution issue. Check package.json in parent directories.`);
+        }
       }
     }
   }
