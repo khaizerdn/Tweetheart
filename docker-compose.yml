@@ -70,8 +70,9 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # Frontend API URL - must match your instance IP or domain
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:8081}
+        # Frontend API URL - empty string uses relative paths (via Nginx proxy)
+        # Set to server IP/domain if not using proxy
+        VITE_API_URL: ${VITE_API_URL:-}
     container_name: dating-app-frontend
     restart: unless-stopped
     ports:
