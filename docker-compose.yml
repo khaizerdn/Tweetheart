@@ -78,8 +78,32 @@ services:
     ports:
       - "80:80"
       - "443:443"  # For HTTPS if configured
+    volumes:
+      # Mount SSL certificates when available (comment out if not using SSL yet)
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       - backend
+    networks:
+      - app-network
+
+  # phpMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: dating-app-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USER:-appuser}
+      PMA_PASSWORD: ${DB_PASSWORD:-apppassword}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      UPLOAD_LIMIT: 20M
+    ports:
+      - "8080:80"  # Access phpMyAdmin at http://your-domain:8080 or https://your-domain:8080
+    depends_on:
+      mariadb:
+        condition: service_healthy
     networks:
       - app-network
 
