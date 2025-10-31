@@ -396,7 +396,7 @@ const fingerprint = SHA256(fingerprintSource);
 
 ### 5. Session Management
 
-**Storage**: MySQL database (`users_sessions` table)
+**Storage**: MariaDB database (`users_sessions` table)
 
 **Session Data Stored**:
 - User ID

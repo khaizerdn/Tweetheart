@@ -2,7 +2,7 @@
 
 > Entry project for Whitecloack Technologies, Inc.
 
-A modern, secure dating application built with React, Node.js, Express, MySQL, and AWS S3. This application implements enterprise-grade security features, real-time communication, and a seamless user experience for matching and connecting with others.
+A modern, secure dating application built with React, Node.js, Express, MariaDB, and AWS S3. This application implements enterprise-grade security features, real-time communication, and a seamless user experience for matching and connecting with others.
 
 ---
 
@@ -43,7 +43,7 @@ A modern, secure dating application built with React, Node.js, Express, MySQL, a
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- MySQL (v8.0 or higher)
+- MariaDB (v10.5 or higher)
 - AWS Account (for S3 photo storage)
 - Git
 
@@ -134,7 +134,7 @@ A modern, secure dating application built with React, Node.js, Express, MySQL, a
 ### Backend
 - **Node.js** - Runtime environment
 - **Express** - Web framework
-- **MySQL** - Database
+- **MariaDB** - Database
 - **JWT** - Authentication tokens
 - **bcrypt** - Password hashing
 - **Socket.IO** - Real-time communication
@@ -145,7 +145,7 @@ A modern, secure dating application built with React, Node.js, Express, MySQL, a
 
 ### Infrastructure
 - **AWS S3** - Photo storage
-- **MySQL** - Relational database
+- **MariaDB** - Relational database
 - **Socket.IO Server** - Real-time server
 
 ---
@@ -410,7 +410,7 @@ This application implements **enterprise-grade security** across all features:
 ### Environment Setup
 
 1. **Database**
-   - Set up MySQL database
+   - Set up MariaDB database
    - Run migration scripts if needed
    - Configure connection pooling
 
