@@ -74,7 +74,7 @@ function Menu() {
   useEffect(() => {
     async function fetchProfilePhoto() {
       try {
-        const response = await requestAccessToken.get('/api/photos'); // use the same endpoint as Profile
+        const response = await requestAccessToken.get('/photos'); // use the same endpoint as Profile
         const data = response.data;
 
         if (data.photos && data.photos.length > 0) {

@@ -103,8 +103,8 @@ function OtherProfile() {
         setBio(bioData);
 
         // Fetch user photos
-        console.log('OtherProfile - Making API call to /api/photos/${userId}');
-        const photosResponse = await requestAccessToken.get(`/api/photos/${userId}`);
+        console.log('OtherProfile - Making API call to /photos/${userId}');
+        const photosResponse = await requestAccessToken.get(`/photos/${userId}`);
         console.log('OtherProfile - Photos response:', photosResponse.data);
         const photosData = photosResponse.data.photos || [];
         

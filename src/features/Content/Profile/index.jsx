@@ -222,7 +222,7 @@ function Profile() {
     // If it's an existing photo, delete it from the server
     if (photo.isExisting && photo.key) {
       try {
-        await requestAccessToken.delete(`/api/photos/delete?key=${photo.key}`);
+        await requestAccessToken.delete(`/photos/delete?key=${photo.key}`);
       } catch (err) {
         console.error("Error deleting photo from server:", err);
         setError("Failed to delete photo from server");
@@ -307,7 +307,7 @@ function Profile() {
         setBio(bioData);
 
         // Fetch user photos
-        const photosResponse = await requestAccessToken.get(`/api/photos`);
+        const photosResponse = await requestAccessToken.get(`/photos`);
         const photosData = photosResponse.data.photos || [];
         
         // Save to cache

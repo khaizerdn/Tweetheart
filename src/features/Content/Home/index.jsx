@@ -110,7 +110,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         setError("");
       }
       
-      const response = await requestAccessToken.get(`/api/users/feed?page=${page}&limit=10&minAge=${filters.minAge}&maxAge=${filters.maxAge}&distance=${filters.distance}`);
+      const response = await requestAccessToken.get(`/users/feed?page=${page}&limit=10&minAge=${filters.minAge}&maxAge=${filters.maxAge}&distance=${filters.distance}`);
       const { users: usersData, pagination } = response.data;
       
       // Transform the data to match the expected format
