@@ -19,8 +19,8 @@ COPY backend/server.js ./
 # Since we're at /app (backend), we need /app/../src = /src
 COPY src /src
 
-# Copy environment file (optional - env vars from docker-compose take precedence)
-COPY backend/.env .env
+# Note: Environment variables are provided by docker-compose.yml
+# No need to copy .env file - all vars come from docker-compose environment section
 
 # Expose port
 EXPOSE 8081
