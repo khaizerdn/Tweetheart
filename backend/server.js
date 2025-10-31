@@ -66,21 +66,40 @@ async function loadRoutesRecursively(dir) {
       await loadRoutesRecursively(fullPath);
     } else if (entry.isFile() && entry.name === "server.js") {
       try {
-        // Use file:// URL with explicit .js extension
-        // Ensure the path is absolute and includes .js extension
-        const absolutePath = path.resolve(fullPath);
-        // file:// URLs need forward slashes and explicit .js
-        const fileUrl = pathToFileURL(absolutePath).href;
-        console.log(`   Attempting to load via file://: ${fileUrl}`);
-        const routeModule = (await import(fileUrl)).default;
+        // Calculate relative path from __dirname to the route file
+        // __dirname = /app, fullPath = /app/src/features/Login/server.js
+        // relative = src/features/Login/server.js
+        const relativePath = path.relative(__dirname, fullPath);
+        // Normalize for import (must start with ./ for relative imports)
+        const importPath = relativePath.startsWith('.') 
+          ? relativePath.replace(/\\/g, '/')
+          : './' + relativePath.replace(/\\/g, '/');
+        
+        console.log(`   Attempting relative import: ${importPath}`);
+        console.log(`   From: ${__dirname}`);
+        console.log(`   To: ${fullPath}`);
+        
+        const routeModule = (await import(importPath)).default;
         if (routeModule) {
           app.use("/", routeModule);
           console.log(`✅ Loaded route: ${fullPath.replace(featuresDir, "")}`);
         }
       } catch (err) {
-        console.error(`❌ Failed to load route at ${fullPath}:`, err.message);
-        console.error(`   Error code: ${err.code}`);
-        console.error(`   Error stack: ${err.stack?.split('\n')[0]}`);
+        console.error(`❌ Failed to load route at ${fullPath}`);
+        console.error(`   Error: ${err.message}`);
+        console.error(`   Code: ${err.code || 'N/A'}`);
+        // Try file:// as fallback
+        try {
+          const fileUrl = pathToFileURL(fullPath).href;
+          console.error(`   Trying file:// fallback: ${fileUrl}`);
+          const routeModule = (await import(fileUrl)).default;
+          if (routeModule) {
+            app.use("/", routeModule);
+            console.log(`✅ Loaded route via file://: ${fullPath.replace(featuresDir, "")}`);
+          }
+        } catch (err2) {
+          console.error(`   file:// also failed: ${err2.message}`);
+        }
       }
     }
   }
