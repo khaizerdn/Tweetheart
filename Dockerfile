@@ -3,6 +3,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Accept build argument for VITE_API_URL
+ARG VITE_API_URL=http://localhost:8081
+ENV VITE_API_URL=$VITE_API_URL
+
 # Copy package files
 COPY package*.json ./
 
@@ -12,7 +16,7 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the React app
+# Build the React app (VITE_API_URL will be embedded)
 RUN npm run build
 
 # Production stage with Nginx

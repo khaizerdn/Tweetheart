@@ -74,6 +74,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        # Frontend API URL - must match your instance IP or domain
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8081}
     container_name: dating-app-frontend
     restart: unless-stopped
     ports:
