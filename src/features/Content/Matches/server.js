@@ -1,9 +1,9 @@
 // Fetch all matches for the current user
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const fetchMatches = async () => {
   try {
-    const response = await fetch(`${API_URL}/api/likes/matches`, {
+    const response = await fetch(`${API_URL}/likes/matches`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -25,7 +25,7 @@ export const fetchMatches = async () => {
 // Fetch a specific match by ID
 export const fetchMatchById = async (matchId) => {
   try {
-    const response = await fetch(`${API_URL}/api/matches/${matchId}`, {
+    const response = await fetch(`${API_URL}/matches/${matchId}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
