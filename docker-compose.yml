@@ -23,28 +23,6 @@ services:
     networks:
       - app-network
 
-  # phpMyAdmin - Database Management Interface
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: dating-app-phpmyadmin
-    restart: unless-stopped
-    environment:
-      PMA_HOST: mariadb
-      PMA_PORT: 3306
-      PMA_USER: ${DB_USER:-appuser}
-      PMA_PASSWORD: ${DB_PASSWORD:-apppassword}
-      # Optional: Set a custom auth type (cookie is default, safer)
-      UPLOAD_LIMIT: 300M
-      MAX_EXECUTION_TIME: 600
-      MEMORY_LIMIT: 512M
-    ports:
-      - "8080:80"  # Access phpMyAdmin at http://your-server-ip:8080
-    depends_on:
-      mariadb:
-        condition: service_healthy
-    networks:
-      - app-network
-
   # Backend Service
   backend:
     build:
@@ -99,11 +77,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"  # For HTTPS
-    volumes:
-      # Mount SSL certificates (only if SSL is configured)
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - /var/www/certbot:/var/www/certbot:ro
+      - "443:443"  # For HTTPS if configured
     depends_on:
       - backend
     networks:

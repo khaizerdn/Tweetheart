@@ -92,13 +92,7 @@ function App() {
   return (
     <Router>
       <ScrollRestoration />
-      {/* Show LocationPermission modal if logged in but location not granted */}
-      {isLoggedIn && locationChecked && !locationGranted && (
-        <LocationPermission
-          onLocationGranted={() => setLocationGranted(true)}
-          onSkip={() => setLocationGranted(true)} // Allow skipping for now
-        />
-      )}
+      {/* Location permission modal removed - location is now optional, users can browse without it */}
       <Routes>
         {!isLoggedIn ? (
           <>

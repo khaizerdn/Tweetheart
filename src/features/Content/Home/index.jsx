@@ -596,20 +596,39 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     return <Error error={error} />;
   }
 
-  if (!locationGranted) {
-    return (
-      <LocationRequired
-        isMobile={isMobile}
-        error={locError}
-        isRequesting={isRequesting}
-        showTooManyAttempts={showTooManyAttempts}
-        onGetLocation={getLocationAndSave}
-      />
-    );
-  }
+  // Location is optional - don't block if not granted
+  // Users can still view cards, just without distance filtering
 
   return (
     <div className={styles.home} ref={containerRef}>
+      {/* Optional location banner - only show if location not granted */}
+      {!locationGranted && (
+        <div style={{ 
+          padding: '10px', 
+          marginBottom: '10px', 
+          background: '#fff3cd', 
+          border: '1px solid #ffc107', 
+          borderRadius: '4px',
+          fontSize: '14px',
+          textAlign: 'center'
+        }}>
+          💡 Location is optional. Enable it to see distance and get better matches nearby.
+          <button 
+            onClick={getLocationAndSave}
+            style={{ 
+              marginLeft: '10px', 
+              padding: '4px 12px', 
+              background: '#007bff', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Enable Location
+          </button>
+        </div>
+      )}
       
       {/* Filter button - always visible */}
       <button 
