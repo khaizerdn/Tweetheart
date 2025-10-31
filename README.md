@@ -1,4 +1,4 @@
-# Dating App - Comprehensive Documentation
+# Tweetheart Dating App
 
 > Entry project for Whitecloack Technologies, Inc.
 
