@@ -19,8 +19,12 @@ COPY backend/server.js ./
 # Since we're at /app (backend), we need /app/../src = /src
 COPY src /src
 
-# Create a package.json in /src so Node.js recognizes it as ES modules
-RUN echo '{"type": "module"}' > /src/package.json
+# Create a valid package.json in /src so Node.js recognizes files as ES modules
+# Using printf to ensure proper JSON formatting
+RUN printf '{\n  "type": "module"\n}' > /src/package.json
+
+# Also create package.json files in all subdirectories for proper module resolution
+RUN find /src -type d -mindepth 1 -exec sh -c 'echo "{\"type\":\"module\"}" > "$1/package.json"' _ {} \;
 
 # Note: Environment variables are provided by docker-compose.yml
 # No need to copy .env file - all vars come from docker-compose environment section
