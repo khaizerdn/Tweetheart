@@ -130,8 +130,8 @@ const NotificationsContainer = () => {
     const userId = getCurrentUserId();
     if (!userId) return;
 
-    const socketUrl = import.meta.env.VITE_API_URL || '';
-    const newSocket = io(socketUrl, {
+    // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+    const newSocket = io({
       withCredentials: true,
     });
 

@@ -111,8 +111,8 @@ function Menu() {
   // Socket listener to show dot on new notifications
   useEffect(() => {
     if (!currentUserId) return;
-    const socketUrl = import.meta.env.VITE_API_URL || '';
-    const s = io(socketUrl, { withCredentials: true });
+    // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+    const s = io({ withCredentials: true });
     s.on('connect', () => {
       s.emit('join_user_room', { userId: currentUserId });
     });

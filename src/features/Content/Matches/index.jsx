@@ -83,8 +83,8 @@ const Matches = () => {
 
   // Initialize socket connection for real-time updates
   useEffect(() => {
-    const socketUrl = import.meta.env.VITE_API_URL || '';
-    const newSocket = io(socketUrl, {
+    // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+    const newSocket = io({
       withCredentials: true,
       transports: ['websocket']
     });
@@ -366,8 +366,8 @@ const Matches = () => {
   // Initialize socket connection for preparation chat
   useEffect(() => {
     if (showPreparationChat && preparationChatData) {
-      const socketUrl = import.meta.env.VITE_API_URL || '';
-      const newSocket = io(socketUrl, {
+      // Socket.io connects to /socket.io on current origin (proxied by Nginx)
+      const newSocket = io({
         withCredentials: true,
         transports: ['websocket']
       });
