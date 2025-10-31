@@ -684,7 +684,23 @@
   font-size: var(--font-size-012);
   opacity: 0.7;
   display: block;
+}
+
+.ownMessage .messageTime {
   text-align: right;
+}
+
+.otherMessage .messageTime {
+  text-align: left;
+}
+.seenIndicator {
+  font-size: var(--font-size-010);
+  opacity: 0.8;
+  display: block;
+  text-align: right;
+  margin-top: var(--margin-004);
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
 }
 
 .emptyMessages {

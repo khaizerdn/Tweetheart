@@ -23,10 +23,17 @@ const ChatRoom = () => {
   const [isPreparationChat, setIsPreparationChat] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const messagesRef = useRef([]); // Ref to track latest messages without causing re-renders
+  const isInitialLoadRef = useRef(true); // Track if this is the initial load
+  const scrollToBottomImmediateRef = useRef(null); // Ref to the immediate scroll function
 
-  // Scroll to bottom of messages
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // Scroll to bottom of messages (smooth for new messages)
+  const scrollToBottom = (immediate = false) => {
+    if (immediate && scrollToBottomImmediateRef.current) {
+      scrollToBottomImmediateRef.current();
+    } else if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   // Check if this is a preparation chat (temporary chat ID format: userId1_userId2)
@@ -64,17 +71,24 @@ const ChatRoom = () => {
       console.log('Connected to chat server');
       setIsConnected(true);
       
-      // Get current user ID
-      const userId = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('userId='))
-        ?.split('=')[1];
-      
-      // Join the specific chat room with user context
-      newSocket.emit('join_chat', {
-        chatId: chatId,
+    // Get current user ID
+    const userId = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userId='))
+      ?.split('=')[1];
+    
+    // Join the specific chat room with user context
+    newSocket.emit('join_chat', {
+      chatId: chatId,
+      userId: userId
+    });
+
+    // Also join user's personal room for read receipts
+    if (userId && userId !== 'unknown') {
+      newSocket.emit('join_user_room', {
         userId: userId
       });
+    }
     });
 
     newSocket.on('disconnect', () => {
@@ -82,7 +96,7 @@ const ChatRoom = () => {
       setIsConnected(false);
     });
 
-    newSocket.on('new_message', (message) => {
+    newSocket.on('new_message', async (message) => {
       // Get current user ID to determine if this is their own message
       const userId = document.cookie
         .split('; ')
@@ -91,7 +105,9 @@ const ChatRoom = () => {
       
       const messageWithOwnFlag = {
         ...message,
-        is_own: message.sender_id === userId
+        is_own: message.sender_id === userId,
+        // Ensure is_read is properly set (0 or 1, not false/true)
+        is_read: message.is_read === 1 || message.is_read === true || message.is_read === '1' ? 1 : 0
       };
       
       setMessages(prev => {
@@ -107,7 +123,18 @@ const ChatRoom = () => {
         }
       });
       scrollToBottom();
+      
+      // Mark messages as read when receiving new messages (for unread count, not for "Seen" indicator)
+      // This clears the pink dot indicator when user is viewing the chat
+      if (message.sender_id !== userId && chatId && chatId.startsWith('chat_')) {
+        try {
+          await markMessagesAsRead(chatId);
+        } catch (err) {
+          console.error('Error marking messages as read:', err);
+        }
+      }
     });
+
 
     newSocket.on('error', (error) => {
       console.error('Socket error:', error);
@@ -147,13 +174,29 @@ const ChatRoom = () => {
           // This is an existing chat
           try {
             const data = await fetchChatMessages(chatId);
-            setMessages(data.messages || []);
+            // Normalize is_read values (ensure 0 or 1, not false/true)
+            const normalizedMessages = (data.messages || []).map(msg => ({
+              ...msg,
+              is_read: msg.is_read === 1 || msg.is_read === true || msg.is_read === '1' ? 1 : 0,
+              // Determine if message is own based on sender_id
+              is_own: (() => {
+                const currentUserId = document.cookie
+                  .split('; ')
+                  .find(row => row.startsWith('userId='))
+                  ?.split('=')[1];
+                return msg.sender_id === currentUserId;
+              })()
+            }));
+            setMessages(normalizedMessages);
             setChatExists(true);
             
-            // Mark messages as read if there are any
-            if (data.messages && data.messages.length > 0) {
+            // Mark messages as read when opening chat (for unread count, not for "Seen" indicator)
+            // This clears the pink dot indicator in the chats list
+            if (normalizedMessages && normalizedMessages.length > 0) {
               await markMessagesAsRead(chatId);
             }
+            
+            // Note: Scroll to bottom is handled by the useEffect that watches messages
           } catch (err) {
             if (err.message.includes('Access denied')) {
               throw err;
@@ -231,10 +274,71 @@ const ChatRoom = () => {
     loadProfile();
   }, [isPreparationChat, otherUserId, chatId]);
 
+  // Update messages ref whenever messages state changes
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
   // Scroll to bottom when messages change
   useEffect(() => {
-    scrollToBottom();
+    if (!messages || messages.length === 0) return;
+    
+    if (isInitialLoadRef.current) {
+      // First load - scroll immediately (try multiple times to ensure it works)
+      const scrollImmediate = () => {
+        if (scrollToBottomImmediateRef.current) {
+          scrollToBottomImmediateRef.current();
+        }
+      };
+      
+      // Try immediately, then after a short delay, then again after longer delay
+      setTimeout(scrollImmediate, 0);
+      setTimeout(scrollImmediate, 50);
+      setTimeout(() => {
+        scrollImmediate();
+        isInitialLoadRef.current = false;
+      }, 150);
+    } else {
+      // Subsequent updates - scroll smoothly for new messages
+      scrollToBottom();
+    }
   }, [messages]);
+  
+  // Reset initial load flag when chatId changes
+  useEffect(() => {
+    isInitialLoadRef.current = true;
+  }, [chatId]);
+
+  // Mark messages as read when chat is opened (for unread count, not for "Seen" indicator)
+  // This ensures the pink dot is cleared when user views the chat
+  useEffect(() => {
+    if (!chatId || !chatId.startsWith('chat_') || loading || !isConnected) return;
+
+    const markAsRead = async () => {
+      try {
+        const currentMessages = messagesRef.current;
+        const hasUnread = currentMessages.some(msg => !msg.is_own && (msg.is_read === 0 || msg.is_read === false));
+        
+        if (hasUnread) {
+          await markMessagesAsRead(chatId);
+        }
+      } catch (err) {
+        console.error('Error marking messages as read:', err);
+      }
+    };
+
+    // Mark as read when chat is opened and periodically to catch new messages
+    markAsRead();
+    const intervalId = setInterval(markAsRead, 2000);
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatId, loading, isConnected]);
+
 
 
   // Handle sending a message
@@ -432,6 +536,7 @@ const ChatRoom = () => {
       onSend={handleSendClick}
       inputRef={inputRef}
       rightPanel={rightPanel}
+      scrollToBottomImmediate={scrollToBottomImmediateRef}
       emptyText={isPreparationChat ? 'Send your first message to start the conversation!' : (chatExists ? 'No messages yet. Start the conversation!' : 'Send your first message to start the conversation!')}
     />
   );

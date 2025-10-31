@@ -524,6 +524,14 @@ router.put('/api/chats/:chatId/read', async (req, res) => {
       return res.status(403).json({ error: 'Access denied to this chat' });
     }
 
+    // Get messages that will be marked as read (before update)
+    const getMessagesQuery = `
+      SELECT id, sender_id 
+      FROM messages 
+      WHERE chat_id = ? AND sender_id != ? AND is_read = 0
+    `;
+    const messagesToRead = await queryDB(getMessagesQuery, [chatId, userId]);
+
     // Mark messages as read
     const updateQuery = `
       UPDATE messages 
@@ -531,6 +539,29 @@ router.put('/api/chats/:chatId/read', async (req, res) => {
       WHERE chat_id = ? AND sender_id != ?
     `;
     await queryDB(updateQuery, [chatId, userId]);
+
+    // Emit read receipt to the sender of the messages via socket
+    const io = req.app.get('io');
+    if (io && messagesToRead.length > 0) {
+      // Get the other user ID (the sender of these messages)
+      const chatQuery = `
+        SELECT user1_id, user2_id FROM chats WHERE id = ?
+      `;
+      const chatUsers = await queryDB(chatQuery, [chatId]);
+      
+      if (chatUsers.length > 0) {
+        const { user1_id, user2_id } = chatUsers[0];
+        const senderId = userId === user1_id ? user2_id : user1_id;
+        
+        // Emit to the sender that their messages have been read - REAL-TIME via WebSocket
+        const messageIds = messagesToRead.map(msg => msg.id);
+        console.log(`📤 Emitting read receipt via WebSocket to user_${senderId} for chat ${chatId}, messages:`, messageIds);
+        io.to(`user_${senderId}`).emit('messages_read', {
+          chatId: chatId,
+          messageIds: messageIds
+        });
+      }
+    }
 
     res.json({ message: 'Messages marked as read' });
   } catch (error) {

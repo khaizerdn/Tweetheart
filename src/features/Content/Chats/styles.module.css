@@ -410,7 +410,14 @@
   font-size: var(--font-size-012);
   opacity: 0.7;
   display: block;
+}
+
+.ownMessage .messageTime {
   text-align: right;
+}
+
+.otherMessage .messageTime {
+  text-align: left;
 }
 
 .emptyMessages {
