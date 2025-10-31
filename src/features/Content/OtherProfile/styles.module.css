@@ -1,9 +1,8 @@
 .profilePage {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--color-primary-3);
   font-family: var(--font-family-primary);
-  padding: var(--padding-016);
   padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
 }
 
@@ -20,7 +19,7 @@
 .centerContainer {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
   padding: 2rem;
   min-height: 100vh;
@@ -29,6 +28,8 @@
 .previewCard {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: var(--gap-016);
   width: 100%;
   max-width: 350px;
