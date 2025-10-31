@@ -66,21 +66,21 @@ async function loadRoutesRecursively(dir) {
       await loadRoutesRecursively(fullPath);
     } else if (entry.isFile() && entry.name === "server.js") {
       try {
-        // Use relative path from server.js location for ES module import
-        // __dirname is /app, fullPath is /app/src/features/Login/server.js
-        // relative path should be: src/features/Login/server.js
-        // But we need ./ prefix for relative imports
-        const relativePath = path.relative(__dirname, fullPath);
-        const normalizedPath = './' + relativePath.replace(/\\/g, '/');
-        console.log(`   Attempting to load: ${normalizedPath}`);
-        const routeModule = (await import(normalizedPath)).default;
+        // Use file:// URL with explicit .js extension
+        // Ensure the path is absolute and includes .js extension
+        const absolutePath = path.resolve(fullPath);
+        // file:// URLs need forward slashes and explicit .js
+        const fileUrl = pathToFileURL(absolutePath).href;
+        console.log(`   Attempting to load via file://: ${fileUrl}`);
+        const routeModule = (await import(fileUrl)).default;
         if (routeModule) {
           app.use("/", routeModule);
           console.log(`✅ Loaded route: ${fullPath.replace(featuresDir, "")}`);
         }
       } catch (err) {
         console.error(`❌ Failed to load route at ${fullPath}:`, err.message);
-        console.error(`   Relative path attempted: ./${path.relative(__dirname, fullPath).replace(/\\/g, '/')}`);
+        console.error(`   Error code: ${err.code}`);
+        console.error(`   Error stack: ${err.stack?.split('\n')[0]}`);
       }
     }
   }
