@@ -233,7 +233,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         async (position) => {
           try {
             const { latitude, longitude } = position.coords;
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/update-location`, {
+            const response = await fetch(`${API_URL}/api/update-location`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'include',

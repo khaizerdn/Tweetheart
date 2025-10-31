@@ -1,7 +1,9 @@
 // Fetch all matches for the current user
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export const fetchMatches = async () => {
   try {
-    const response = await fetch('http://localhost:8081/api/likes/matches', {
+    const response = await fetch(`${API_URL}/api/likes/matches`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -23,7 +25,7 @@ export const fetchMatches = async () => {
 // Fetch a specific match by ID
 export const fetchMatchById = async (matchId) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/matches/${matchId}`, {
+    const response = await fetch(`${API_URL}/api/matches/${matchId}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -45,7 +47,7 @@ export const fetchMatchById = async (matchId) => {
 // Send a message to a match
 export const sendMessage = async (matchId, message) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/matches/${matchId}/messages`, {
+    const response = await fetch(`${API_URL}/api/matches/${matchId}/messages`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -68,7 +70,7 @@ export const sendMessage = async (matchId, message) => {
 // Fetch messages for a specific match
 export const fetchMessages = async (matchId) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/matches/${matchId}/messages`, {
+    const response = await fetch(`${API_URL}/api/matches/${matchId}/messages`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -90,7 +92,7 @@ export const fetchMessages = async (matchId) => {
 // Unmatch with a user
 export const unmatchUser = async (matchId) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/likes/unmatch/${matchId}`, {
+    const response = await fetch(`${API_URL}/api/likes/unmatch/${matchId}`, {
       method: 'DELETE',
       credentials: 'include',
       headers: {
@@ -112,7 +114,7 @@ export const unmatchUser = async (matchId) => {
 // Report a match
 export const reportMatch = async (matchId, reason) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/matches/${matchId}/report`, {
+    const response = await fetch(`${API_URL}/api/matches/${matchId}/report`, {
       method: 'POST',
       credentials: 'include',
       headers: {

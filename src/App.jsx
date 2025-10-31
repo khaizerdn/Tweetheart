@@ -21,7 +21,7 @@ import SignUp from './features/SignUp';
 import EmailVerification from './features/EmailVerification';
 import LocationPermission from './components/LocationPermission';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,12 +32,12 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.post(`${API_URL}/refresh`, {}, { withCredentials: true });
+        const res = await axios.post(`${API_URL}/api/refresh`, {}, { withCredentials: true });
         setIsLoggedIn(true);
         
         // Check if user has location saved
         try {
-          const locationRes = await axios.get(`${API_URL}/location-status`, { withCredentials: true });
+          const locationRes = await axios.get(`${API_URL}/api/location-status`, { withCredentials: true });
           if (locationRes.data.hasLocation) {
             setLocationGranted(true);
           } else {
