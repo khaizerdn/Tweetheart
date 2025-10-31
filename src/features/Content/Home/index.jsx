@@ -10,7 +10,7 @@ import Error from './features/Error';
 import LocationRequired from './features/LocationRequired';
 import MatchModal from './components/MatchModal';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const Content = ({ locationGranted, setLocationGranted }) => {
   const [cards, setCards] = useState([]);
@@ -233,7 +233,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         async (position) => {
           try {
             const { latitude, longitude } = position.coords;
-            const response = await fetch(`${API_URL}/api/update-location`, {
+            const response = await fetch(`${API_URL}/update-location`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'include',

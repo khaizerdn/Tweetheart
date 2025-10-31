@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "./styles.module.css";
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 function LocationPermission({ onLocationGranted, onSkip }) {
   const [isRequesting, setIsRequesting] = useState(false);
@@ -24,7 +24,7 @@ function LocationPermission({ onLocationGranted, onSkip }) {
 
             // Save location to database
             const response = await axios.post(
-              `${API_URL}/api/update-location`,
+              `${API_URL}/update-location`,
               { latitude, longitude },
               { withCredentials: true }
             );
