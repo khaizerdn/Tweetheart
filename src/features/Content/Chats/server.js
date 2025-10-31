@@ -1,11 +1,11 @@
 // Chat-related API functions
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Fetch all chat conversations for the current user
 export const fetchChats = async () => {
   try {
-    const response = await fetch(`${API_URL}/api/chats`, {
+    const response = await fetch(`${API_URL}/chats`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -27,7 +27,7 @@ export const fetchChats = async () => {
 // Fetch messages for a specific chat
 export const fetchChatMessages = async (chatId) => {
   try {
-    const response = await fetch(`${API_URL}/api/chats/${chatId}/messages`, {
+    const response = await fetch(`${API_URL}/chats/${chatId}/messages`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -49,7 +49,7 @@ export const fetchChatMessages = async (chatId) => {
 // Send a message to a chat
 export const sendChatMessage = async (chatId, message) => {
   try {
-    const response = await fetch(`${API_URL}/api/chats/${chatId}/messages`, {
+    const response = await fetch(`${API_URL}/chats/${chatId}/messages`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -72,7 +72,7 @@ export const sendChatMessage = async (chatId, message) => {
 // Create a new chat with a match
 export const createChat = async (matchId) => {
   try {
-    const response = await fetch(`${API_URL}/api/chats`, {
+    const response = await fetch(`${API_URL}/chats`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -95,7 +95,7 @@ export const createChat = async (matchId) => {
 // Delete a chat
 export const deleteChat = async (chatId) => {
   try {
-    const response = await fetch(`${API_URL}/api/chats/${chatId}`, {
+    const response = await fetch(`${API_URL}/chats/${chatId}`, {
       method: 'DELETE',
       credentials: 'include',
       headers: {
@@ -117,7 +117,7 @@ export const deleteChat = async (chatId) => {
 // Mark messages as read
 export const markMessagesAsRead = async (chatId) => {
   try {
-    const response = await fetch(`${API_URL}/api/chats/${chatId}/read`, {
+    const response = await fetch(`${API_URL}/chats/${chatId}/read`, {
       method: 'PUT',
       credentials: 'include',
       headers: {
