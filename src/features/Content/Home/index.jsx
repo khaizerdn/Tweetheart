@@ -27,6 +27,8 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [dragCurrent, setDragCurrent] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [hasDragged, setHasDragged] = useState(false);
+  const [blockPhotoNavigation, setBlockPhotoNavigation] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState({});
   const [swipeDistance, setSwipeDistance] = useState(0);
   
@@ -313,6 +315,11 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   }, [removedCards, cards]);
 
   const handleStart = (e, cardId) => {
+    // Prevent default to avoid text selection and other unwanted behaviors
+    if (e.preventDefault) e.preventDefault();
+    // Stop propagation to prevent photo navigation
+    if (e.stopPropagation) e.stopPropagation();
+    
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     
@@ -320,6 +327,10 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     setDragCurrent({ x: clientX, y: clientY });
     setIsDragging(true);
     setIsMoving(true);
+    setHasDragged(false);
+    // Temporarily block photo navigation when drag starts
+    // Will be unblocked if no drag movement occurs
+    setBlockPhotoNavigation(true);
   };
 
   const handleMove = (e, cardId) => {
@@ -330,6 +341,11 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     
     const deltaX = clientX - dragStart.x;
     const deltaY = clientY - dragStart.y;
+    
+    // Mark that we've dragged (even slightly)
+    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+      setHasDragged(true);
+    }
     
     setDragCurrent({ x: clientX, y: clientY });
     setSwipeDistance(deltaX);
@@ -352,8 +368,26 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     const deltaY = dragCurrent.y - dragStart.y;
     const velocityX = deltaX / (Date.now() - (e.timeStamp || Date.now()));
     
+    const hadDragMovement = hasDragged;
+    
     setIsDragging(false);
     setIsMoving(false);
+    setHasDragged(false);
+    
+    // Block photo navigation for a short time after drag ends to prevent accidental clicks
+    if (hadDragMovement) {
+      // Prevent event propagation
+      if (e.stopPropagation) e.stopPropagation();
+      if (e.preventDefault) e.preventDefault();
+      
+      // Keep photo navigation blocked and unblock after a short delay
+      setTimeout(() => {
+        setBlockPhotoNavigation(false);
+      }, 300); // 300ms should be enough to prevent accidental clicks
+    } else {
+      // No drag movement, unblock immediately
+      setBlockPhotoNavigation(false);
+    }
     
     const cardElement = cardRefs.current[cardId];
     if (!cardElement) return;
@@ -498,7 +532,16 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   };
 
   const nextPhoto = (cardId, e) => {
-    e.stopPropagation();
+    // Prevent photo navigation if a drag just ended
+    if (blockPhotoNavigation) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      return;
+    }
+    
+    if (e) e.stopPropagation();
     const card = cards.find(c => c.id === cardId);
     if (!card) return;
     
@@ -511,7 +554,16 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   };
 
   const prevPhoto = (cardId, e) => {
-    e.stopPropagation();
+    // Prevent photo navigation if a drag just ended
+    if (blockPhotoNavigation) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      return;
+    }
+    
+    if (e) e.stopPropagation();
     const card = cards.find(c => c.id === cardId);
     if (!card) return;
     
