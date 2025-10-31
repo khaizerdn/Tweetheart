@@ -92,8 +92,30 @@
   max-width: var(--gap-064);
 }
 
+.mobileLogo {
+  display: none;
+}
+
 .logoContainer h1 {
   color: var(--background-color-secondary-default);
+}
+
+@media (max-width: 768px) {
+  .mobileLogo {
+    display: block;
+    height: var(--gap-048);
+    width: auto;
+    max-width: 120px;
+    margin-bottom: var(--gap-016);
+  }
+
+  .logoContainer {
+    align-items: center;
+  }
+
+  .logoContainer h1 {
+    text-align: center;
+  }
 }
 
 form {

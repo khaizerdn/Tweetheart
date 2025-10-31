@@ -83,6 +83,11 @@ function Login({ setIsLoggedIn }) {
       <div className={styles.rightContainer}>
         <div className={styles.loginSection}>
           <div className={styles.logoContainer}>
+            <img
+              src={logo}
+              alt="Tweetheart logo"
+              className={styles.mobileLogo}
+            />
             <h1>Tweetheart</h1>
           </div>
           <form onSubmit={handleSubmit}>
