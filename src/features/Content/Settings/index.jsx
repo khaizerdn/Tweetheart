@@ -49,7 +49,7 @@ function Settings() {
 
   return (
     <div className={styles.settingsPage}>
-      <Header title="Settings" />
+      <Header title="Settings" className={styles.settingsHeader} />
       <div className={styles.containerAccess}>
         <div className={styles.settingsContainer}>
           <div className={styles.settingsCard}>
@@ -57,21 +57,10 @@ function Settings() {
             {/* Theme Toggle Section */}
             <div className={styles.settingSection}>
               <div className={styles.settingInfo}>
-                <h3>Appearance</h3>
-                <p>Choose your preferred theme</p>
+                <h3>Dark Mode</h3>
               </div>
               
               <div className={styles.themeToggleContainer}>
-                <div className={styles.themeOption}>
-                  <div className={`${styles.themePreview} ${!isDarkMode ? styles.active : ''}`}>
-                    <div className={styles.themePreviewContent}>
-                      <div className={styles.themePreviewHeader}></div>
-                      <div className={styles.themePreviewBody}></div>
-                    </div>
-                  </div>
-                  <span className={styles.themeLabel}>Light</span>
-                </div>
-
                 <div className={styles.toggleSwitch}>
                   <input
                     type="checkbox"
@@ -83,16 +72,6 @@ function Settings() {
                   <label htmlFor="theme-toggle" className={styles.toggleLabel}>
                     <span className={styles.toggleSlider}></span>
                   </label>
-                </div>
-
-                <div className={styles.themeOption}>
-                  <div className={`${styles.themePreview} ${isDarkMode ? styles.active : ''}`}>
-                    <div className={styles.themePreviewContent}>
-                      <div className={styles.themePreviewHeader}></div>
-                      <div className={styles.themePreviewBody}></div>
-                    </div>
-                  </div>
-                  <span className={styles.themeLabel}>Dark</span>
                 </div>
               </div>
             </div>
