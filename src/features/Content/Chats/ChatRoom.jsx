@@ -62,7 +62,8 @@ const ChatRoom = () => {
 
   // Initialize socket connection
   useEffect(() => {
-    const newSocket = io('http://localhost:8081', {
+    const socketUrl = import.meta.env.VITE_API_URL || '';
+    const newSocket = io(socketUrl, {
       withCredentials: true,
       transports: ['websocket']
     });

@@ -10,6 +10,8 @@ import Error from './features/Error';
 import LocationRequired from './features/LocationRequired';
 import MatchModal from './components/MatchModal';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const Content = ({ locationGranted, setLocationGranted }) => {
   const [cards, setCards] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -70,7 +72,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     const loadLikedAndPassedUsers = async () => {
       try {
         // Fetch liked users
-        const likedRes = await fetch('http://localhost:8081/api/likes/liked', {
+        const likedRes = await fetch(`${API_URL}/api/likes/liked`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -81,7 +83,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
           setLikedUserIds(likeIds);
         }
         // Fetch passed users
-        const passRes = await fetch('http://localhost:8081/api/likes/passed', {
+        const passRes = await fetch(`${API_URL}/api/likes/passed`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -484,7 +486,7 @@ const Content = ({ locationGranted, setLocationGranted }) => {
   // Handle user action (like/pass)
   const handleUserAction = async (cardId, action) => {
     try {
-      const response = await fetch('http://localhost:8081/api/likes', {
+      const response = await fetch(`${API_URL}/api/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import styles from './styles.module.css';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const NotificationItem = ({ notification, onDismiss }) => {
   const handleDismiss = () => {
     onDismiss(notification.id);
@@ -62,7 +64,7 @@ const NotificationsContainer = () => {
   // Fetch notifications from API
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/notifications', {
+      const response = await fetch(`${API_URL}/api/notifications`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -85,7 +87,7 @@ const NotificationsContainer = () => {
   // Dismiss notification
   const dismissNotification = async (notificationId) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/notifications/${notificationId}/dismiss`, {
+      const response = await fetch(`${API_URL}/api/notifications/${notificationId}/dismiss`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -105,7 +107,7 @@ const NotificationsContainer = () => {
   // Mark notification as read
   const markAsRead = async (notificationId) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/notifications/${notificationId}/read`, {
+      const response = await fetch(`${API_URL}/api/notifications/${notificationId}/read`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -128,7 +130,8 @@ const NotificationsContainer = () => {
     const userId = getCurrentUserId();
     if (!userId) return;
 
-    const newSocket = io('http://localhost:8081', {
+    const socketUrl = import.meta.env.VITE_API_URL || '';
+    const newSocket = io(socketUrl, {
       withCredentials: true,
     });
 
@@ -190,7 +193,7 @@ const NotificationsContainer = () => {
         const matchUserId = data?.matchUserId;
         if (!matchUserId) return;
         // Prefer dedicated basic profile endpoint for correct gender + signed photos
-        const resp = await fetch(`http://localhost:8081/api/users/${matchUserId}/basic`, {
+        const resp = await fetch(`${API_URL}/api/users/${matchUserId}/basic`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' }
