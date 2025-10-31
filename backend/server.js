@@ -85,19 +85,33 @@ async function loadRoutesRecursively(dir) {
       }
       console.log(`🔍 DEBUG: Found server.js at: ${fullPath}`);
       
-      // Node.js dynamic imports with file:// URLs don't respect package.json reliably
-      // Solution: Create a .mjs copy or use file:// with explicit extension
-      // For now, try renaming to .mjs temporarily at runtime
+      // Try .mjs version FIRST - Node.js recognizes .mjs as ES modules automatically
       const mjsPath = fullPath.replace(/\.js$/, '.mjs');
+      if (fs.existsSync(mjsPath)) {
+        try {
+          const fileUrl = pathToFileURL(mjsPath).href;
+          console.log(`   🔍 Trying .mjs version first: ${fileUrl}`);
+          const routeModule = (await import(fileUrl)).default;
+          if (routeModule) {
+            app.use("/", routeModule);
+            console.log(`✅ Loaded route via .mjs: ${fullPath.replace(featuresDir, "")}`);
+            continue;
+          }
+        } catch (err) {
+          console.error(`   ❌ .mjs import failed: ${err.message}`);
+        }
+      } else {
+        console.log(`   ⚠️  .mjs file not found at: ${mjsPath}`);
+      }
       
+      // Fallback: Try relative import with .js
       try {
-        // Try relative import first (respects package.json better)
         const relativePath = path.relative(__dirname, fullPath);
         const importPath = relativePath.startsWith('.') 
           ? relativePath.replace(/\\/g, '/')
           : './' + relativePath.replace(/\\/g, '/');
         
-        console.log(`   Attempting relative import: ${importPath}`);
+        console.log(`   🔍 Trying relative import: ${importPath}`);
         const routeModule = (await import(importPath)).default;
         if (routeModule) {
           app.use("/", routeModule);
@@ -105,37 +119,9 @@ async function loadRoutesRecursively(dir) {
           continue;
         }
       } catch (err) {
-        console.log(`   Relative import failed, trying file:// URL...`);
         console.error(`❌ Failed to load route at ${fullPath}`);
         console.error(`   Error: ${err.message}`);
         console.error(`   Code: ${err.code || 'N/A'}`);
-        console.error(`   Stack trace:`, err.stack);
-        
-        // Verify package.json exists
-        const srcPkgPath = path.join(__dirname, './src/package.json');
-        const dirPkgPath = path.join(path.dirname(fullPath), 'package.json');
-        console.error(`   Checking package.json at /app/src/package.json: ${fs.existsSync(srcPkgPath)}`);
-        if (fs.existsSync(srcPkgPath)) {
-          console.error(`   Contents:`, fs.readFileSync(srcPkgPath, 'utf8'));
-        }
-        console.error(`   Checking package.json at ${dirPkgPath}: ${fs.existsSync(dirPkgPath)}`);
-        
-        // Try .mjs version (Node.js recognizes .mjs as ES modules automatically)
-        try {
-          const mjsPath = fullPath.replace(/\.js$/, '.mjs');
-          if (fs.existsSync(mjsPath)) {
-            const fileUrl = pathToFileURL(mjsPath).href;
-            console.error(`   Trying .mjs version: ${fileUrl}`);
-            const routeModule = (await import(fileUrl)).default;
-            if (routeModule) {
-              app.use("/", routeModule);
-              console.log(`✅ Loaded route via .mjs: ${fullPath.replace(featuresDir, "")}`);
-              continue;
-            }
-          }
-        } catch (err2) {
-          console.error(`   .mjs import also failed: ${err2.message}`);
-        }
       }
     }
   }
