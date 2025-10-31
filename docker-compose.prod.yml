@@ -1,0 +1,25 @@
+# Production docker-compose override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+version: '3.8'
+
+services:
+  mariadb:
+    # For production, consider using Lightsail Managed Database instead
+    # Comment out this service and update DB_HOST to your Lightsail DB endpoint
+    ports:
+      - "127.0.0.1:3306:3306"  # Only expose to localhost
+    command: --bind-address=0.0.0.0
+
+  backend:
+    environment:
+      FRONTEND_URL: ${FRONTEND_URL:-https://yourdomain.com}
+      # Production DB settings (if using external DB)
+      # DB_HOST: your-lightsail-db-endpoint.rds.amazonaws.com
+
+  frontend:
+    # For HTTPS, you'll need to:
+    # 1. Configure SSL certificates in nginx
+    # 2. Update nginx.conf to listen on 443
+    # 3. Use Lightsail load balancer or Let's Encrypt
+
