@@ -100,7 +100,7 @@ async function loadRoutesRecursively(dir) {
           
           // Check if it's an Express router (has use/get/post/etc methods)
           if (routeModule && typeof routeModule.use === 'function') {
-            app.use("/", routeModule);
+            app.use("/api", routeModule);
             console.log(`✅ Loaded route via .mjs: ${fullPath.replace(featuresDir, "")}`);
             continue;
           } else {
@@ -128,7 +128,7 @@ async function loadRoutesRecursively(dir) {
         
         // Check if it's an Express router (has use/get/post/etc methods)
         if (routeModule && typeof routeModule.use === 'function') {
-          app.use("/", routeModule);
+          app.use("/api", routeModule);
           console.log(`✅ Loaded route: ${fullPath.replace(featuresDir, "")}`);
           continue;
         } else {
