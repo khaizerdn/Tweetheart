@@ -78,28 +78,34 @@ async function loadRoutesRecursively(dir) {
     if (entry.isDirectory()) {
       // Recurse into subdirectories
       await loadRoutesRecursively(fullPath);
-    } else if (entry.isFile() && entry.name === "server.js") {
+    } else if ((entry.isFile() && entry.name === "server.js") || (entry.isFile() && entry.name === "server.mjs")) {
+      // Skip .mjs files - we'll load them when we find the .js version
+      if (entry.name === "server.mjs") {
+        continue;
+      }
       console.log(`🔍 DEBUG: Found server.js at: ${fullPath}`);
+      
+      // Node.js dynamic imports with file:// URLs don't respect package.json reliably
+      // Solution: Create a .mjs copy or use file:// with explicit extension
+      // For now, try renaming to .mjs temporarily at runtime
+      const mjsPath = fullPath.replace(/\.js$/, '.mjs');
+      
       try {
-        // Calculate relative path from __dirname to the route file
-        // __dirname = /app, fullPath = /app/src/features/Login/server.js
-        // relative = src/features/Login/server.js
+        // Try relative import first (respects package.json better)
         const relativePath = path.relative(__dirname, fullPath);
-        // Normalize for import (must start with ./ for relative imports)
         const importPath = relativePath.startsWith('.') 
           ? relativePath.replace(/\\/g, '/')
           : './' + relativePath.replace(/\\/g, '/');
         
         console.log(`   Attempting relative import: ${importPath}`);
-        console.log(`   From: ${__dirname}`);
-        console.log(`   To: ${fullPath}`);
-        
         const routeModule = (await import(importPath)).default;
         if (routeModule) {
           app.use("/", routeModule);
           console.log(`✅ Loaded route: ${fullPath.replace(featuresDir, "")}`);
+          continue;
         }
       } catch (err) {
+        console.log(`   Relative import failed, trying file:// URL...`);
         console.error(`❌ Failed to load route at ${fullPath}`);
         console.error(`   Error: ${err.message}`);
         console.error(`   Code: ${err.code || 'N/A'}`);
@@ -114,18 +120,21 @@ async function loadRoutesRecursively(dir) {
         }
         console.error(`   Checking package.json at ${dirPkgPath}: ${fs.existsSync(dirPkgPath)}`);
         
-        // Try file:// as fallback
+        // Try .mjs version (Node.js recognizes .mjs as ES modules automatically)
         try {
-          const fileUrl = pathToFileURL(fullPath).href;
-          console.error(`   Trying file:// fallback: ${fileUrl}`);
-          const routeModule = (await import(fileUrl)).default;
-          if (routeModule) {
-            app.use("/", routeModule);
-            console.log(`✅ Loaded route via file://: ${fullPath.replace(featuresDir, "")}`);
+          const mjsPath = fullPath.replace(/\.js$/, '.mjs');
+          if (fs.existsSync(mjsPath)) {
+            const fileUrl = pathToFileURL(mjsPath).href;
+            console.error(`   Trying .mjs version: ${fileUrl}`);
+            const routeModule = (await import(fileUrl)).default;
+            if (routeModule) {
+              app.use("/", routeModule);
+              console.log(`✅ Loaded route via .mjs: ${fullPath.replace(featuresDir, "")}`);
+              continue;
+            }
           }
         } catch (err2) {
-          console.error(`   file:// also failed: ${err2.message}`);
-          console.error(`   file:// error code: ${err2.code || 'N/A'}`);
+          console.error(`   .mjs import also failed: ${err2.message}`);
         }
       }
     }

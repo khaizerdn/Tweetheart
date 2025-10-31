@@ -18,15 +18,15 @@ COPY backend/server.js ./
 # This allows relative imports to work properly with ES modules
 COPY src ./src
 
-# Create package.json in /app/src root for ES module resolution
-# This tells Node.js that all .js files in /app/src and subdirectories are ES modules
+# Create package.json in /app/src for ES module resolution
 RUN echo '{"type":"module"}' > ./src/package.json
 
-# Verify package.json was created correctly
-RUN cat ./src/package.json && \
-    echo "---" && \
-    echo "Package.json in /app:" && \
-    cat ./package.json | grep -A 1 '"type"'
+# Create .mjs copies of all server.js files
+# Node.js recognizes .mjs files as ES modules automatically (no package.json needed)
+RUN find ./src -name "server.js" -type f | while read file; do \
+      cp "$file" "${file%.js}.mjs"; \
+    done && \
+    echo "Created .mjs copies of route files"
 
 # Note: Environment variables are provided by docker-compose.yml
 # No need to copy .env file - all vars come from docker-compose environment section
