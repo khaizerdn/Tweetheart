@@ -5,7 +5,7 @@ This guide will help you set up HTTPS/SSL for your Dating App using Let's Encryp
 ## Prerequisites
 
 1. A domain name pointing to your AWS Lightsail instance IP
-2. DNS A record configured (e.g., `datingapp.example.com` → `54.169.155.97`)
+2. DNS A record configured (e.g., `tweetheart.xyz` → `YOUR_LIGHTSAIL_IP`)
 3. Ports 80 and 443 open in your Lightsail firewall
 4. SSH access to your server
 
@@ -16,15 +16,15 @@ Make sure your domain points to your Lightsail IP:
 ```
 Type: A
 Name: @ (or your subdomain like 'app')
-Value: 54.169.155.97 (your Lightsail IP)
+Value: YOUR_LIGHTSAIL_IP (replace with your actual Lightsail IP)
 TTL: 300 (or default)
 ```
 
 Verify DNS propagation:
 ```bash
-dig yourdomain.com
+dig tweetheart.xyz
 # or
-nslookup yourdomain.com
+nslookup tweetheart.xyz
 ```
 
 ## Step 2: Open Ports in Lightsail
@@ -56,13 +56,13 @@ docker compose stop frontend
 ## Step 5: Obtain SSL Certificate
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
-sudo certbot certonly --standalone -d yourdomain.com --email your-email@example.com --agree-tos --non-interactive
+# Use your domain tweetheart.xyz
+sudo certbot certonly --standalone -d tweetheart.xyz --email your-email@example.com --agree-tos --non-interactive
 ```
 
 **Example:**
 ```bash
-sudo certbot certonly --standalone -d datingapp.example.com --email admin@example.com --agree-tos --non-interactive
+sudo certbot certonly --standalone -d tweetheart.xyz --email admin@tweetheart.xyz --agree-tos --non-interactive
 ```
 
 ## Step 6: Update Configuration Files
@@ -72,8 +72,8 @@ sudo certbot certonly --standalone -d datingapp.example.com --email admin@exampl
 Replace `_` with your domain name in `nginx-ssl.conf`:
 
 ```bash
-sed -i 's/server_name _;/server_name yourdomain.com;/g' nginx-ssl.conf
-sed -i 's|/etc/letsencrypt/live/_/|/etc/letsencrypt/live/yourdomain.com/|g' nginx-ssl.conf
+sed -i 's/server_name _;/server_name tweetheart.xyz;/g' nginx-ssl.conf
+sed -i 's|/etc/letsencrypt/live/_/|/etc/letsencrypt/live/tweetheart.xyz/|g' nginx-ssl.conf
 ```
 
 ### Replace nginx.conf
@@ -113,7 +113,7 @@ Update `FRONTEND_URL` to use HTTPS:
 
 ```bash
 # In your .env file
-FRONTEND_URL=https://yourdomain.com
+FRONTEND_URL=https://tweetheart.xyz
 ```
 
 ## Step 7: Rebuild and Start Services
@@ -131,7 +131,7 @@ docker compose logs frontend | tail -20
 
 ## Step 8: Verify HTTPS
 
-1. Open your browser and go to `https://yourdomain.com`
+1. Open your browser and go to `https://tweetheart.xyz`
 2. You should see a padlock icon indicating secure connection
 3. Test geolocation - it should work now!
 
@@ -179,7 +179,7 @@ If port 80 is in use during certificate request:
 docker compose stop frontend
 
 # Get certificate
-sudo certbot certonly --standalone -d yourdomain.com
+sudo certbot certonly --standalone -d tweetheart.xyz
 
 # Start frontend
 docker compose start frontend
@@ -195,10 +195,10 @@ sudo certbot certificates
 
 ```bash
 # From outside your server
-curl -I https://yourdomain.com
+curl -I https://tweetheart.xyz
 
 # Check SSL details
-openssl s_client -connect yourdomain.com:443
+openssl s_client -connect tweetheart.xyz:443
 ```
 
 ## Security Best Practices
