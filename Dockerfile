@@ -4,7 +4,8 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Accept build argument for VITE_API_URL
-ARG VITE_API_URL=http://localhost:8081
+# Default to relative path /api (works with nginx proxy)
+ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL
 
 # Copy package files
@@ -26,8 +27,8 @@ FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration
-# Use nginx.conf for HTTP, nginx-ssl.conf for HTTPS (after getting certificates)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Use nginx-ssl.conf for HTTPS (with SSL certificates)
+COPY nginx-ssl.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
 EXPOSE 80
