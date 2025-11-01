@@ -13,8 +13,8 @@ services:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
-      # Uncomment below if you have an init.sql file for database initialization
-      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      # Database initialization script
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -78,10 +78,10 @@ services:
     ports:
       - "80:80"
       - "443:443"  # For HTTPS if configured
-    volumes:
-      # Mount SSL certificates when available (comment out if not using SSL yet)
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - /var/www/certbot:/var/www/certbot:ro
+    # volumes:
+      # SSL certificates (for production - uncomment when deploying with SSL)
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
+      # - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       - backend
     networks:
