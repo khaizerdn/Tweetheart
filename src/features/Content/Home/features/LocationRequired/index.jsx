@@ -14,7 +14,7 @@ const LocationRequired = ({
     <div className={styles.home}>
       <div className={styles.locationRequiredContainer}>
         <div className={styles.emptyState}>
-          <i className="fa fa-map-marker-alt" style={{fontSize:50}}></i>
+          <i className="fa fa-map-marker-alt"></i>
           <h3>Location Access Required</h3>
           <p className={styles.locationInfo}>
             To help you find matches nearby, we need access to your location. 

@@ -596,40 +596,21 @@ const Content = ({ locationGranted, setLocationGranted }) => {
     return <Error error={error} />;
   }
 
-  // Location is optional - don't block if not granted
-  // Users can still view cards, just without distance filtering
+  // Show LocationRequired component if location not granted
+  if (!locationGranted) {
+    return (
+      <LocationRequired
+        isMobile={isMobile}
+        error={locError}
+        isRequesting={isRequesting}
+        showTooManyAttempts={showTooManyAttempts}
+        onGetLocation={getLocationAndSave}
+      />
+    );
+  }
 
   return (
     <div className={styles.home} ref={containerRef}>
-      {/* Optional location banner - only show if location not granted */}
-      {!locationGranted && (
-        <div style={{ 
-          padding: '10px', 
-          marginBottom: '10px', 
-          background: '#fff3cd', 
-          border: '1px solid #ffc107', 
-          borderRadius: '4px',
-          fontSize: '14px',
-          textAlign: 'center'
-        }}>
-          💡 Location is optional. Enable it to see distance and get better matches nearby.
-          <button 
-            onClick={getLocationAndSave}
-            style={{ 
-              marginLeft: '10px', 
-              padding: '4px 12px', 
-              background: '#007bff', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Enable Location
-          </button>
-        </div>
-      )}
-      
       {/* Filter button - always visible */}
       <button 
         className={styles.filterButton}
@@ -702,9 +683,13 @@ const Content = ({ locationGranted, setLocationGranted }) => {
         <div className={styles.cards}>
           {allCardsSwiped ? (
             <div className={styles.emptyState}>
-              <i className="fa fa-heart-broken"></i>
-              <h3>No more cards!</h3>
-              <p>You've swiped through all {totalUsers} cards.</p>
+              <i className="fa fa-star"></i>
+              <h3>You've seen everyone!</h3>
+              <p>
+                You've explored all {totalUsers} {totalUsers === 1 ? 'person' : 'people'} in your area. 
+                Don't worry though - someone special might have already swiped right on you! 
+                Check your matches to see who's interested.
+              </p>
             </div>
           ) : (
             <>

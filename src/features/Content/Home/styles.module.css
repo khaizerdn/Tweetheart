@@ -195,15 +195,41 @@
   border-radius: var(--border-radius-999);
   width: 60px !important;
   height: 60px !important;
-  border: 2px solid rgba(255, 255, 255, 0.2); /* Subtle border for definition */
+  border: 2px solid var(--color-primary-10);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow for overlapping effect */
+  box-shadow: var(--shadow-2);
   transition: all 0.3s ease;
   font-size: var(--font-size-020);
   flex-shrink: 0;
+}
+
+/* Error component button - different styling */
+.emptyState .button {
+  width: auto !important;
+  height: auto !important;
+  min-width: 120px;
+  padding: var(--padding-012) var(--padding-024);
+  background: var(--background-color-secondary-default);
+  color: var(--font-color-secondary-default);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+  margin-top: 0;
+  border: 1px solid var(--color-secondary-15);
+}
+
+.emptyState .button:hover {
+  background: var(--background-color-secondary-hover);
+  color: var(--font-color-secondary-hover);
+  transform: scale(1.05);
+}
+
+.emptyState .button:active {
+  background: var(--background-color-secondary-active);
+  color: var(--font-color-secondary-active);
+  transform: scale(0.98);
 }
 
 .button:hover {
@@ -274,28 +300,54 @@
   justify-content: center;
   height: 100%;
   text-align: center;
-  color: rgba(255, 255, 255, 0.7);
-  width: 320px;
+  color: var(--font-color-muted);
+  width: 600px;
+  padding: var(--padding-032);
+  gap: var(--gap-016);
 }
 
 .emptyState i {
   font-size: var(--font-size-064);
-  color: var(--font-color-status-danger);
-  margin-bottom: var(--padding-024);
+  opacity: 0.9;
+}
+
+/* Icon colors for different states */
+.emptyState:has(.fa-spinner) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-exclamation-triangle) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-map-marker-alt) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-star) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-heart-broken) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState i {
+  color: var(--background-color-secondary-default);
 }
 
 .emptyState h3 {
   font-size: var(--font-size-032);
-  color: var(--color-white);
-  margin-bottom: var(--gap-016);
+  color: var(--font-color-default);
   font-weight: var(--font-weight-semi-bold);
 }
 
 .emptyState p {
   font-size: var(--font-size-018);
-  color: rgba(255, 255, 255, 0.7);
-  max-width: 300px;
+  color: var(--font-color-muted);
   line-height: var(--line-height-default);
+  margin: 0;
+  text-wrap: pretty;
 }
 
 /* Loading more cards indicator */
@@ -306,17 +358,17 @@
   justify-content: center;
   padding: var(--padding-024);
   text-align: center;
-  color: rgba(255, 255, 255, 0.7);
-  background: var(--background-color-1);
-  border-radius: 12px;
-  margin: var(--gap-016) 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: var(--font-color-muted);
+  background: var(--background-color-2);
+  border-radius: var(--border-radius-012);
+  margin: var(--margin-016) 0;
+  box-shadow: var(--shadow-1);
+  gap: var(--gap-012);
 }
 
 .loadingMore i {
   font-size: var(--font-size-032);
-  margin-bottom: var(--gap-012);
-  color: var(--accent-color);
+  color: var(--font-color-status-inform);
 }
 
 .loadingMore span {
@@ -538,10 +590,11 @@
   .locationRequiredContainer {
     width: 100%;
     height: 100%;
-    padding: 0;
+    padding: var(--padding-024);
   }
 
   .emptyState {
+    width: 100%;
     height: 100%;
     padding: var(--padding-024);
   }
@@ -552,6 +605,18 @@
 
   .emptyState p {
     font-size: var(--font-size-016);
+    max-width: 100%;
+  }
+
+  .locationRequiredContainer {
+    padding: var(--padding-024);
+  }
+
+  .locationInfo {
+    max-width: 100%;
+  }
+
+  .tooManyAttemptsWarning {
     max-width: 100%;
   }
 
@@ -630,7 +695,9 @@
   color: var(--font-color-hover);
 }
 
-.filterButton:active { }
+.filterButton:active {
+  color: var(--font-color-active);
+}
 
 .filterButton svg {
   width: 20px;
@@ -672,16 +739,74 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: var(--padding-032);
+  gap: var(--gap-024);
+}
+
+.emptyState .error {
+  background-color: var(--background-color-status-danger);
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-014);
+  font-weight: var(--font-weight-medium);
+  padding: var(--padding-012) var(--padding-016);
+  border-radius: var(--border-radius-008);
+  margin-top: var(--margin-016);
+  margin-bottom: var(--margin-016);
+  text-align: center;
+  border: 1px solid var(--font-color-status-danger);
+  opacity: 0.8;
+  text-wrap: pretty;
 }
 
 .tooManyAttemptsWarning {
   color: var(--font-color-status-danger);
-  font-size: var(--font-size-012);
+  font-size: var(--font-size-014);
   font-weight: var(--font-weight-normal);
   text-align: center;
-  margin-top: 0.5rem;
+  margin-top: var(--margin-016);
+  padding: var(--padding-012) var(--padding-016);
+  background-color: var(--background-color-status-danger);
+  border-radius: var(--border-radius-008);
+  border: 1px solid var(--font-color-status-danger);
+  opacity: 0.9;
+  max-width: 400px;
+  text-wrap: pretty;
 }
 
 .locationInfo {
-  margin-bottom: 1rem;
+  margin-bottom: var(--margin-024);
+  font-size: var(--font-size-016);
+  color: var(--font-color-muted);
+  line-height: var(--line-height-default);
+  text-wrap: pretty;
+}
+
+/* Location Optional Banner */
+.locationOptionalBanner {
+  padding: 10px;
+  margin-bottom: 10px;
+  background: var(--background-color-2);
+  border: 1px solid var(--background-color-3);
+  border-radius: var(--border-radius-016);
+  font-size: var(--font-size-014);
+  text-align: center;
+}
+
+.locationOptionalButton {
+  margin-left: 10px;
+  padding: 4px 12px;
+  background: var(--background-color-secondary-default);
+  color: var(--font-color-default);
+  border: none;
+  border-radius: var(--border-radius-016);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.locationOptionalButton:hover {
+  background: var(--background-color-secondary-hover);
+}
+
+.locationOptionalButton:active {
+  background: var(--background-color-secondary-active);
 }
