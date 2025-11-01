@@ -254,7 +254,7 @@ const Matches = () => {
 
     try {
       // Send message to server
-      const response = await fetch(`http://localhost:8081/api/chats/${preparationChatData.tempChatId}/messages`, {
+      const response = await fetch(`${API_URL}/chats/${preparationChatData.tempChatId}/messages`, {
         method: 'POST',
         credentials: 'include',
         headers: {
