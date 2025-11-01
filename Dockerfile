@@ -25,9 +25,9 @@ FROM nginx:alpine
 # Copy built files from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration (use nginx-ssl.conf for HTTPS, nginx.conf for HTTP)
-# After SSL certificates are obtained, switch to nginx-ssl.conf
-COPY nginx-ssl.conf /etc/nginx/conf.d/default.conf
+# Copy nginx configuration
+# Use nginx.conf for HTTP, nginx-ssl.conf for HTTPS (after getting certificates)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
 EXPOSE 80
