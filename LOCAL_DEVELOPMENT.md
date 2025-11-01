@@ -54,11 +54,31 @@ SECRET_ACCESS_KEY=your-aws-secret-key
 
 **Important:** `.env.local` should be in `.gitignore` (it already is), so it won't be committed.
 
-### Step 2: Run Docker Compose Locally
+### Step 2: Handle Port Conflicts
+
+**If XAMPP or another service is using port 80:**
+
+#### Option A: Stop the conflicting service (Recommended)
+- **XAMPP**: Open XAMPP Control Panel → Stop Apache
+- Then run: `docker compose up -d`
+- Access at: http://localhost
+
+#### Option B: Use different port (Keep XAMPP running)
+```bash
+# Use the local override file (uses port 3000 instead of 80)
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+
+# Access at: http://localhost:3000
+```
+
+### Step 3: Run Docker Compose Locally
 
 ```bash
-# Start all services (uses your local .env or docker-compose.yml defaults)
+# If port 80 is free (Option A):
 docker compose up -d
+
+# If port 80 is in use (Option B):
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
 
 # Or use the helper script if on Windows Git Bash
 ./docker-run.sh docker compose up -d
@@ -70,10 +90,17 @@ docker compose ps
 docker compose logs -f
 ```
 
-### Step 3: Access Your Local App
+### Step 4: Access Your Local App
 
+**If using standard docker-compose.yml:**
 - **Frontend**: http://localhost
 - **Backend API**: http://localhost/api
+- **Backend Direct**: http://localhost:8081
+- **phpMyAdmin**: http://localhost:8080
+
+**If using docker-compose.local.yml (port 3000):**
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:3000/api
 - **Backend Direct**: http://localhost:8081
 - **phpMyAdmin**: http://localhost:8080
 

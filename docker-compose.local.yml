@@ -1,0 +1,11 @@
+# Local Development Override
+# Use this when XAMPP is running and you want to use a different port
+# Usage: docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+
+services:
+  frontend:
+    ports:
+      - "3000:80"  # Access at http://localhost:3000 instead of http://localhost
+      # Remove 443 for local dev (no SSL needed)
+      # - "443:443"
+
