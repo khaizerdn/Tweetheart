@@ -77,11 +77,11 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"  # For HTTPS if configured
-    # volumes:
-      # SSL certificates (for production - uncomment when deploying with SSL)
-      # - /etc/letsencrypt:/etc/letsencrypt:ro
-      # - /var/www/certbot:/var/www/certbot:ro
+      - "443:443"  # For HTTPS
+    volumes:
+      # SSL certificates (uncomment after getting certificates)
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       - backend
     networks:
