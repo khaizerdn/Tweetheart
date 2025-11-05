@@ -1,0 +1,152 @@
+.containerAccess {
+  --container-gap: var(--gap-080);
+  display: flex;
+  min-height: 100vh;
+  height: auto;
+  min-width: 100vw;
+  background-color: var(--background-color-1);
+  font-family: var(--font-family-primary);
+  gap: var(--container-gap);
+  overflow-y: auto;
+}
+
+.leftContainer {
+  flex: 1;
+  display: flex;
+  justify-content: right;
+  align-items: rigiht;
+  padding: var(--padding-016);
+}
+
+.leftHero {
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  align-items: right;
+}
+
+.leftLogo {
+  width: clamp(240px, 60%, 520px);
+  height: auto;
+}
+
+.rightContainer {
+  flex: 1;
+  display: flex;
+  justify-content: left;
+  align-items: flex-start;
+  padding: var(--padding-016);
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.loginSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px;
+  padding: var(--padding-016);
+  gap: var(--gap-016);
+  margin: auto 0;
+  padding-top: var(--padding-048);
+  padding-bottom: var(--padding-048);
+  min-height: fit-content;
+  margin-left: 5rem; 
+}
+
+@media (max-width: 768px) {
+  .containerAccess {
+    flex-direction: column;
+    --container-gap: 0rem;
+    min-height: auto;
+  }
+
+  .rightContainer {
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: var(--padding-016) var(--padding-016) var(--padding-032) var(--padding-016);
+  }
+  
+  .leftContainer {
+    display: none;
+  }
+
+  .loginSection {
+    margin: 0;
+    padding-top: var(--padding-032);
+    padding-bottom: var(--padding-032);
+  }
+}
+
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+}
+
+.logo {
+  height: var(--gap-064);
+  width: auto;
+  max-width: var(--gap-064);
+}
+
+.mobileLogo {
+  display: none;
+}
+
+.logoContainer h1 {
+  color: var(--background-color-secondary-default);
+}
+
+@media (max-width: 768px) {
+  .mobileLogo {
+    display: block;
+    height: var(--gap-048);
+    width: auto;
+    max-width: 120px;
+    margin-bottom: var(--gap-016);
+  }
+
+  .logoContainer {
+    align-items: center;
+  }
+
+  .logoContainer h1 {
+    text-align: center;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--gap-016);
+}
+
+.errorMessage {
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+}
+
+.loginSection p {
+  text-align: center;
+  font-size: var(--font-size-014);
+}
+
+.loginSection hr {
+  background-color: var(--background-color-primary-default-1);
+}
+
+.buttonRegisterText {
+  color: var(--font-color-default);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.buttonRegisterText:hover {
+  color: var(--font-color-active);
+}

@@ -1,0 +1,324 @@
+/* Card Container */
+.card {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: var(--color-white);
+  border-radius: var(--border-radius-024);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+}
+
+/* Glare Effect Overlay */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  opacity: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 0;
+  animation: glare 1.5s ease-in-out;
+}
+
+@keyframes glare {
+  0% {
+    top: -50%;
+    left: -50%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 150%;
+    left: 150%;
+    opacity: 0;
+  }
+}
+
+/* Photo Container */
+.photoContainer {
+  position: relative;
+  height: 100%;
+  background: var(--background-color-2);
+  overflow: hidden;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.activePhoto {
+  opacity: 1;
+  z-index: 1;
+}
+
+.hiddenPhoto {
+  opacity: 0;
+  z-index: 0;
+}
+
+/* Placeholder Photo */
+.placeholderPhoto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-016);
+  color: var(--font-color-muted);
+  background: var(--background-color-2);
+}
+
+.placeholderPhoto i {
+  font-size: var(--font-size-064);
+  color: var(--font-color-muted);
+}
+
+.placeholderPhoto p {
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+  text-align: center;
+  padding: 0 var(--padding-024);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+/* Photo Indicators */
+.photoIndicators {
+  position: absolute;
+  top: var(--padding-012);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--gap-008);
+  z-index: 2;
+}
+
+.indicator {
+  width: var(--gap-008);
+  height: var(--gap-008);
+  border-radius: var(--border-radius-999);
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.indicator.active {
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.2);
+}
+
+/* Clickable Areas for Photo Navigation */
+.leftClickArea,
+.rightClickArea {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.leftClickArea {
+  left: 0;
+}
+
+.rightClickArea {
+  right: 0;
+}
+
+/* Navigation Buttons - Only visible on hover, static */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-999);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--font-color-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-016);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 2;
+  box-shadow: var(--shadow-2);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.photoContainer:hover .navButton {
+  opacity: 1;
+  visibility: visible;
+}
+
+.prevButton {
+  left: var(--padding-012);
+}
+
+.nextButton {
+  right: var(--padding-012);
+}
+
+/* Card Info Overlay */
+.cardInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.60) 60%, rgba(0, 0, 0, 0.95) 100%, rgba(0, 0, 0, 1) 100%);
+  padding: var(--padding-020) var(--padding-020) calc(var(--padding-020) + 35px) var(--padding-020); /* Extra bottom padding for button overlap */
+  color: var(--color-white);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  z-index: 3;
+}
+
+/* Action Buttons Container */
+.actionButtonsContainer {
+  position: absolute;
+  bottom: var(--padding-012);
+  left: var(--padding-012);
+  right: var(--padding-012);
+  z-index: 4;
+  pointer-events: auto;
+  display: flex;
+  gap: var(--gap-008);
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.unmatchButtonWrapper,
+.viewProfileButtonWrapper {
+  flex-shrink: 0;
+}
+
+/* Allow child elements to be interactive but prevent text selection */
+.cardInfo * {
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .card {
+    height: 550px;
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photoContainer {
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photo {
+    border-radius: var(--border-radius-016);
+  }
+  
+  .cardInfo {
+    display: none !important; /* Hide cardInfo completely on mobile */
+    background: none !important; /* Remove gradient on mobile */
+  }
+  
+  .navButton {
+    display: none;
+  }
+  
+  .prevButton {
+    left: var(--gap-008);
+  }
+  
+  .nextButton {
+    right: var(--gap-008);
+  }
+  
+  .indicator {
+    width: var(--gap-008);
+    height: var(--gap-008);
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    height: 500px;
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photoContainer {
+    border-radius: var(--border-radius-016);
+  }
+  
+  .photo {
+    border-radius: var(--border-radius-016);
+  }
+  
+  .cardInfo {
+    display: none !important; /* Hide cardInfo completely on mobile */
+    background: none !important; /* Remove gradient on mobile */
+  }
+  
+  .navButton {
+    display: none;
+  }
+  
+  .prevButton {
+    left: var(--gap-008);
+  }
+  
+  .nextButton {
+    right: var(--gap-008);
+  }
+  
+  .photoIndicators {
+    top: var(--gap-008);
+  }
+  
+  .indicator {
+    width: var(--gap-008);
+    height: var(--gap-008);
+  }
+}
+
+/* Mobile full-screen styles for Profile component */
+@media (max-width: 685px) {
+  .card {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    box-shadow: none !important;
+  }
+}
+

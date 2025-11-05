@@ -1,0 +1,49 @@
+:root {
+    /* p */
+    --color-p: var(--font-color-active);
+    --font-family-p: var(--font-family-primary);
+    --font-size-p: var(--font-size-016);
+    --font-style-p: normal;
+    --font-variant-p: normal;
+    --font-weight-p: var(--font-weight-normal);
+    --letter-spacing-p: normal;
+    --line-height-p: var(--font-size-018);
+    --text-transform-p: none;
+
+    /* p small */
+    --color-p-small: var(--font-color-active);
+    --font-family-p-small: var(--font-family-primary);
+    --font-size-p-small: var(--font-size-012);
+    --font-style-p-small: normal;
+    --font-variant-p-small: normal;
+    --font-weight-p-small: var(--font-weight-normal);
+    --letter-spacing-p-small: normal;
+    --line-height-p-small: var(--font-size-014);
+    --text-transform-p-small: none;
+}
+
+:where(p) {
+    margin: 0;
+    text-wrap: pretty;
+    color: var(--color-p);
+    font-family: var(--font-family-p);
+    font-size: var(--font-size-p);
+    font-style: var(--font-style-p);
+    font-variant: var(--font-variant-p);
+    font-weight: var(--font-weight-p);
+    letter-spacing: var(--letter-spacing-p);
+    line-height: var(--line-height-p);
+    text-transform: var(--text-transform-p);
+}
+
+:where(p.small) {
+    color: var(--color-p-small);
+    font-family: var(--font-family-p-small);
+    font-size: var(--font-size-p-small);
+    font-style: var(--font-style-p-small);
+    font-variant: var(--font-variant-p-small);
+    font-weight: var(--font-weight-p-small);
+    letter-spacing: var(--letter-spacing-p-small);
+    line-height: var(--line-height-p-small);
+    text-transform: var(--text-transform-p-small);
+}

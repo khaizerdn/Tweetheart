@@ -1,0 +1,43 @@
+/* Custom scrollbar track */
+.os-scrollbar-track {
+  background: transparent !important;
+}
+
+/* Custom scrollbar handle */
+.os-scrollbar-handle {
+  background: var(--scrollbar-color-default) !important;
+  opacity: 0.5;
+}
+
+/* Scrollbar handle hover state */
+.os-scrollbar-handle:hover {
+  background: var(--scrollbar-color-hover) !important;
+  opacity: 1;
+}
+
+/* Vertical scrollbar specific styles */
+.os-scrollbar-vertical {
+  width: 0.8rem !important;
+  padding: 2px !important;
+}
+
+/* Horizontal scrollbar specific styles */
+.os-scrollbar-horizontal {
+  height: 0.8rem !important;
+  padding: 2px !important;
+}
+
+/* Scrollbar corner */
+.os-scrollbar-corner {
+  background: transparent !important;
+}
+
+.os-scrollbar-auto-hide.os-scrollbar-visible {
+  opacity: 1;
+}
+
+/* RTL support */
+.os-scrollbar-rtl .os-scrollbar-vertical {
+  right: 0 !important;
+  left: auto !important;
+}

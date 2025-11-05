@@ -1,0 +1,108 @@
+/* Button Default */
+.buttonDefault {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  height: 40px;
+  border-radius: var(--border-radius-008);
+  border: 1px solid transparent;
+  margin-bottom: var(--margin-002);
+  padding: 0 var(--padding-004);
+  gap: var(--gap-008);
+  position: relative;
+}
+
+.buttonDefault:hover {
+  background-color: var(--background-color-2); 
+  border: 1px solid var(--background-color-3);
+  color: var(--font-color-hover);
+  cursor: pointer;
+}
+
+.buttonDefault:active,
+.buttonDefault.selected:active {
+  background-color: var(--background-color-2); 
+  border: 1px solid var(--background-color-3);
+}
+
+.buttonDefault.selected {
+  background-color: var(--background-color-2); 
+  border: 1px solid var(--background-color-3);
+  color: var(--background-color-secondary-default);
+}
+
+/* Button Logo Container */
+.buttonLogoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  height: 32px;
+  width: 32px;
+  flex-shrink: 0;
+}
+
+/* Button Logo */
+.buttonLogo {
+  color: var(--font-color-default);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.buttonLogo i {
+  font-size: inherit;
+  color: inherit;
+}
+
+.buttonDefault:hover .buttonLogo {
+  color: var(--font-color-hover);
+}
+
+.buttonDefault.selected .buttonLogo {
+  color: var(--background-color-secondary-default);
+}
+
+/* Button Text */
+.buttonText {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* Selected state */
+.selected {
+  background-color: var(--background-color-2);
+  color: var(--background-color-secondary-default);
+}
+
+.selected .buttonLogo {
+  color: var(--background-color-secondary-default);
+}
+
+/* Small dot badge shown on the right for unread/new */
+.badgeDot {
+  position: absolute;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--border-radius-999);
+  background: var(--background-color-secondary-default);
+}
+
+/* Responsive Styles */
+@media screen and (min-width: 685px) and (max-width: 1006px) {
+  .buttonText {
+    display: none;
+  }
+
+  .buttonDefault {
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+}

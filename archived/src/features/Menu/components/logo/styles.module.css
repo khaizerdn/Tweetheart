@@ -1,0 +1,71 @@
+/* Logo Container */
+.logoContainer {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  height: 40px;
+  border-radius: var(--border-radius-008);
+  border: 1px solid transparent;
+  margin-bottom: var(--margin-002);
+  padding: 0 var(--padding-008);
+  gap: var(--gap-008);
+}
+
+/* Logo Button */
+.logoButton {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 32px;
+  width: auto;
+  min-width: 32px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: var(--gap-008);
+}
+
+.logoContainer:hover .logo {
+  transform: scale(1.1);
+}
+
+.logoContainer:active .logo {
+  transform: scale(1.05);
+}
+
+/* Logo Image */
+.logo {
+  max-width: 100%;
+  height: auto;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+/* Logo Text */
+.logoText {
+  font-size: var(--font-size-024);
+  font-weight: 600;
+  color: var(--background-color-secondary-default);
+  white-space: nowrap;
+  user-select: none;
+  transition: none;
+}
+
+/* Responsive Styles */
+@media screen and (min-width: 685px) and (max-width: 1006px) {
+  .logoContainer {
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 0;
+  }
+  
+  .logoButton {
+    justify-content: center;
+  }
+  
+  .logoText {
+    display: none;
+  }
+}

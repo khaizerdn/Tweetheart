@@ -1,0 +1,812 @@
+.home {
+  width: 100%;
+  height: 100vh;
+  background: var(--color-primary-3);
+  font-family: var(--font-family-primary);
+  padding: var(--padding-016);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  position: relative;
+}
+
+.tinder {
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  background: var(--color-primary-3);
+  font-family: var(--font-family-primary);
+}
+
+.loaded {
+  opacity: 1;
+}
+
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  width: 350px; /* Fixed width to match card width */
+  margin: 0 auto; /* Center the container */
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  position: relative;
+  width: 350px; /* Fixed width to match card width */
+  height: 600px; /* Fixed height to match card height */
+  margin-bottom: -35px; /* Negative margin to allow button overlap */
+}
+
+/* Swipe card specific styles - override Card component for swipe functionality */
+.swipeCard {
+  position: absolute !important;
+  width: 350px !important;
+  height: 600px !important;
+  will-change: transform;
+  transition: all 0.3s ease-in-out;
+  cursor: grab;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.swipeCard.moving {
+  transition: none;
+  cursor: grabbing;
+}
+
+/* Swipe overlays - specific to Home component */
+.swipeOverlayLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 0, 0, 0.8) 0%, rgba(255, 0, 0, 0) 100%);
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.1s ease-out;
+}
+
+.swipeOverlayRight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 255, 0, 0.8) 0%, rgba(0, 255, 0, 0) 100%);
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.1s ease-out;
+}
+
+/* Card info content - specific to Home component */
+
+.nameAge {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+.nameAge h3 {
+  margin: 0 0 var(--margin-012) 0;
+  font-size: var(--font-size-028);
+  color: var(--color-white);
+  font-weight: var(--font-weight-semi-bold);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+.category {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.9);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+.category i {
+  font-size: var(--font-size-012);
+}
+
+.distance {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.9);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+  margin-top: var(--margin-004);
+}
+
+.distance i {
+  font-size: var(--font-size-012);
+}
+
+.bioPreview {
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.95);
+  line-height: var(--line-height-default);
+  margin-top: var(--margin-008);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--padding-012);
+  z-index: 100;
+  margin-top: 0; /* No top margin since buttons overlap with card */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+  width: 350px; /* Fixed width to match card width */
+  position: relative;
+}
+
+.button {
+  border-radius: var(--border-radius-999);
+  width: 60px !important;
+  height: 60px !important;
+  border: 2px solid var(--color-primary-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-2);
+  transition: all 0.3s ease;
+  font-size: var(--font-size-020);
+  flex-shrink: 0;
+}
+
+/* Error component button - different styling */
+.emptyState .button {
+  width: auto !important;
+  height: auto !important;
+  min-width: 120px;
+  padding: var(--padding-012) var(--padding-024);
+  background: var(--background-color-secondary-default);
+  color: var(--font-color-secondary-default);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+  margin-top: 0;
+  border: 1px solid var(--color-secondary-15);
+}
+
+.emptyState .button:hover {
+  background: var(--background-color-secondary-hover);
+  color: var(--font-color-secondary-hover);
+  transform: scale(1.05);
+}
+
+.emptyState .button:active {
+  background: var(--background-color-secondary-active);
+  color: var(--font-color-secondary-active);
+  transform: scale(0.98);
+}
+
+.button:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-3);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button:focus {
+  outline: none;
+}
+
+.undoButton {
+  background: var(--font-color-status-warning);
+  color: var(--color-white);
+}
+
+.nopeButton {
+  background: var(--font-color-status-danger);
+  color: var(--color-white);
+}
+
+.superLikeButton {
+  background: var(--font-color-status-inform);
+  color: var(--color-white);
+}
+
+.likeButton {
+  background: var(--font-color-status-success);
+  color: var(--color-white);
+}
+
+.boostButton {
+  background: var(--color-secondary-16);
+  color: var(--color-white);
+}
+
+.resetButton {
+  width: auto;
+  padding: 0 var(--padding-024);
+  border-radius: var(--border-radius-032);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  background: var(--font-color-status-inform);
+  color: var(--color-white);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+}
+
+.resetButton span {
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-white);
+}
+
+.resetButton i {
+  color: var(--color-white);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--font-color-muted);
+  width: 600px;
+  padding: var(--padding-032);
+  gap: var(--gap-016);
+}
+
+.emptyState i {
+  font-size: var(--font-size-064);
+  opacity: 0.9;
+}
+
+/* Icon colors for different states */
+.emptyState:has(.fa-spinner) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-exclamation-triangle) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-map-marker-alt) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-star) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState:has(.fa-heart-broken) i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState i {
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState h3 {
+  font-size: var(--font-size-032);
+  color: var(--font-color-default);
+  font-weight: var(--font-weight-semi-bold);
+}
+
+.emptyState p {
+  font-size: var(--font-size-018);
+  color: var(--font-color-muted);
+  line-height: var(--line-height-default);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* Loading more cards indicator */
+.loadingMore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-024);
+  text-align: center;
+  color: var(--font-color-muted);
+  background: var(--background-color-2);
+  border-radius: var(--border-radius-012);
+  margin: var(--margin-016) 0;
+  box-shadow: var(--shadow-1);
+  gap: var(--gap-012);
+}
+
+.loadingMore i {
+  font-size: var(--font-size-032);
+  color: var(--font-color-status-inform);
+}
+
+.loadingMore span {
+  font-size: var(--font-size-018);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Match Modal Styles */
+.matchModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.matchModalContent {
+  background: var(--background-color-1);
+  border: 1px solid var(--background-color-primary-default-1);
+  border-radius: var(--border-radius-024);
+  padding: var(--padding-048);
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: var(--shadow-3);
+  animation: slideUp 0.3s ease-out;
+}
+
+.matchAnimation {
+  margin-bottom: var(--padding-024);
+}
+
+.matchHearts {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap-016);
+  font-size: var(--font-size-048);
+  color: var(--background-color-secondary-default);
+  animation: heartBeat 1s ease-in-out infinite;
+}
+
+.matchModalContent h2 {
+  font-size: var(--font-size-032);
+  color: var(--color-white);
+  margin-bottom: var(--padding-016);
+  font-weight: var(--font-weight-bold);
+}
+
+.matchModalContent p {
+  font-size: var(--font-size-018);
+  color: var(--font-color-muted);
+  margin-bottom: var(--padding-032);
+  line-height: var(--line-height-default);
+}
+
+.matchActions {
+  display: flex;
+  gap: var(--gap-016);
+  justify-content: center;
+}
+
+.matchButton {
+  background: var(--background-color-2);
+  color: var(--font-color-hover);
+  padding: var(--padding-012) var(--padding-024);
+  border-radius: var(--border-radius-016);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+  width: auto;
+  height: auto;
+  border: 1px solid var(--background-color-primary-default-1);
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.matchButton:hover {
+  background: var(--background-color-primary-hover-1);
+  color: var(--font-color-hover);
+  box-shadow: var(--shadow-2);
+}
+
+.messageButton {
+  background: var(--background-color-secondary-default);
+  color: var(--color-white);
+  padding: var(--padding-012) var(--padding-024);
+  border-radius: var(--border-radius-016);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-medium);
+  width: auto;
+  height: auto;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.messageButton:hover {
+  background: var(--background-color-secondary-hover);
+  box-shadow: var(--shadow-2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Mobile Responsive Styles */
+@media screen and (max-width: 685px) {
+  .home {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: var(--color-primary-3);
+  }
+
+
+  .container {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+  }
+
+  .cardContainer {
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    flex: 1;
+  }
+
+  .cards {
+    width: 100%;
+    height: 100%; /* Full height minus space for mobile menu, buttons will overlap */
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    margin-bottom: -80px; /* Increased negative margin for more button overlap on mobile */
+  }
+
+  .swipeCard {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0;
+  }
+
+  .buttons {
+    width: 100%;
+    max-width: 100%;
+    margin-top: -10px; /* Move buttons up by 20px to match card info adjustment */
+    margin-bottom: 80px; /* Increased bottom margin to account for MobileMenu height (60px) + extra spacing */
+    padding: 0 var(--padding-016);
+    justify-content: center;
+    gap: var(--padding-020);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10; /* Higher z-index to appear above card */
+  }
+
+  .button {
+    width: 70px !important;
+    height: 70px !important;
+    font-size: var(--font-size-024);
+  }
+
+  .resetButton {
+    width: auto;
+    height: 60px;
+    padding: 0 var(--padding-024);
+    font-size: var(--font-size-018);
+  }
+
+  .locationRequiredContainer {
+    width: 100%;
+    height: 100%;
+    padding: var(--padding-024);
+  }
+
+  .emptyState {
+    width: 100%;
+    height: 100%;
+    padding: var(--padding-024);
+  }
+
+  .emptyState h3 {
+    font-size: var(--font-size-028);
+  }
+
+  .emptyState p {
+    font-size: var(--font-size-016);
+    max-width: 100%;
+  }
+
+  .locationRequiredContainer {
+    padding: var(--padding-024);
+  }
+
+  .locationInfo {
+    max-width: 100%;
+  }
+
+  .tooManyAttemptsWarning {
+    max-width: 100%;
+  }
+
+  .loadingMore {
+    width: 100%;
+    margin: var(--gap-012) 0;
+  }
+
+  /* Match modal adjustments for mobile */
+  .matchModalContent {
+    width: 95%;
+    max-width: 350px;
+    padding: var(--padding-032);
+  }
+
+  .matchActions {
+    flex-direction: row;
+    gap: var(--gap-012);
+  }
+
+  .matchActions :global(.button) {
+    width: auto;
+    height: auto;
+  }
+
+  .matchButton,
+  .messageButton {
+    width: 100%;
+    height: 50px;
+  }
+}
+
+/* Very small mobile screens */
+@media screen and (max-width: 320px) {
+  .cardContainer {
+    padding: 0;
+  }
+
+  .buttons {
+    gap: var(--padding-016);
+  }
+
+  .button {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: var(--font-size-020);
+  }
+
+  .resetButton {
+    height: 50px;
+    font-size: var(--font-size-016);
+  }
+}
+
+/* Filter Button Styles */
+.filterButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--font-color-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.filterButton:hover {
+  color: var(--font-color-hover);
+}
+
+.filterButton:active {
+  color: var(--font-color-active);
+}
+
+.filterButton svg {
+  width: 20px;
+  height: 20px;
+  color: var(--background-color-secondary-default);
+}
+
+.filterBadge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: var(--background-color-secondary-default);
+  border-radius: var(--border-radius-999);
+  border: 2px solid var(--background-color-1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.locationRequiredContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-032);
+  gap: var(--gap-024);
+}
+
+.emptyState .error {
+  background-color: var(--background-color-status-danger);
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-014);
+  font-weight: var(--font-weight-medium);
+  padding: var(--padding-012) var(--padding-016);
+  border-radius: var(--border-radius-008);
+  margin-top: var(--margin-016);
+  margin-bottom: var(--margin-016);
+  text-align: center;
+  border: 1px solid var(--font-color-status-danger);
+  opacity: 0.8;
+  text-wrap: pretty;
+}
+
+.tooManyAttemptsWarning {
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-014);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+  margin-top: var(--margin-016);
+  padding: var(--padding-012) var(--padding-016);
+  background-color: var(--background-color-status-danger);
+  border-radius: var(--border-radius-008);
+  border: 1px solid var(--font-color-status-danger);
+  opacity: 0.9;
+  max-width: 400px;
+  text-wrap: pretty;
+}
+
+.locationInfo {
+  margin-bottom: var(--margin-024);
+  font-size: var(--font-size-016);
+  color: var(--font-color-muted);
+  line-height: var(--line-height-default);
+  text-wrap: pretty;
+}
+
+/* Location Optional Banner */
+.locationOptionalBanner {
+  padding: 10px;
+  margin-bottom: 10px;
+  background: var(--background-color-2);
+  border: 1px solid var(--background-color-3);
+  border-radius: var(--border-radius-016);
+  font-size: var(--font-size-014);
+  text-align: center;
+}
+
+.locationOptionalButton {
+  margin-left: 10px;
+  padding: 4px 12px;
+  background: var(--background-color-secondary-default);
+  color: var(--font-color-default);
+  border: none;
+  border-radius: var(--border-radius-016);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.locationOptionalButton:hover {
+  background: var(--background-color-secondary-hover);
+}
+
+.locationOptionalButton:active {
+  background: var(--background-color-secondary-active);
+}

@@ -1,0 +1,248 @@
+.settingsPage {
+  width: 100%;
+  height: 100vh;
+  background: var(--color-primary-3);
+  font-family: var(--font-family-primary);
+  padding: var(--padding-016);
+  padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
+}
+
+.settingsHeader {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+  padding: var(--padding-016);
+}
+
+.containerAccess {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  background-color: var(--background-color-1);
+  font-family: var(--font-family-primary);
+  min-height: calc(100vh - 80px);
+}
+
+.settingsContainer {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
+}
+
+.settingsCard {
+  background-color: var(--background-color-2);
+  border: 1px solid var(--background-color-primary-default-2);
+  border-radius: var(--border-radius-016);
+  width: 100%;
+  max-width: 600px;
+}
+
+.settingsContent {
+  padding: var(--padding-016);
+}
+
+.settingSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--background-color-primary-muted-1);
+}
+
+.settingSection:last-child {
+  border-bottom: none;
+}
+
+.settingInfo {
+  flex: 1;
+}
+
+.settingInfo h3 {
+  font-size: var(--font-size-016);
+  color: var(--font-color-default);
+}
+
+.settingAction {
+  flex-shrink: 0;
+}
+
+/* Theme Test Styles */
+.themeTestContainer {
+  display: flex;
+  gap: var(--gap-012);
+  flex-wrap: wrap;
+  flex: 1;
+  margin-right: var(--margin-024);
+}
+
+.colorTest {
+  padding: var(--padding-008) var(--padding-012);
+  border-radius: var(--border-radius-004);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+  min-width: 80px;
+  border: 1px solid var(--background-color-primary-default-1);
+}
+
+/* Theme Toggle Styles - Simplified */
+.themeToggleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+/* Toggle Switch */
+.toggleSwitch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 var(--margin-012);
+}
+
+.toggleInput {
+  display: none;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  width: 44px;
+  height: 22px;
+  background-color: var(--background-color-primary-muted-1);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.toggleLabel:hover {
+  background-color: var(--background-color-primary-default-1);
+}
+
+.toggleInput:checked + .toggleLabel {
+  background-color: var(--background-color-secondary-default);
+}
+
+.toggleSlider {
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-white);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  position: absolute;
+  left: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggleInput:checked + .toggleLabel .toggleSlider {
+  transform: translateX(22px);
+}
+
+/* Loading styles */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.loadingMessage {
+  font-size: var(--font-size-018);
+  color: var(--font-color-muted);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .settingsPage {
+    padding: 0;
+  }
+  
+  .containerAccess {
+    padding: var(--padding-024) var(--padding-012);
+  }
+
+  .settingsCard {
+    max-width: 100%;
+  }
+
+  .settingsHeader {
+    padding: var(--padding-032) var(--padding-024) var(--padding-024);
+  }
+
+  .settingsHeader h1 {
+    font-size: var(--font-size-032);
+  }
+
+  .settingsContent {
+    padding: var(--padding-024);
+  }
+
+  .settingSection {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--gap-016);
+  }
+
+  .settingInfo {
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .themeToggleContainer {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+
+  .toggleSwitch {
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .containerAccess {
+    padding: var(--padding-016) var(--padding-008);
+  }
+
+  .settingsHeader {
+    padding: var(--padding-024) var(--padding-016) var(--padding-020);
+  }
+
+  .settingsHeader h1 {
+    font-size: var(--font-size-028);
+  }
+
+  .settingsContent {
+    padding: var(--padding-020) var(--padding-016);
+  }
+
+  .themeToggleContainer {
+    justify-content: flex-end;
+  }
+
+  .toggleSwitch {
+    margin: 0;
+  }
+
+  .toggleLabel {
+    width: 50px;
+    height: 28px;
+  }
+
+  .toggleSlider {
+    width: 20px;
+    height: 20px;
+  }
+
+  .toggleInput:checked + .toggleLabel .toggleSlider {
+    transform: translateX(22px);
+  }
+}

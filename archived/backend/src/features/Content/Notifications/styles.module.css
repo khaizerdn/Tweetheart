@@ -1,0 +1,391 @@
+.notifications {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-primary-3);
+  font-family: var(--font-family-primary);
+  padding: var(--padding-016);
+  padding-top: 0;
+  padding-bottom: calc(var(--padding-016) + 80px); /* Add space for mobile menu */
+}
+
+.notificationsHeader {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  margin: 0;
+  padding: var(--padding-016);
+}
+
+.markAllReadButton {
+  position: absolute;
+  right: 0;
+  background: var(--background-color-primary-default-1);
+  color: var(--font-color-primary);
+  border: 1px solid var(--border-color-primary);
+  border-radius: var(--border-radius-008);
+  padding: var(--padding-008) var(--padding-016);
+  font-size: var(--font-size-014);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+}
+
+.markAllReadButton:hover {
+  background: var(--background-color-primary-hover-1);
+  transform: translateY(-1px);
+}
+
+.markAllReadButton:active {
+  background: var(--background-color-primary-active-1);
+  transform: translateY(0);
+}
+
+.container {
+  max-width: 600px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-008);
+  margin: 0 auto;
+}
+
+/* Filter Tabs */
+.filterTabs {
+  display: flex;
+  gap: var(--gap-008);
+  overflow-x: auto;
+  padding: var(--padding-008) 0;
+  justify-content: center;
+}
+
+.filterTab {
+  background: transparent;
+  color: var(--font-color-default);
+  border: none;
+  border-radius: var(--border-radius-008);
+  padding: var(--padding-012) var(--padding-016);
+  font-size: var(--font-size-016);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+.filterTab:hover {
+  background: var(--background-color-2);
+  color: var(--font-color-primary);
+}
+
+.filterTab.active {
+  background: var(--background-color-3);
+  color: var(--font-color-primary);
+}
+
+.filterTab .count {
+  background: var(--background-color-primary-default-3);
+  color: var(--font-color-primary);
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: var(--font-size-012);
+  font-weight: 600;
+  min-width: 18px;
+  text-align: center;
+}
+
+.filterTab.active .count {
+  background: var(--color-primary-1);
+  color: white;
+}
+
+/* Notifications List */
+.notificationsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-012);
+}
+
+.notificationItem {
+  background: var(--background-color-2);
+  border: 1px solid var(--background-color-primary-default-2);
+  border-radius: var(--border-radius-016);
+  padding: var(--padding-016);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-016);
+  position: relative;
+}
+
+.notificationItem:hover {
+  background: var(--background-color-3);
+  border: 1px solid var(--background-color-primary-hover-3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notificationItem.unread {
+  background: var(--background-color-primary-muted-1);
+  border-left: 4px solid var(--color-primary-1);
+}
+
+.notificationIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--background-color-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--font-size-018);
+}
+
+.notificationContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-008);
+}
+
+.notificationHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-016);
+}
+
+.notificationTitle {
+  font-size: var(--font-size-016);
+  font-weight: 600;
+  color: var(--font-color-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.notificationTime {
+  font-size: var(--font-size-012);
+  color: var(--font-color-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.notificationMessage {
+  font-size: var(--font-size-014);
+  color: var(--font-color-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Match layout (copied from in-menu toast style, adapted) */
+.matchHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--margin-012);
+}
+
+.matchHeaderLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-008);
+}
+
+.matchHeaderIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-999);
+  background: var(--color-secondary-16);
+  color: var(--font-color-secondary-selected);
+  font-size: var(--font-size-012);
+}
+
+.matchHeaderTitle {
+  font-size: var(--font-size-016);
+  color: var(--font-color-default);
+}
+
+.matchBodyRow {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  align-items: center;
+  gap: var(--gap-012);
+}
+
+.matchAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--border-radius-999);
+  background: var(--color-secondary-16);
+  background-size: cover;
+  background-position: center;
+}
+
+.matchBodyText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-008);
+}
+
+.matchNameLine {
+  font-size: var(--font-size-020);
+  color: var(--font-color-primary);
+  font-weight: var(--font-weight-semi-bold);
+}
+
+.matchMetaLine {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-008);
+}
+
+.matchMetaText {
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+}
+
+.notificationUser {
+  font-size: var(--font-size-012);
+  color: var(--font-color-muted);
+  font-style: italic;
+}
+
+.unreadIndicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  background: var(--color-primary-1);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--font-color-muted);
+  width: 600px;
+  padding: var(--padding-032);
+  gap: var(--gap-024);
+  margin: 0 auto;
+}
+
+.emptyState i {
+  font-size: var(--font-size-064);
+  opacity: 0.9;
+  color: var(--background-color-secondary-default);
+}
+
+.emptyState h3 {
+  font-size: var(--font-size-032);
+  color: var(--font-color-default);
+  font-weight: var(--font-weight-semi-bold);
+  margin: 0;
+}
+
+.emptyState p {
+  font-size: var(--font-size-018);
+  color: var(--font-color-muted);
+  line-height: var(--line-height-default);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-048) var(--padding-024);
+  text-align: center;
+  color: var(--font-color-muted);
+}
+
+.loadingState i {
+  font-size: var(--font-size-032);
+  margin-bottom: var(--margin-016);
+  color: var(--color-primary-1);
+}
+
+.loadingState h3 {
+  font-size: var(--font-size-020);
+  font-weight: 600;
+  color: var(--font-color-primary);
+  margin: 0 0 var(--margin-008) 0;
+}
+
+.loadingState p {
+  font-size: var(--font-size-014);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Error State */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-048) var(--padding-024);
+  text-align: center;
+  color: var(--font-color-muted);
+}
+
+.errorState i {
+  font-size: var(--font-size-032);
+  margin-bottom: var(--margin-016);
+  color: #f44336;
+}
+
+.errorState h3 {
+  font-size: var(--font-size-020);
+  font-weight: 600;
+  color: var(--font-color-primary);
+  margin: 0 0 var(--margin-008) 0;
+}
+
+.errorState p {
+  font-size: var(--font-size-014);
+  margin: 0 0 var(--margin-016) 0;
+  line-height: 1.5;
+}
+
+.retryButton {
+  background: var(--background-color-primary-default-1);
+  color: var(--font-color-primary);
+  border: 1px solid var(--border-color-primary);
+  border-radius: var(--border-radius-008);
+  padding: var(--padding-012) var(--padding-024);
+  font-size: var(--font-size-014);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  background: var(--background-color-primary-hover-1);
+  transform: translateY(-1px);
+}
+
+.retryButton:active {
+  background: var(--background-color-primary-active-1);
+  transform: translateY(0);
+}
+

@@ -1,0 +1,223 @@
+.inputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  --input-default: var(--background-color-default);
+  --input-hover: var(--background-color-hover);
+  --input-active: var(--background-color-active);
+  --input-selected: var(--background-color-selected, var(--background-color-active));
+  --input-disabled: var(--background-color-disabled, var(--background-color-2));
+  --input-muted: var(--background-color-muted, var(--background-color-3));
+  --input-label-background: var(--background-color-1);
+  --input-option-background: var(--background-color-2);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.inputLabel {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  font-size: var(--font-size-016);
+  color: var(--font-color-default);
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+  transform-origin: top left;
+}
+
+.inputLabel.filled,
+.inputField:focus + .inputLabel {
+  top: -0.5rem;
+  left: 0.75rem;
+  font-size: var(--font-size-014);
+  color: var(--font-color-active);
+  background: var(--input-label-background);
+  padding: 0 0.25rem;
+}
+
+.inputField {
+  padding: var(--padding-014) 2.5rem var(--padding-014) var(--padding-014);
+  border: 1px solid var(--input-default);
+  border-radius: var(--border-radius-008);
+  font-size: var(--font-size-016);
+  background-color: transparent;
+  color: var(--font-color-default);
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  appearance: none;
+}
+
+.inputField:focus {
+  color: var(--font-color-active);
+  border: 1px solid var(--input-active);
+  background-color: transparent;
+}
+
+.inputField:hover {
+  border: 1px solid var(--input-hover);
+  color: var(--font-color-hover);
+}
+
+.inputField:hover + .inputLabel {
+  color: var(--font-color-hover);
+}
+
+.inputField::placeholder {
+  color: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.inputField:focus::placeholder {
+  color: var(--font-color-disabled);
+}
+
+.inputField[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit {
+  opacity: 0;
+  transition: color 0.2s ease-in-out;
+}
+
+.inputField[type="date"]:focus::-webkit-datetime-edit {
+  opacity: 1;
+  color: var(--font-color-disabled) !important;
+}
+
+.inputField[type="date"].has-value::-webkit-datetime-edit {
+  opacity: 1;
+  color: var(--font-color-default);
+}
+
+.inputField[type="date"].has-value:hover::-webkit-datetime-edit {
+  opacity: 1;
+  color: var(--font-color-hover);
+}
+
+.inputField[type="date"].has-value:focus::-webkit-datetime-edit {
+  opacity: 1;
+  color: var(--font-color-active) !important;
+}
+
+.inputField[type="date"][value=""]::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.inputField.error {
+  border: 1px solid var(--font-color-status-danger) !important;
+}
+
+.inputField:disabled {
+  border: 1px solid var(--input-disabled);
+  color: var(--font-color-disabled);
+  background-color: var(--input-muted);
+  cursor: not-allowed;
+}
+
+.inputField:disabled + .inputLabel {
+  color: var(--font-color-disabled);
+}
+
+.inputField:disabled:hover {
+  border: 1px solid var(--input-disabled);
+  color: var(--font-color-disabled);
+}
+
+.inputField:disabled:hover + .inputLabel {
+  color: var(--font-color-disabled);
+}
+
+.inputField.has-value {
+  border: 1px solid var(--input-selected);
+}
+
+.errorMessage {
+  position: absolute;
+  bottom: -0.5rem;
+  right: 0.75rem;
+  font-size: var(--font-size-012);
+  color: var(--font-color-status-danger);
+  background: var(--input-label-background);
+  padding: 0 0.25rem;
+}
+
+.inputIcon {
+  position: absolute;
+  right: var(--padding-014);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.inputIcon svg {
+  fill: var(--font-color-default);
+  transition: fill 0.2s ease-in-out;
+}
+
+.inputIcon:hover svg {
+  fill: var(--font-color-hover);
+}
+
+.inputPlaceholder {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  font-size: var(--font-size-016);
+  color: var(--font-color-disabled);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+  transform-origin: top left;
+}
+
+.inputPlaceholder.filled {
+  opacity: 1;
+  font-size: var(--font-size-016);
+  color: var(--font-color-disabled);
+}
+
+.inputField option {
+  background-color: var(--input-option-background);
+  color: var(--font-color-default);
+  font-size: var(--font-size-016);
+}
+
+.selectIcon {
+  pointer-events: none;
+}
+
+.inputField:focus ~ .selectIcon svg,
+.inputField:hover ~ .selectIcon svg {
+  fill: var(--font-color-hover);
+}
+
+.selectIcon svg {
+  transition: transform 0.2s ease-in-out, fill 0.2s ease-in-out;
+}
+
+.textareaField {
+  resize: vertical;
+  min-height: 5rem;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.charCounter {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  font-size: var(--font-size-012);
+  color: var(--font-color-muted);
+  background: var(--input-label-background);
+  padding: 0 0.25rem;
+  pointer-events: none;
+}

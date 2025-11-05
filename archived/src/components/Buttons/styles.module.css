@@ -1,0 +1,88 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  padding: var(--padding-014);
+  background-color: var(--font-color-default);
+  color: var(--font-color-default);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-016);
+  font-weight: var(--font-weight-normal);
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+}
+
+.button.right-align {
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+}
+
+.button.center-align {
+  justify-content: center;
+}
+
+.button.type-secondary {
+  background-color: var(--background-color-secondary-default);
+  color: var(--color-white);
+  box-shadow: var(--shadow-1);
+  transition: all 0.2s ease-in-out;
+}
+
+.button.type-secondary:hover {
+  background-color: var(--background-color-secondary-hover);
+  box-shadow: var(--shadow-2);
+}
+  
+.button.type-primary {
+  background-color: var(--background-color-primary-default-1);
+  box-shadow: var(--shadow-1);
+  color: var(--font-color-default);
+  transition: all 0.2s ease-in-out;
+}
+
+.button.type-primary:hover {
+  box-shadow: var(--shadow-2);
+  background-color: var(--background-color-primary-hover-1);
+  color: var(--font-color-hover);
+}
+
+.button .icon {
+  display: flex;
+  align-items: center;
+}
+
+.button.loading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.button.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.button.disabled:hover {
+  background-color: var(--background-color-secondary-default);
+  box-shadow: var(--shadow-1);
+}
+
+.button.type-primary.disabled:hover {
+  background-color: var(--background-color-primary-default-1);
+  color: var(--font-color-default);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

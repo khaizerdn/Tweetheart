@@ -1,0 +1,666 @@
+.containerAccess {
+  --container-gap: 0;
+  display: flex;
+  gap: var(--container-gap);
+  min-height: 100vh;
+  height: auto;
+  width: 100vw;
+  background-color: var(--background-color-1);
+  font-family: var(--font-family-primary);
+}
+
+.leftContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding-top: var(--padding-048);
+  padding-bottom: var(--padding-048);
+}
+
+.previewCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-016);
+  width: 100%;
+  max-width: 350px;
+}
+
+.previewLabel {
+  font-size: var(--font-size-032);
+  font-weight: var(--font-weight-semi-bold);
+  color: var(--background-color-secondary-default);
+  text-align: left;
+}
+
+/* Custom placeholder for SignUp preview */
+.placeholderPhoto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-016);
+  color: var(--font-color-muted);
+  background: var(--background-color-2);
+}
+
+.placeholderPhoto i {
+  font-size: var(--font-size-064);
+  color: var(--font-color-muted);
+}
+
+.placeholderPhoto p {
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+  text-align: center;
+  padding: 0 var(--padding-024);
+}
+
+/* Card info content styles specific to SignUp */
+
+.nameAge {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+.nameAge h3 {
+  margin: 0 0 var(--margin-012) 0;
+  font-size: var(--font-size-028);
+  color: var(--color-white);
+  font-weight: var(--font-weight-semi-bold);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+.category {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-008);
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.9);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+.category i {
+  font-size: var(--font-size-012);
+}
+
+.bioPreview {
+  font-size: var(--font-size-014);
+  color: rgba(255, 255, 255, 0.95);
+  line-height: var(--line-height-default);
+  margin-top: var(--margin-008);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+.rightContainer {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--padding-048);
+  padding-bottom: var(--padding-048);
+  width: 100%;
+  max-width: 700px;
+}
+
+.formSection h1 {
+  color: var(--background-color-secondary-default);
+  margin: 0;
+  padding: 0 var(--padding-016);
+  width: 320px;
+}
+
+.formContent {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.inputFieldsSection {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  padding: var(--padding-016);
+  gap: var(--gap-016);
+  min-height: fit-content;
+  flex-shrink: 0;
+  order: 1;
+}
+
+.photoSection {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  gap: var(--gap-016);
+  flex-shrink: 0;
+  padding: var(--padding-016);
+  order: 2;
+}
+
+
+.photoUploadInfo {
+  text-align: center;
+  margin-bottom: var(--gap-008);
+}
+
+.photoUploadInfo p {
+  font-size: var(--font-size-012);
+  color: var(--font-color-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+.actionsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  flex-shrink: 0;
+  order: 3;
+}
+
+.buttonSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--padding-016);
+  gap: var(--gap-016);
+}
+
+.termsSection {
+  display: flex;
+  width: 100%;
+  padding: var(--padding-016);
+}
+
+.termsSection p {
+  text-align: center;
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+}
+
+.hrSection {
+  display: flex;
+  width: 100%;
+  padding: 0 var(--padding-016);
+}
+
+.hrSection hr {
+  width: 100%;
+  background-color: var(--background-color-primary-default-1);
+  border: none;
+  height: 1px;
+  margin: 0;
+}
+
+.accountLinkSection {
+  display: flex;
+  width: 100%;
+  padding: var(--padding-016);
+}
+
+.accountLinkSection p {
+  text-align: center;
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+  width: 100%;
+}
+
+.photoRequirement {
+  font-size: var(--font-size-014);
+  color: var(--font-color-muted);
+  margin: 0;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-016);
+  width: 100%;
+}
+
+.photoCard {
+  aspect-ratio: 1;
+  border-radius: var(--border-radius-008);
+  background-color: var(--background-color-2);
+  border: 2px dashed var(--background-color-primary-default-1);
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+
+.photoCard:hover {
+  border-color: var(--background-color-primary-hover-1);
+}
+
+.photoUpload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  gap: var(--gap-008);
+  color: var(--font-color-muted);
+  transition: all 0.2s ease-in-out;
+}
+
+.photoUpload:hover {
+  color: var(--font-color-hover);
+  background-color: var(--background-color-3);
+}
+
+.photoUpload i {
+  font-size: var(--font-size-032);
+}
+
+.photoUpload span {
+  font-size: var(--font-size-012);
+}
+
+.photoPreview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.photoPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+  color: white;
+  gap: var(--gap-008);
+}
+
+.photoOverlay:hover {
+  opacity: 1;
+}
+
+.photoOverlay i {
+  font-size: var(--font-size-024);
+}
+
+.photoOverlay span {
+  font-size: var(--font-size-014);
+}
+
+/* Standard Media Queries matching index.css */
+
+/* Center rightContainer on screens 1279px and below */
+@media screen and (max-width: 1279px) {
+  .formSection h1 {
+    align-self: center;
+  }
+  
+  .rightContainer {
+    justify-content: center;
+  }
+  
+  .formContent {
+    justify-content: center;
+  }
+}
+
+/* Very small screens: 1px - 286px */
+@media screen and (min-width: 1px) and (max-width: 286px) {
+  .containerAccess {
+    flex-direction: column;
+  }
+
+  .leftContainer {
+    display: none;
+  }
+
+  .rightContainer {
+    position: relative;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .formSection {
+    padding: var(--padding-016) 0;
+    max-width: 100%;
+  }
+
+  .formContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .inputFieldsSection {
+    width: 320px;
+    padding: var(--padding-008);
+    order: 1;
+  }
+
+  .photoSection {
+    width: 320px;
+    padding: var(--padding-008);
+    order: 2;
+  }
+
+  .actionsContainer {
+    order: 3;
+    width: 320px;
+  }
+
+  .buttonSection {
+    padding: var(--padding-008);
+  }
+
+  .termsSection {
+    padding: var(--padding-008);
+  }
+
+  .hrSection {
+    padding: 0 var(--padding-008);
+  }
+
+  .accountLinkSection {
+    padding: var(--padding-008);
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-008);
+  }
+}
+
+/* Small screens: 286px - 685px */
+@media screen and (min-width: 286px) and (max-width: 685px) {
+  .containerAccess {
+    flex-direction: column;
+  }
+
+  .leftContainer {
+    display: none;
+  }
+
+  .rightContainer {
+    position: relative;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .formSection {
+    padding: var(--padding-024) 0;
+    max-width: 100%;
+  }
+
+  .formContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .inputFieldsSection {
+    width: 320px;
+    padding: var(--padding-012);
+    order: 1;
+  }
+
+  .photoSection {
+    width: 320px;
+    padding: var(--padding-012);
+    order: 2;
+  }
+
+  .actionsContainer {
+    width: 320px;
+    order: 3;
+  }
+
+  .buttonSection {
+    padding: var(--padding-012);
+  }
+
+  .termsSection {
+    padding: var(--padding-012);
+  }
+
+  .hrSection {
+    padding: 0 var(--padding-012);
+  }
+
+  .accountLinkSection {
+    padding: var(--padding-012);
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-012);
+  }
+  
+  .nameAge h3 {
+    font-size: var(--font-size-020);
+  }
+}
+
+/* Medium screens / Tablet: 685px - 1006px */
+@media screen and (min-width: 685px) and (max-width: 1006px) {
+  .rightContainer {
+    position: relative;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .formSection {
+    max-width: 100%;
+  }
+
+  .formContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .inputFieldsSection {
+    width: 320px;
+    padding: var(--padding-016);
+    order: 1;
+  }
+
+  .photoSection {
+    width: 320px;
+    padding: var(--padding-016);
+    order: 2;
+  }
+
+  .actionsContainer {
+    width: 320px;
+    order: 3;
+  }
+
+  .buttonSection {
+    padding: var(--padding-016);
+  }
+
+  .termsSection {
+    padding: var(--padding-016);
+  }
+
+  .hrSection {
+    padding: 0 var(--padding-016);
+  }
+
+  .accountLinkSection {
+    padding: var(--padding-016);
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-016);
+  }
+
+  .nameAge h3 {
+    font-size: var(--font-size-024);
+  }
+}
+
+/* Large screens: 1006px - 1245px */
+@media screen and (min-width: 1006px) and (max-width: 1245px) {
+  .rightContainer {
+    justify-content: center;
+  }
+  
+  .formContent {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
+
+/* Extra large screens: 1245px - 1279px (centered) */
+@media screen and (min-width: 1245px) and (max-width: 1279px) {
+  .rightContainer {
+    justify-content: center;
+  }
+  
+  .formContent {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
+
+/* Extra large screens: 1280px - 1921px */
+@media screen and (min-width: 1280px) and (max-width: 1921px) {
+  .formContent {
+    flex-direction: row;
+  }
+
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
+
+/* Max width: 1921px+ */
+@media screen and (min-width: 1921px) {
+  .containerAccess {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+
+  .formContent {
+    flex-direction: row;
+  }
+
+  .inputFieldsSection {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .photoSection {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .actionsContainer {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.errorMessage {
+  color: var(--font-color-status-danger);
+  font-size: var(--font-size-012);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+}
+
+.buttonRegisterText {
+  color: var(--font-color-default);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.buttonRegisterText:hover {
+  color: var(--font-color-hover);
+}

@@ -1,0 +1,233 @@
+import React, { useState, useEffect } from 'react';
+import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import axios from 'axios';
+import { mockAxios } from './mock/mockApi.js';
+import ScrollRestoration from './utils/scrollrestoration';
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import layoutStyles from './utils/styles/layout.module.css';
+
+import Menu from './features/Menu/features';
+import BlankPage from './components/BlankPage';
+import Content from './features/Content/Home';
+import ProfileWrapper from './features/Content/ProfileWrapper';
+import Matches from './features/Content/Matches';
+import Chats from './features/Content/Chats';
+import ChatRoom from './features/Content/Chats/ChatRoom';
+import Settings from './features/Content/Settings';
+import Notifications from './features/Content/Notifications';
+
+import Login from './features/Login';
+import ForgotPassword from '../src/features/ForgotPassword';
+import SignUp from './features/SignUp';
+import EmailVerification from './features/EmailVerification';
+import LocationPermission from './components/LocationPermission';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+const isStaticMode = import.meta.env.VITE_STATIC_MODE === 'true' || import.meta.env.MODE === 'static';
+
+// Use mock API in static mode
+const apiClient = isStaticMode ? mockAxios : axios;
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(isStaticMode); // Auto-login in static mode
+  const [loading, setLoading] = useState(true);
+  const [locationChecked, setLocationChecked] = useState(false);
+  const [locationGranted, setLocationGranted] = useState(false);
+  
+  // Check for logout in static mode
+  useEffect(() => {
+    if (isStaticMode) {
+      // Check on mount and immediately
+      const checkLogout = () => {
+        const loggedOut = sessionStorage.getItem('loggedOut');
+        if (loggedOut === 'true') {
+          setIsLoggedIn(false);
+          sessionStorage.removeItem('loggedOut');
+          // Force navigation to login page
+          window.location.hash = '#/';
+        }
+      };
+      
+      // Check immediately
+      checkLogout();
+      // Check periodically
+      const interval = setInterval(checkLogout, 50);
+      
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [isStaticMode]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (isStaticMode) {
+        // In static mode, auto-login and skip auth check
+        setIsLoggedIn(true);
+        setLocationGranted(true);
+        setLocationChecked(true);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await apiClient.post(`${API_URL}/refresh`, {}, { withCredentials: true });
+        setIsLoggedIn(true);
+        
+        // Check if user has location saved
+        try {
+          const locationRes = await apiClient.get(`${API_URL}/location-status`, { withCredentials: true });
+          if (locationRes.data.hasLocation) {
+            setLocationGranted(true);
+          } else {
+            setLocationGranted(false);
+          }
+        } catch (locationErr) {
+          console.error("Error checking location status:", locationErr);
+          // If location status check fails, assume no location (show prompt)
+          setLocationGranted(false);
+        }
+        
+        setLocationChecked(true);
+      } catch (err) {
+        setIsLoggedIn(false);
+        setLocationChecked(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    // Check location status after login
+    setTimeout(async () => {
+      if (isStaticMode) {
+        setLocationGranted(true);
+        setLocationChecked(true);
+        return;
+      }
+      
+      try {
+        const locationRes = await apiClient.get(`${API_URL}/location-status`, { withCredentials: true });
+        if (!locationRes.data.hasLocation) {
+          setLocationGranted(false); // Ensure it's false if not saved
+        } else {
+          setLocationGranted(true);
+        }
+        setLocationChecked(true);
+      } catch (locationErr) {
+        console.error("Error checking location status:", locationErr);
+        // If location status check fails, assume no location (show prompt)
+        setLocationGranted(false);
+        setLocationChecked(true);
+      }
+    }, 100); // Small delay to ensure cookies are set
+  };
+  
+  const ProtectedRoute = ({ children }) => {
+    return isLoggedIn ? children : <Navigate to="/" />;
+  };
+
+  if (loading || (isLoggedIn && !locationChecked)) {
+    return <div>Loading session...</div>;
+  }
+
+  return (
+    <Router>
+      <ScrollRestoration />
+      {/* Location permission modal removed - location is now optional, users can browse without it */}
+      <Routes>
+        {!isLoggedIn ? (
+          <>
+            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/" element={<Login setIsLoggedIn={handleLogin} />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/verification" element={<EmailVerification setIsLoggedIn={handleLogin} />} />
+            <Route path="/reset-password" element={<EmailVerification setIsLoggedIn={handleLogin} />} />
+          </>
+        ) : (
+          <Route
+            path="*"
+            element={
+              <ProtectedRoute>
+                <div className="container">
+                  <div className="container-titleBar">
+                    <div className="titleBar"></div>
+                  </div>
+                  <div className="main-container">
+                    <div className={layoutStyles.containerShortcut}>
+                      <OverlayScrollbarsComponent
+                        options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                        overflow: { x: 'hidden', y: 'scroll' } }}
+                        className={layoutStyles.shortcut}>
+                        <Menu />
+                      </OverlayScrollbarsComponent>
+                    </div>
+                    <div className="container-content">
+                      <Routes>
+                        <Route path="/" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, }, overflow: { x: 'hidden', y: 'hidden' } }}
+                            className="content">
+                            <Content locationGranted={locationGranted} setLocationGranted={setLocationGranted} />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="/notifications" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Notifications />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="/matches" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Matches />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="/chats" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Chats />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="/chats/:chatId" element={<ChatRoom />} />
+                        <Route path="/profile/:userId" element={<ProfileWrapper />} />
+                        <Route path="/settings" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'scroll' } }}
+                            className="content">
+                            <Settings />
+                          </OverlayScrollbarsComponent>
+                        } />
+                        <Route path="*" element={
+                          <OverlayScrollbarsComponent
+                            options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0, },
+                            overflow: { x: 'hidden', y: 'hidden' } }}
+                            className="content">
+                            <BlankPage />
+                          </OverlayScrollbarsComponent>
+                        } />
+                      </Routes>
+                    </div>
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+        )}
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
